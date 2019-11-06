@@ -9,8 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\FoodRepository")
  */
-class Food
-{
+class Food {
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -34,13 +33,13 @@ class Food
     private $price;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\type", inversedBy="foods")
+     * @ORM\ManyToOne(targetEntity="Type", inversedBy="foods")
      * @ORM\JoinColumn(nullable=false)
      */
     private $type;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\tag", inversedBy="foods")
+     * @ORM\ManyToMany(targetEntity="Tag", inversedBy="foods")
      */
     private $tag;
 
@@ -90,12 +89,12 @@ class Food
         return $this;
     }
 
-    public function getType(): ?type
+    public function getType(): ?Type
     {
         return $this->type;
     }
 
-    public function setType(?type $type): self
+    public function setType(?Type $type): self
     {
         $this->type = $type;
 
@@ -103,14 +102,14 @@ class Food
     }
 
     /**
-     * @return Collection|tag[]
+     * @return Collection|Tag[]
      */
     public function getTag(): Collection
     {
         return $this->tag;
     }
 
-    public function addTag(tag $tag): self
+    public function addTag(Tag $tag): self
     {
         if (!$this->tag->contains($tag)) {
             $this->tag[] = $tag;
@@ -119,7 +118,7 @@ class Food
         return $this;
     }
 
-    public function removeTag(tag $tag): self
+    public function removeTag(Tag $tag): self
     {
         if ($this->tag->contains($tag)) {
             $this->tag->removeElement($tag);

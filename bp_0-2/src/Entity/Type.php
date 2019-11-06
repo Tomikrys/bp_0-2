@@ -9,8 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\TypeRepository")
  */
-class Type
-{
+class Type {
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -24,7 +23,7 @@ class Type
     private $name;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Food", mappedBy="type")
+     * @ORM\OneToMany(targetEntity="Food", mappedBy="type")
      */
     private $foods;
 

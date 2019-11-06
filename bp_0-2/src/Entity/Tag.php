@@ -9,8 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\TagRepository")
  */
-class Tag
-{
+class Tag {
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -24,7 +23,7 @@ class Tag
     private $name;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Food", mappedBy="tag")
+     * @ORM\ManyToMany(targetEntity="Food", mappedBy="tag")
      */
     private $foods;
 
