@@ -3,7 +3,200 @@
 {% block stylesheets %}{% endblock %}
 {% block body %}
 <h1>Foods</h1>
-    
+    {{ include('pages/foods/parts/table.html.twig') }}
+
+    <button type="button" class="btn btn-success" onclick="add_row_for_new_food()">Přidat řádek</button>
+
+    <!-- modal na loading -->
+    <div class="modal fade" id="loading">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content" style="background-color: transparent; border: none;">
+                {#            <img class="align-self-center" src="https://i.imgur.com/RlS6YST.gif" width="32px" height="32px">#}
+                <img class="align-self-center" src="https://thumbs.gfycat.com/GenuineIllinformedEmu-size_restricted.gif" width="500" height="375">
+            </div>
+        </div>
+    </div>
+
+    <!-- modal na přidání tagu -->
+    <div class="modal fade" id="addTagFormModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Přidat tag</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    {{ include('pages/foods/parts/formaddtag.html.twig') }}
+                </div>
+            </div>
+        </div>
+    </div>
 
 {% endblock %}
-{% block javascripts %}{% endblock %}
+{% block javascripts %}
+    <script>
+        const foods = document.getElementById('foods');
+        if (foods) {
+            //    deleting item
+            foods.addEventListener('click', e => {
+                if ($(e.target).hasClass('delete-food')) {
+                    delete_food(e);
+                }
+                // adding item
+                if ($(e.target).hasClass('add-food')) {
+                    add_food(e);
+                }
+
+                // editing item
+                if ($(e.target).hasClass('edit-food')) {
+                    edit_food(e);
+                }
+
+                // adding tag
+                if ($(e.target).hasClass('add-tag')) {
+                    alert('tag');
+                    add_tag(e);
+                }
+            });
+        }
+
+        function delete_food(e) {
+            $("#loading").modal("show");
+            if (confirm('Opravdu?')) {
+                const id = e.target.getAttribute('data-id');
+
+                fetch(`/foods/delete/${id}`, {
+                    method: 'DELETE'
+                }).then(res => window.location.reload());
+            }
+            $("#loading").modal("hide");
+        }
+
+        function edit_food(e) {
+            $("#loading").modal("show");
+            // vytežení infa z tabulky
+            const id = e.target.getAttribute('data-id');
+            const name = document.getElementById(id).getElementsByClassName("food_name")[0].innerText;
+            const description = document.getElementById(id).getElementsByClassName("food_description")[0].innerText;
+            const price = document.getElementById(id).getElementsByClassName("food_price")[0].innerText;
+
+            // řešení selektu
+            var selector = document.getElementById(id).getElementsByClassName("food_type")[0];
+            var type = selector[selector.selectedIndex].value;
+
+            // nacpání do struktury
+            const data = {
+                id: id,
+                name: name,
+                description: description,
+                price: price,
+                type: type
+            };
+
+            // odeslání do FoodController
+            try {
+                const response = fetch('/foods/edit', {
+                    method: 'PATCH', // or 'PUT'
+                    body: JSON.stringify(data), // data can be `string` or {object}!
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }).then(res => window.location.reload());
+                const json = response.json();
+                console.log('Success:', JSON.stringify(json));
+            } catch (error) {
+                console.error('Error:', error);
+            }
+            $("#loading").modal("hide");
+        }
+
+        // přidání řádku a buňek do tabulky
+        function add_row_for_new_food() {
+            const foods = document.getElementById('foods');
+            var row = foods.insertRow(-1);
+            var cell_name =         row.insertCell(0);
+            var cell_description =  row.insertCell(1);
+            var cell_price =        row.insertCell(2);
+            var cell_tags =         row.insertCell(3);
+            var cell_type =         row.insertCell(4);
+            var cell_buttons =      row.insertCell(5);
+
+            // přidání "editovatelnosti"
+            var editable = document.createAttribute("contenteditable");
+            editable.value = "true";
+            var editable2 = document.createAttribute("contenteditable");
+            editable2.value = "true";
+            var editable3 = document.createAttribute("contenteditable");
+            editable3.value = "true";
+
+            row.id = "adding";
+
+            cell_name.classList.add("food_name");
+            cell_name.classList.add("font-weight-bold");
+            cell_name.attributes.setNamedItem(editable);
+
+            cell_description.classList.add("food_description");
+            cell_description.attributes.setNamedItem(editable2);
+
+            cell_price.innerHTML = " ";
+            cell_price.classList.add("food_price");
+            cell_price.attributes.setNamedItem(editable3);
+
+            // řešení selektu
+            cell_type.innerHTML =
+                '<select class="food_type form-control">\n' +
+                '   <option selected></option>' +
+                '   {% for type in types %}\n'+
+                '       <option>{{ type.name }}</option>\n'+
+                '   {% endfor %}\n'+
+                '</select>';
+
+            // tlačítko k uložení
+            cell_buttons.innerHTML = '<a href=\"#\" class=\"btn btn-primary add-food\">Uložit</a>';
+        }
+
+        // funke k přidání jídla
+        function add_food(e) {
+            $("#loading").modal("show");
+            // vytáhne si z přidaného řádku info
+            const name = e.target.parentElement.parentElement.getElementsByClassName("food_name")[0].innerText;
+            const description = e.target.parentElement.parentElement.getElementsByClassName("food_description")[0].innerText;
+            const price = e.target.parentElement.parentElement.getElementsByClassName("food_price")[0].innerText;
+            const selector = e.target.parentElement.parentElement.getElementsByClassName("food_type")[0];
+            const type = selector[selector.selectedIndex].value;
+            // napere to do struktury
+            const food = {
+                id: e.target.getAttribute('data-id'),
+                name: name,
+                description: description,
+                price: price,
+                type: type
+            };
+            // pošle do FoodControlleru
+            try {
+                const response = fetch('/foods/add', {
+                    method: 'POST',
+                    body: JSON.stringify(food),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }).then(res => window.location.reload());
+                console.log('Success');
+            } catch (error) {
+                console.error('Error:', error);
+            }
+            $("#loading").modal("hide");
+        }
+
+        function add_tag(e) {
+            $("#addTagFormModal").modal("show");
+
+
+            $("#addTagFormModal").modal("hide");
+        }
+    </script>
+{% endblock %}

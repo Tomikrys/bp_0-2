@@ -94,6 +94,13 @@ class Food {
         return $this->type;
     }
 
+    public function setTypeByString(string $str, $entityManager): self {
+        $repo = $entityManager->getRepository(Type::class);
+        $type = $repo->findOneBy(array('name' => $str));
+        $this->type = $type;
+        return $this;
+    }
+
     public function setType(?Type $type): self
     {
         $this->type = $type;
@@ -104,7 +111,7 @@ class Food {
     /**
      * @return Collection|Tag[]
      */
-    public function getTag(): Collection
+    public function getTags(): Collection
     {
         return $this->tag;
     }
