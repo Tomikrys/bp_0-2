@@ -1,0 +1,29 @@
+<form name="form" method="post">
+    <div id="form">
+        <div>
+            <label for="form_name" class="required">
+                Jméno
+            </label>
+            <input type="text" id="form_name" name="form[name]" required="required" class="form-control">
+        </div>
+        <div>
+            <label for="form_is_girl" class="required">
+                Tag
+            </label>
+            <select id="form_is_girl" name="form[is_girl]" class="custom-select">
+                <option value="0">
+                    Muž
+                </option>
+                <option value="1">
+                    Žena
+                </option>
+            </select>
+        </div>
+        <div>
+            <button type="submit" id="form_submit" name="form[submit]" class="btn btn btn-success mt-3" data-dissmiss="modal">
+                Uložit
+            </button>
+        </div>
+{#        <input type="hidden" id="form__token" name="form[_token]" value="46xSMtKD8tJfMyV1-KxasF5lEHfJE8pxa2e-BtKZBv0">#}
+    </div>
+</form>
