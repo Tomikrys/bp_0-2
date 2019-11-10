@@ -1,9 +1,87 @@
 {% extends 'base.html.twig' %}
-{% block title %}{% endblock %}
-{% block stylesheets %}{% endblock %}
+{% block title %}Menu{% endblock %}
+{% block stylesheets %}
+    <style>
+        .card-header {
+            padding: 0px 5px 0px 5px;
+        }
+    </style>{% endblock %}
 {% block body %}
-<h1>menu</h1>
+    <div class="row">
+        <div class="col">
+            <h1>Sestavení menu</h1>
+            <div id="foodList">
+                {% for type,foods in foods %}
+                    <h2 id="{{ type }}">{{ type }}</h2>
+                    <div id="foodList_{{ type }}" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    {% for food in foods %}
+                        <div class="meal card-header" id="{{ food.id }}" data-type="{{ type }}" draggable="true" ondragstart="drag(event)">
+                            {{ food.name }}, {{ food.price }}
+                        </div>
+                    {% endfor %}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="col">
+            <h2>Jídelníček</h2>
+            <h3>Pondělí</h3>
+            <h4 class="menu-header" ondrop="drop(event)" ondragover="allowDrop(event)">
+                Polévka
+            </h4>
+            <div class="menu-item bg-light mb-3" id="soup" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+
+            <h4 class="menu-header" ondrop="drop(event)" ondragover="allowDrop(event)">
+                Hlavní chod
+            </h4>
+            <div class="menu-item bg-light mb-3" id="meal" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+
+            <h4 class="menu-header" ondrop="drop(event)" ondragover="allowDrop(event)">
+                Hlavní chod vege
+            </h4>
+            <div class="menu-item bg-light mb-3" id="vege" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+
+        </div>
+    </div>
 
 
 {% endblock %}
-{% block javascripts %}{% endblock %}
+{% block javascripts %}
+<script>
+    function allowDrop(ev) {
+        ev.preventDefault();
+    }
+
+    function drag(ev) {
+        ev.dataTransfer.setData("dragged_element", ev.target.id);
+    }
+
+    function drop(ev) {
+        ev.preventDefault();
+
+        var data = ev.dataTransfer.getData("dragged_element");
+
+        let target = ev.target;
+
+        if (target.classList.contains( "meal" )){
+            target = ev.target.parentNode;
+        }
+
+        if (target.classList.contains( "menu-header" )){
+           // target = target.parentNode.getElementsByClassName("menu-item")[0];
+            target = target.nextElementSibling;
+        }
+
+        //let divsHolderid = "foodList_" + document.getElementById("foodList");
+        let divsHolderId = "foodList_" + document.getElementById(data.data("type"));
+
+        if (target.children.length > 0){
+            let currentDiv = target.children[0];
+            divsHolderId.appendChild(currentDiv);
+        }
+
+        target.appendChild(document.getElementById(data));
+    }
+</script>
+{% endblock %}
