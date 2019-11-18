@@ -5,17 +5,21 @@
         .card-header {
             padding: 0px 5px 0px 5px;
         }
+
+        .food-header, .food-item {
+            margin-left: 5px;
+        }
     </style>{% endblock %}
 {% block body %}
     <div class="row">
         <div class="col">
             <h1>Sestavení menu</h1>
-            <div id="foodList">
+            <div id="foodList" class="menu-header" ondrop="drop(event)" ondragover="allowDrop(event)" >
                 {% for type,foods in foods %}
                     <h2 id="{{ type }}">{{ type }}</h2>
                     <div id="foodList_{{ type }}" ondrop="drop(event)" ondragover="allowDrop(event)">
                     {% for food in foods %}
-                        <div class="meal card-header" id="{{ food.id }}" data-type="{{ type }}" draggable="true" ondragstart="drag(event)">
+                        <div class="meal card-header" id="meal{{ food.id }}" data-id="{{ food.id }}" data-type="{{ type }}" draggable="true" ondragstart="drag(event)">
                             {{ food.name }}, {{ food.price }}
                         </div>
                     {% endfor %}
@@ -26,62 +30,160 @@
 
         <div class="col">
             <h2>Jídelníček</h2>
-            <h3>Pondělí</h3>
-            <h4 class="menu-header" ondrop="drop(event)" ondragover="allowDrop(event)">
-                Polévka
-            </h4>
-            <div class="menu-item bg-light mb-3" id="soup" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+            <div id="page-content">
+                <div id="menuList">
+                    <div class="day">
+                        <h3 class="day-name">Pondělí</h3>
+                        <h4 class="food-header" data-type="soup" ondrop="drop(event)" ondragover="allowDrop(event)">Polévka</h4>
+                        <div class="food-item" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
 
-            <h4 class="menu-header" ondrop="drop(event)" ondragover="allowDrop(event)">
-                Hlavní chod
-            </h4>
-            <div class="menu-item bg-light mb-3" id="meal" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                        <h4 class="food-header" data-type="meal" ondrop="drop(event)" ondragover="allowDrop(event)">Hlavní chod</h4>
+                        <div class="food-item" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
 
-            <h4 class="menu-header" ondrop="drop(event)" ondragover="allowDrop(event)">
-                Hlavní chod vege
-            </h4>
-            <div class="menu-item bg-light mb-3" id="vege" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                        <h4 class="food-header" data-type="vege" ondrop="drop(event)" ondragover="allowDrop(event)">Hlavní chod vege</h4>
+                        <div class="food-item" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                    </div>
 
+                    <div class="day">
+                        <h3 class="day-name">Úterý</h3>
+                        <h4 class="food-header" data-type="soup" ondrop="drop(event)" ondragover="allowDrop(event)">Polévka</h4>
+                        <div class="food-item" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+
+                        <h4 class="food-header" data-type="meal" ondrop="drop(event)" ondragover="allowDrop(event)">Hlavní chod</h4>
+                        <div class="food-item" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+
+                        <h4 class="food-header" data-type="vege" ondrop="drop(event)" ondragover="allowDrop(event)">Hlavní chod vege</h4>
+                        <div class="food-item" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                    </div>
+
+                    <div class="day">
+                        <h3 class="day-name">Středa</h3>
+                        <h4 class="food-header" data-type="soup" ondrop="drop(event)" ondragover="allowDrop(event)">Polévka</h4>
+                        <div class="food-item" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+
+                        <h4 class="food-header" data-type="meal" ondrop="drop(event)" ondragover="allowDrop(event)">Hlavní chod</h4>
+                        <div class="food-item" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+
+                        <h4 class="food-header" data-type="vege" ondrop="drop(event)" ondragover="allowDrop(event)">Hlavní chod vege</h4>
+                        <div class="food-item" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                     </div>
+                </div>
+            <button onclick="generateMenu()" class="btn btn-success">Exportovat .doc</button>
+            <button onclick="getMenu()" class="btn btn-primary">Náhled</button>
         </div>
     </div>
 
 
 {% endblock %}
+
 {% block javascripts %}
 <script>
+    function generate_json() {
+        let menuList = document.getElementById("menuList");
+        let menuDays = menuList.children;
+
+        let menu = [];
+
+        for (let i = 0; i < menuDays.length; i++) {
+            let menuDay = menuDays[i].children;
+            let day = {name: "", meals: []};
+            let type = {name: "", meals: []};
+
+            for (let j = 0; j < menuDay.length; j++) {
+                let menuDayItem = menuDay[j];
+                if (menuDayItem.classList.contains("day-name")) {
+                    day.name = menuDayItem.innerText;
+
+                } else if (menuDayItem.classList.contains("food-header")){
+                    if (type.name !== "") {
+                        // kopie objektu, jinak by se uložila pouze reference
+                        let cloneType = Object.assign({}, type);
+                        day.meals.push(cloneType);
+                        type.meals = [];
+                    }
+                    type.name= menuDayItem.getAttribute("data-type");
+
+                } else if (menuDayItem.classList.contains("food-item")){
+                    let menuMeals = menuDayItem.children;
+                    for (let k = 0; k < menuMeals.length; k++) {
+                        let meal = {id: menuMeals[k].id, name: menuMeals[k].innerText};
+                        type.meals.push(meal);
+                    }
+                }
+            }
+            day.meals.push(type);
+            menu.push(day);
+        }
+        console.log(menu);
+        return menu;
+    }
+
+
+    function getMenu() {
+        let json = generate_json();
+        console.log(JSON.stringify(json));
+        window.open("/menu/generate?generate=false&json=" + JSON.stringify(json), "_blank", "fullscreen=yes");
+    }
+
+    async function generateMenu () {
+        let json = generate_json();
+        window.open("/menu/generate?generate=true&json=" + JSON.stringify(json),
+            "_blank", "width=10,height=10,top=30,left=200");
+
+
+        // const response = fetch("/menu/generate?generate=" + doGenerate + "&json=" + JSON.stringify(json), "_blank", "fullscreen=yes"
+        // , {
+        //     method: 'GET'
+        // });
+    }
+
+    function hasParent (elem, selector) {
+        for ( ; elem && elem !== document; elem = elem.parentNode ) {
+            if ( elem.matches( '#' + selector ) ) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     function allowDrop(ev) {
         ev.preventDefault();
     }
 
     function drag(ev) {
-        ev.dataTransfer.setData("dragged_element", ev.target.id);
+        ev.dataTransfer.setData("text", ev.target.id);
     }
 
     function drop(ev) {
         ev.preventDefault();
 
-        var data = ev.dataTransfer.getData("dragged_element");
+        var data = ev.dataTransfer.getData("text");
+        let dragged = document.getElementById(data);
 
         let target = ev.target;
-
         if (target.classList.contains( "meal" )){
             target = ev.target.parentNode;
-        }
 
-        if (target.classList.contains( "menu-header" )){
-           // target = target.parentNode.getElementsByClassName("menu-item")[0];
+        }
+        if (target.classList.contains( "food-header" )){
+            // target = target.parentNode.getElementsByClassName("food-item")[0];
             target = target.nextElementSibling;
+
         }
 
-        //let divsHolderid = "foodList_" + document.getElementById("foodList");
-        let divsHolderId = "foodList_" + document.getElementById(data.data("type"));
-
-        if (target.children.length > 0){
-            let currentDiv = target.children[0];
-            divsHolderId.appendChild(currentDiv);
+        if (hasParent(target, "foodList")) {
+            let divsHolderId = "foodList_" + (dragged.getAttribute('data-type'));
+            let divsHolder = document.getElementById(divsHolderId);
+            divsHolder.appendChild(dragged);
         }
-
-        target.appendChild(document.getElementById(data));
+        // if (hasParent(target, "menuList")) {
+        //     let divsHolderId = "menuList_" + (dragged.getAttribute('data-type'));
+        //     let divsHolder = document.getElementById(divsHolderId);
+        //     divsHolder.appendChild(dragged);
+        // }
+        else {
+            target.appendChild(dragged);
+        }
     }
 </script>
 {% endblock %}

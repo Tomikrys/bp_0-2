@@ -28,4 +28,16 @@ class MenuController extends AbstractController {
 
         return $this->render('pages/menu/menu.html.twig', array('foods' => $foods));
     }
+
+
+    /**
+     * @Route("/menu/generate", methods={"GET", "POST"})
+     */
+    public function generate(){
+        $menu = json_decode ($_GET["json"]);
+        $doGenerate = $_GET["generate"];
+//        dump($menu);
+//        exit;
+        return $this->render('pages/menu/export.html.twig', array('menu' => $menu, "generate" => $doGenerate));
+    }
 }
