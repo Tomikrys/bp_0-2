@@ -11,9 +11,9 @@
         </p>
         {% for day in menu %}
             <div class="day">
-                <h3>{{ day.name }}</h3>
+                <h2>{{ day.name }}</h2>
                 {% for type in day.meals %}
-                    <h4>{{ type.name }}</h4>
+                    <h3>{{ type.name }}</h3>
                     {%  for meal in type.meals %}
                         <p>{{ meal.name }}</p>
                     {% endfor %}
