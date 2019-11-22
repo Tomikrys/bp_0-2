@@ -7,6 +7,7 @@ namespace App\Controller;
 use App\Entity\Type;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
+use Twig\Extra\CssInliner\CssInlinerExtension;
 
 /**
  * Class MenuController
@@ -38,6 +39,7 @@ class MenuController extends AbstractController {
         $doGenerate = $_GET["generate"];
 //        dump($menu);
 //        exit;
+
         return $this->render('pages/menu/export.html.twig', array('menu' => $menu, "generate" => $doGenerate));
     }
 }

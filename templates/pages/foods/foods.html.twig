@@ -3,29 +3,14 @@
 {% block stylesheets %}{% endblock %}
 {% block body %}
 <h1>Foods</h1>
+
     {{ include('pages/foods/parts/table.html.twig') }}
 
     <button type="button" class="btn btn-success" onclick="add_row_for_new_food()">Přidat řádek</button>
 
 
-    <!-- modal na přidání tagu -->
-    <div class="modal fade" id="addTagFormModal">
-        <div class="modal-dialog">
-            <div class="modal-content">
+{#    {{ include('pages/foods/parts/formAddTag.html.twig') }}#}
 
-                <!-- Modal Header -->
-                <div class="modal-header">
-                    <h4 class="modal-title">Přidat tag</h4>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                </div>
-
-                <!-- Modal body -->
-                <div class="modal-body">
-                    {{ include('pages/foods/parts/formaddtag.html.twig') }}
-                </div>
-            </div>
-        </div>
-    </div>
 
 {% endblock %}
 {% block javascripts %}
@@ -66,6 +51,14 @@
             }
             $("#loading").modal("hide");
         }
+
+        // function edit_tags(e) {
+        //     $("#loading").modal("show");
+        //         fetch(`/foods/${id}/editTags`, {
+        //             method: 'PATCH'
+        //         }).then(res => window.location.reload());
+        //     $("#loading").modal("hide");
+        // }
 
         function edit_food(e) {
             $("#loading").modal("show");

@@ -27,6 +27,19 @@ class Tag {
      */
     private $foods;
 
+    private $tags_array;
+
+    public function getTagsArray () {
+        return $this->tags_array;
+    }
+
+    public function setTagsArray($tags_arr): self
+    {
+        $this->tags_array = $tags_arr;
+
+        return $this;
+    }
+
     public function __construct()
     {
         $this->foods = new ArrayCollection();

@@ -6,16 +6,20 @@ namespace App\Controller;
 
 use App\Entity\Food;
 use App\Entity\Type;
+use App\Entity\Tag;
 use App\Repository\FoodRepository;
+use App\Repository\TagRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Twig\Extra\CssInliner\CssInlinerExtension;
 
 /**
  * Class FoodsController
@@ -140,6 +144,55 @@ class FoodsController extends AbstractController {
         return $response;
     }
 
+//    /**
+//     * @param Request $request
+//     * @return Response
+//     * @Route("/foods/{id}/editTags", methods={"PATCH"})
+//     */
+//    public function editTags(Request $request) : Response {
+//        $food = $this->getDoctrine()->getRepository(Food::class)->find($id);
+//
+//        // získání seznamu typů z databáze
+//        $all_tags = $this->getDoctrine()->getRepository(Tag::class)->findAll();
+//        $form_tags = null;
+//        foreach ($all_tags as $tag) {
+//            $form_tags[$tag->getName()] = $tag->getId();
+//        }
+//
+//        $add_tags = new Tag();
+//        // Dole to pak použiju k vyhledání toho hráča, co se má uložit
+//        // v Tags je připravenna proměnná, do které se pole uloží
+//        $form_add_tag = $this->createFormBuilder($add_tags)
+//            ->add('tags_array', ChoiceType::class, array(
+//                'choices'  => $form_tags,
+//                'multiple' => true,
+//                'expanded' => true,
+//                'attr' => array('class' => 'form-group'),
+//                'label' => 'Dostupné tagy' ))
+//            ->add('submit', SubmitType::class, array(
+//                'label' => 'Uložit',
+//                'attr' => array('class' => 'btn btn btn-success mt-3', 'data-dissmiss' => 'modal')) )
+//            ->getForm();
+//
+//        // Zpracování add formuláře.
+//        $form_add_tag->handleRequest($request);
+//        if ($form_add_tag->isSubmitted() && $form_add_tag->isValid()) {
+//            foreach ($food->getTags() as $tag) {
+//                $food->removeTag($tag);
+//            }
+//
+//            foreach ($add_tags->getTagsArray() as $tag) {
+//                $food->addTag($tag);
+//            }
+////            // sic je tady getName, tak do name jsem výše uložil ID toho hráča, takže se hledá podle ID, sorry.
+////            $team->addPlayer($player);
+////            $this->getDoctrine()->getManager()->persist($team);
+////            $this->getDoctrine()->getManager()->flush();
+////            $this->addFlash('success', 'Hráč \'' . $player->getName() . '\' byl úspěšně  do týmu \'' . $team->getName() . '\'.');
+////            return $this->redirect($request->getUri());
+//        }
+//    }
+
     /**
      * @param Request $request
      * @return Response
@@ -161,7 +214,8 @@ class FoodsController extends AbstractController {
         // získání seznamu jídel
         $foods = $this->getDoctrine()->getRepository(Food::class)->findAll();
 
-
-        return $this->render('pages/foods/foods.html.twig', array('formadd' => $formadd->createView(), 'table' => $table, 'types' => $types, 'foods' => $foods));
+        return $this->render('pages/foods/foods.html.twig', array('formadd' => $formadd->createView(),
+            'table' => $table, 'types' => $types, 'foods' => $foods));
+            //'table' => $table, 'types' => $types, 'foods' => $foods, 'formAddTag' => $form_add_tag->createView()));
     }
 }
