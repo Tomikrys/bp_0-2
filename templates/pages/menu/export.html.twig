@@ -2,10 +2,13 @@
 
 {% block title %}Menu{% endblock %}
 {% block stylesheets %}
+    <link rel="stylesheet" href="/style/export.css" />
 {% endblock %}
 {% block body %}
     <div id="menu">
-        <h1>Menu Padagali</h1>
+        <p class="MsoNormal" align="center" style="text-align:center">
+            <img id="logo" class="logo" width="250" height="128" src="{{ asset('Logo-PG-CB.png') }}">
+        </p>
         {% for day in menu %}
             <div class="day">
                 <h3>{{ day.name }}</h3>
@@ -17,6 +20,7 @@
                 {% endfor %}
             </div>
         {% endfor %}
+        <p>Přejeme dobrou chuť!<br>Heslo k WiFi: swagatam</p>
     </div>
     <a class="word-export btn btn-success" href="javascript:void(0)"> Export as .doc </a>
 {% endblock %}

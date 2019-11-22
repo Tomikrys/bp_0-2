@@ -30,7 +30,9 @@ if (typeof jQuery !== "undefined" && typeof saveAs !== "undefined") {
                 var w = Math.min(img[i].width, options.maxWidth);
                 var h = img[i].height * (w / img[i].width);
                 // Create canvas for converting image to data URL
-                $('<canvas>').attr("id", "jQuery-Word-export_img_" + i).width(w).height(h).insertAfter(img[i]);
+                //img[i].after($('<canvas>').attr({id : "jQuery-Word-export_img_" + i}).width(w).height(h));
+                var logo = document.getElementById("logo");
+                $('<canvas>').attr("id", "jQuery-Word-export_img_" + i).width(w).height(h).insertAfter(logo);
                 var canvas = document.getElementById("jQuery-Word-export_img_" + i);
                 canvas.width = w;
                 canvas.height = h;
@@ -65,10 +67,28 @@ if (typeof jQuery !== "undefined" && typeof saveAs !== "undefined") {
             mhtmlBottom += "--NEXT.ITEM-BOUNDARY--";
 
             //TODO: load css from included stylesheet
-            var styles = "";
+            let file = "/style/export.css";
+
+            var rawFile = new XMLHttpRequest();
+            var export_css = "";
+            rawFile.open("GET", file, false);
+            rawFile.onreadystatechange = function ()
+            {
+                if(rawFile.readyState === 4)
+                {
+                    if(rawFile.status === 200 || rawFile.status == 0)
+                    {
+                        export_css = rawFile.responseText;
+                    }
+                }
+            };
+            rawFile.send(null);
+
+            var styles = export_css;
 
             // Aggregate parts of the file together 
             var fileContent = static.mhtml.top.replace("_html_", static.mhtml.head.replace("_styles_", styles) + static.mhtml.body.replace("_body_", markup.html())) + mhtmlBottom;
+            console.log(fileContent);
 
             // Create a Blob with the file contents
             var blob = new Blob([fileContent], {

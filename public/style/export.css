@@ -1,4 +1,38 @@
+#menu {
+    font-family: Calibri;
+    text-align: left;
+    max-width: 80%;
+    align-self: center;
+    margin-left: auto;
+    margin-right: auto;
+}
 
+.logo {
+    text-align: center;
+}
+
+p {
+    font-family: Calibri;
+    text-align: center;
+    font-size: 14px;
+}
+
+.footoer {
+    text-align:center;
+    color:grey;
+}
+
+h1, h2, h3, h4 {
+    font-family: "Calibri Light";
+    text-align: left;
+}
+
+h1 {
+    font-size: 25px;
+}
+h2 {
+    font-size: 18px;
+}
 h3 {
-    font-family: cursive;
+    font-size: 16px;
 }

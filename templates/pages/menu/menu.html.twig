@@ -34,13 +34,13 @@
                 <div id="menuList">
                     <div class="day">
                         <h3 class="day-name">Pondělí</h3>
-                        <h4 class="food-header" data-type="soup" ondrop="drop(event)" ondragover="allowDrop(event)">Polévka</h4>
+                        <h4 class="food-header" data-type="Polévka" ondrop="drop(event)" ondragover="allowDrop(event)">Polévka</h4>
                         <div class="food-item" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
 
-                        <h4 class="food-header" data-type="meal" ondrop="drop(event)" ondragover="allowDrop(event)">Hlavní chod</h4>
+                        <h4 class="food-header" data-type="Hlavní chod" ondrop="drop(event)" ondragover="allowDrop(event)">Hlavní chod</h4>
                         <div class="food-item" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
 
-                        <h4 class="food-header" data-type="vege" ondrop="drop(event)" ondragover="allowDrop(event)">Hlavní chod vege</h4>
+                        <h4 class="food-header" data-type=">Hlavní chod vege" ondrop="drop(event)" ondragover="allowDrop(event)">Hlavní chod vege</h4>
                         <div class="food-item" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
                     </div>
 
@@ -101,7 +101,8 @@
                         day.meals.push(cloneType);
                         type.meals = [];
                     }
-                    type.name= menuDayItem.getAttribute("data-type");
+                    //type.name= menuDayItem.getAttribute("data-type");
+                    type.name= menuDayItem.innerText;
 
                 } else if (menuDayItem.classList.contains("food-item")){
                     let menuMeals = menuDayItem.children;
