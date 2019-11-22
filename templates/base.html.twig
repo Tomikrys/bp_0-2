@@ -21,7 +21,7 @@
     {% block stylesheets %}{% endblock %}
 </head>
 <body>
-<h1>{{ asset('style/style.css') }}</h1>
+<h1>{{ absolute_url(asset('/style/style.css')) }}</h1>
 {{ include('parts/navbar.html.twig') }}
 
 <main role="main" class="content mt-4">
