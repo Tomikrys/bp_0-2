@@ -32,42 +32,16 @@
             <h2>Jídelníček</h2>
             <div id="page-content">
                 <div id="menuList">
+                {% for day in settings.days %}
                     <div class="day">
-                        <h3 class="day-name">Pondělí</h3>
-                        <h4 class="food-header" data-type="Polévka" ondrop="drop(event)" ondragover="allowDrop(event)">Polévka</h4>
-                        <div class="food-item" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
-
-                        <h4 class="food-header" data-type="Hlavní chod" ondrop="drop(event)" ondragover="allowDrop(event)">Hlavní chod</h4>
-                        <div class="food-item" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
-
-                        <h4 class="food-header" data-type=">Hlavní chod vege" ondrop="drop(event)" ondragover="allowDrop(event)">Hlavní chod vege</h4>
-                        <div class="food-item" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                        <h3 class="day-name">{{ day }}</h3>
+                        {% for meal in settings.meals %}
+                            <h4 class="food-header" data-type="{{ meal }}" ondrop="drop(event)" ondragover="allowDrop(event)">{{ meal }}</h4>
+                            <div class="food-item" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                        {% endfor %}
                     </div>
+                {% endfor %}
 
-                    <div class="day">
-                        <h3 class="day-name">Úterý</h3>
-                        <h4 class="food-header" data-type="soup" ondrop="drop(event)" ondragover="allowDrop(event)">Polévka</h4>
-                        <div class="food-item" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
-
-                        <h4 class="food-header" data-type="meal" ondrop="drop(event)" ondragover="allowDrop(event)">Hlavní chod</h4>
-                        <div class="food-item" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
-
-                        <h4 class="food-header" data-type="vege" ondrop="drop(event)" ondragover="allowDrop(event)">Hlavní chod vege</h4>
-                        <div class="food-item" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
-                    </div>
-
-                    <div class="day">
-                        <h3 class="day-name">Středa</h3>
-                        <h4 class="food-header" data-type="soup" ondrop="drop(event)" ondragover="allowDrop(event)">Polévka</h4>
-                        <div class="food-item" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
-
-                        <h4 class="food-header" data-type="meal" ondrop="drop(event)" ondragover="allowDrop(event)">Hlavní chod</h4>
-                        <div class="food-item" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
-
-                        <h4 class="food-header" data-type="vege" ondrop="drop(event)" ondragover="allowDrop(event)">Hlavní chod vege</h4>
-                        <div class="food-item" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
-                     </div>
-                </div>
             <button onclick="generateMenu()" class="btn btn-success">Exportovat .doc</button>
             <button onclick="getMenu()" class="btn btn-primary">Náhled</button>
         </div>
