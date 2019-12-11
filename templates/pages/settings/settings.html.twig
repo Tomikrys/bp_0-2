@@ -19,7 +19,10 @@
         {% for type in types %}
             <p>{{ type.name }}</p>
         {% endfor %}
-
+    <h2>Tagy jídel</h2>
+        {% for tag in tags %}
+            <p>{{ tag.name }}</p>
+        {% endfor %}
 {% endblock %}
 
 {% block javascripts %}

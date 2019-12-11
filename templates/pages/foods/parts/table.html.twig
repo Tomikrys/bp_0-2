@@ -18,9 +18,9 @@
                 <td class="food_price"  contenteditable="true">{{ food.price }}</td>
                 <td class="food_tags">
                     {% for tag in food.tags %}
-                        <span class="badge badge-primary">{{ tag.name }}</span>
+                        <span class="badge badge-primary    food_tag" data-id="{{ tag.id }}" >{{ tag.name }}</span>
                     {% endfor %}
-                    <a onclick="add_tag()" class="badge badge-success"><i class="fas fa-plus"></i></a>
+                    <a onclick="add_tag(this)" class="badge badge-success" data-id="{{ food.id }}"><i class="fas fa-plus"></i></a>
                 </td>
                 <td class="food_types">
                     <select class="food_type form-control">

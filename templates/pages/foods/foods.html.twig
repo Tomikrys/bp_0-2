@@ -9,7 +9,7 @@
     <button type="button" class="btn btn-success" onclick="add_row_for_new_food()">Přidat řádek</button>
 
 
-{#    {{ include('pages/foods/parts/formAddTag.html.twig') }}#}
+    {{ include('pages/foods/parts/formAddTag.html.twig') }}
 
 
 {% endblock %}
@@ -177,10 +177,25 @@
         }
 
         function add_tag(e) {
+            let food_id = $(e).data('id');
+            document.getElementById(food_id).querySelectorAll('.food_tag').forEach(
+                function(e) {
+                    let tag_id = e.getAttribute('data-id');
+                    let form = document.getElementById("form_tags");
+                    let checkboxes = form.children;
+                    for (let i = 0; i < checkboxes.length; i++) {
+                        console.log(checkboxes[i].checked);
+                        console.log(checkboxes[i]);
+                        console.log(checkboxes[i].getAttribute('value') === tag_id);
+                        checkboxes[i].checked = checkboxes[i].getAttribute('value') === tag_id;
+                    }
+
+                }
+            );
             $("#addTagFormModal").modal("show");
 
 
-            $("#addTagFormModal").modal("hide");
+            //$("#addTagFormModal").modal("hide");
         }
     </script>
 {% endblock %}

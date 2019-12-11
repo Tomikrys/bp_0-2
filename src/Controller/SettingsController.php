@@ -5,6 +5,7 @@ namespace App\Controller;
 
 
 use App\Entity\Settings;
+use App\Entity\Tag;
 use App\Entity\Type;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -34,7 +35,7 @@ class SettingsController extends AbstractController {
 
         $tags = ["vege", "spicy", "beef", "lamb", "shrink"];
         foreach ($tags as $tag) {
-            $new_tag = new Type();
+            $new_tag = new Tag();
             $new_tag->setName($tag);
             $this->getDoctrine()->getManager()->persist($new_tag);
             $this->getDoctrine()->getManager()->flush();
@@ -45,7 +46,6 @@ class SettingsController extends AbstractController {
      * @Route("/settings", methods={"GET", "POST"})
      */
     public function index(){
-        $this->default_settings();
         // naplnění struktury pro výpis tabulky
         $settings = $this->getDoctrine()->getRepository(Settings::class)->find(1);
         $types = $this->getDoctrine()->getRepository(Type::class)->findAll();

@@ -12,6 +12,7 @@ use App\Repository\TagRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -193,16 +194,53 @@ class FoodsController extends AbstractController {
 //        }
 //    }
 
+    function array_push_assoc($array, $key, $value){
+        $array[$key] = $value;
+        return $array;
+    }
+
+    private function make_addtag_form (Request $request) {
+        $tags = $this->getDoctrine()->getRepository(Tag::class)->findAll();
+        $tags_choices = [];
+        foreach ($tags as $tag) {
+            $tags_choices = $this->array_push_assoc($tags_choices, $tag->getName(),  $tag->getId());
+        }
+
+        $formtags = $this->createFormBuilder()
+            ->add('id', NumberType::class, [
+                'label' => false,
+                'attr' => array('class' => 'd-none')
+            ])
+            ->add('tags', ChoiceType::class, [
+                'label' => false,
+                'choices' => $tags_choices,
+                'expanded' => true,
+                'multiple' => true
+            ])
+            ->add('submit', SubmitType::class, array(
+                'label' => 'Uložit',
+                'attr' => array('class' => 'btn btn btn-success mt-3', 'data-dissmiss' => 'modal')) )
+            ->getForm();
+
+        // Zpracování editačního formuláře.
+        $formtags->handleRequest($request);
+        if ($formtags->isSubmitted()) {
+            // TODO handle
+            $this->addFlash('notice', 'Tagy byly editovány.');
+        }
+
+        return $formtags;
+    }
+
     /**
      * @param Request $request
      * @return Response
      * @Route("/foods", methods={"GET", "POST"})
      */
     public function index(Request $request) : Response {
-
         $food = new Food();
         $formadd = $this->make_me_form($food, $request);
-
+        $formaddtag = $this->make_addtag_form($request);
 
         // získání seznamu typů z databáze
         $types = $this->getDoctrine()->getRepository(Type::class)->findAll();
@@ -215,7 +253,7 @@ class FoodsController extends AbstractController {
         $foods = $this->getDoctrine()->getRepository(Food::class)->findAll();
 
         return $this->render('pages/foods/foods.html.twig', array('formadd' => $formadd->createView(),
-            'table' => $table, 'types' => $types, 'foods' => $foods));
-            //'table' => $table, 'types' => $types, 'foods' => $foods, 'formAddTag' => $form_add_tag->createView()));
+            //'table' => $table, 'types' => $types, 'tags' => $tags, 'foods' => $foods));
+            'table' => $table, 'types' => $types, 'foods' => $foods, 'formAddTag' => $formaddtag->createView()));
     }
 }
