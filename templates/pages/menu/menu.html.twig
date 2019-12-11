@@ -32,44 +32,18 @@
             <h2>Jídelníček</h2>
             <div id="page-content">
                 <div id="menuList">
+                {% for day in settings.days %}
                     <div class="day">
-                        <h3 class="day-name">Pondělí</h3>
-                        <h4 class="food-header" data-type="Polévka" ondrop="drop(event)" ondragover="allowDrop(event)">Polévka</h4>
-                        <div class="food-item" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
-
-                        <h4 class="food-header" data-type="Hlavní chod" ondrop="drop(event)" ondragover="allowDrop(event)">Hlavní chod</h4>
-                        <div class="food-item" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
-
-                        <h4 class="food-header" data-type=">Hlavní chod vege" ondrop="drop(event)" ondragover="allowDrop(event)">Hlavní chod vege</h4>
-                        <div class="food-item" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                        <h3 class="day-name">{{ day }}</h3>
+                        {% for meal in settings.meals %}
+                            <h4 class="food-header" data-type="{{ meal }}" ondrop="drop(event)" ondragover="allowDrop(event)">{{ meal }}</h4>
+                            <div class="food-item" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                        {% endfor %}
                     </div>
+                {% endfor %}
 
-                    <div class="day">
-                        <h3 class="day-name">Úterý</h3>
-                        <h4 class="food-header" data-type="soup" ondrop="drop(event)" ondragover="allowDrop(event)">Polévka</h4>
-                        <div class="food-item" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
-
-                        <h4 class="food-header" data-type="meal" ondrop="drop(event)" ondragover="allowDrop(event)">Hlavní chod</h4>
-                        <div class="food-item" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
-
-                        <h4 class="food-header" data-type="vege" ondrop="drop(event)" ondragover="allowDrop(event)">Hlavní chod vege</h4>
-                        <div class="food-item" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
-                    </div>
-
-                    <div class="day">
-                        <h3 class="day-name">Středa</h3>
-                        <h4 class="food-header" data-type="soup" ondrop="drop(event)" ondragover="allowDrop(event)">Polévka</h4>
-                        <div class="food-item" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
-
-                        <h4 class="food-header" data-type="meal" ondrop="drop(event)" ondragover="allowDrop(event)">Hlavní chod</h4>
-                        <div class="food-item" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
-
-                        <h4 class="food-header" data-type="vege" ondrop="drop(event)" ondragover="allowDrop(event)">Hlavní chod vege</h4>
-                        <div class="food-item" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
-                     </div>
-                </div>
             <button onclick="generateMenu()" class="btn btn-success">Exportovat .doc</button>
-            <button onclick="getMenu()" class="btn btn-primary">Náhled</button>
+{#            <button onclick="getMenu()" class="btn btn-primary">Náhled</button>#}
         </div>
     </div>
 
@@ -86,28 +60,28 @@
 
         for (let i = 0; i < menuDays.length; i++) {
             let menuDay = menuDays[i].children;
-            let day = {name: "", meals: []};
-            let type = {name: "", meals: []};
+            let day = {day: "", meals: []};
+            let type = {type: "", meals: []};
 
             for (let j = 0; j < menuDay.length; j++) {
                 let menuDayItem = menuDay[j];
                 if (menuDayItem.classList.contains("day-name")) {
-                    day.name = menuDayItem.innerText;
+                    day.day = menuDayItem.innerText;
 
                 } else if (menuDayItem.classList.contains("food-header")){
-                    if (type.name !== "") {
+                    if (type.type !== "") {
                         // kopie objektu, jinak by se uložila pouze reference
                         let cloneType = Object.assign({}, type);
                         day.meals.push(cloneType);
                         type.meals = [];
                     }
                     //type.name= menuDayItem.getAttribute("data-type");
-                    type.name= menuDayItem.innerText;
+                    type.type= menuDayItem.innerText;
 
                 } else if (menuDayItem.classList.contains("food-item")){
                     let menuMeals = menuDayItem.children;
                     for (let k = 0; k < menuMeals.length; k++) {
-                        let meal = {id: menuMeals[k].id, name: menuMeals[k].innerText};
+                        let meal = {id: menuMeals[k].getAttribute('data-id'), text: menuMeals[k].innerText};
                         type.meals.push(meal);
                     }
                 }
@@ -119,6 +93,48 @@
         return menu;
     }
 
+        // for html_to_doc
+    // function generate_json_old() {
+    //     let menuList = document.getElementById("menuList");
+    //     let menuDays = menuList.children;
+    //
+    //     let menu = [];
+    //
+    //     for (let i = 0; i < menuDays.length; i++) {
+    //         let menuDay = menuDays[i].children;
+    //         let day = {name: "", meals: []};
+    //         let type = {name: "", meals: []};
+    //
+    //         for (let j = 0; j < menuDay.length; j++) {
+    //             let menuDayItem = menuDay[j];
+    //             if (menuDayItem.classList.contains("day-name")) {
+    //                 day.name = menuDayItem.innerText;
+    //
+    //             } else if (menuDayItem.classList.contains("food-header")){
+    //                 if (type.name !== "") {
+    //                     // kopie objektu, jinak by se uložila pouze reference
+    //                     let cloneType = Object.assign({}, type);
+    //                     day.meals.push(cloneType);
+    //                     type.meals = [];
+    //                 }
+    //                 //type.name= menuDayItem.getAttribute("data-type");
+    //                 type.name= menuDayItem.innerText;
+    //
+    //             } else if (menuDayItem.classList.contains("food-item")){
+    //                 let menuMeals = menuDayItem.children;
+    //                 for (let k = 0; k < menuMeals.length; k++) {
+    //                     let meal = {id: menuMeals[k].id, name: menuMeals[k].innerText};
+    //                     type.meals.push(meal);
+    //                 }
+    //             }
+    //         }
+    //         day.meals.push(type);
+    //         menu.push(day);
+    //     }
+    //     console.log(menu);
+    //     return menu;
+    // }
+
 
     function getMenu() {
         let json = generate_json();
@@ -128,8 +144,22 @@
 
     async function generateMenu () {
         let json = generate_json();
-        window.open("/menu/generate?generate=true&json=" + JSON.stringify(json),
-            "_blank", "width=10,height=10,top=30,left=200");
+        // window.open("/menu/generate?generate=true&json=" + JSON.stringify(json),
+        //     "_blank", "width=10,height=10,top=30,left=200");
+        fetch("/menu/generate?generate=true&json=" + JSON.stringify(json), {
+            method: 'POST'
+        })
+        .then(response => response.blob())
+        .then(blob => {
+            let url = window.URL.createObjectURL(blob);
+            console.log(blob);
+            let a = document.createElement('a');
+            a.href = url;
+            a.download = "menu.docx";
+            document.body.appendChild(a); // we need to append the element to the dom -> otherwise it will not work in firefox
+            a.click();
+            a.remove();  //afterwards we remove the element again
+        });
 
 
         // const response = fetch("/menu/generate?generate=" + doGenerate + "&json=" + JSON.stringify(json), "_blank", "fullscreen=yes"

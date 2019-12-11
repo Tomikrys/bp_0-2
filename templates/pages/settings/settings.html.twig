@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+{% block title %}Nastavení{% endblock %}
+{% block stylesheets %}
+    <style>
+
+    </style>
+    {% endblock %}
+{% block body %}
+    <h1>Nastavení</h1>
+    <h2>Dny na menu</h2>
+        {% for day in settings.days %}
+            <p>{{ day }}</p>
+        {% endfor %}
+    <h2>Jídla na menu</h2>
+        {% for meal in settings.meals %}
+            <p>{{ meal }}</p>
+        {% endfor %}
+    <h2>Typy jídel</h2>
+        {% for type in types %}
+            <p>{{ type.name }}</p>
+        {% endfor %}
+    <h2>Tagy jídel</h2>
+        {% for tag in tags %}
+            <p>{{ tag.name }}</p>
+        {% endfor %}
+{% endblock %}
+
+{% block javascripts %}
+<script>
+
+</script>
+{% endblock %}
