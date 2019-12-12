@@ -6,6 +6,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
+
+
 /**
  * @ORM\Entity(repositoryClass="App\Repository\FoodRepository")
  */
@@ -131,6 +133,24 @@ class Food {
             $this->tag->removeElement($tag);
         }
 
+        return $this;
+    }
+
+
+    public function setTags(array $new_tags): self {
+        $old_tags = $this->getTags()->toArray();
+        $delete = array_udiff($old_tags, $new_tags,  function ($a, $b) {
+                return $a->getId() <=> $b->getId();
+        });
+        $add = array_udiff($new_tags, $old_tags,  function ($a, $b) {
+            return $a->getId() <=> $b->getId();
+        });
+        foreach ($delete as $tag) {
+            $this->removeTag($tag);
+        }
+        foreach ($add as $tag) {
+            $this->addTag($tag);
+        }
         return $this;
     }
 }
