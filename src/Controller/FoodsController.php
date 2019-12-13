@@ -206,6 +206,9 @@ class FoodsController extends AbstractController {
             $tags_choices = $this->array_push_assoc($tags_choices, $tag->getName(),  $tag->getId());
         }
 
+//        <input type="checkbox" class="custom-control-input" id="customCheck1" checked="">
+//      <label class="custom-control-label" for="customCheck1">Check this custom checkbox</label>
+
         $formtags = $this->createFormBuilder()
             ->add('id', NumberType::class, [
                 'label' => false,
@@ -214,8 +217,13 @@ class FoodsController extends AbstractController {
             ->add('tags', ChoiceType::class, [
                 'label' => false,
                 'choices' => $tags_choices,
+                'choice_attr' => function($choice, $key, $value) {
+                    // adds a class like attending_yes, attending_no, etc
+                    return ['class' => 'form-checkbox'];
+                },
                 'expanded' => true,
-                'multiple' => true
+                'multiple' => true,
+                'attr' => array('class' => 'custom-control custom-checkbox')
             ])
             ->add('submit', SubmitType::class, array(
                 'label' => 'Uložit',
@@ -225,6 +233,16 @@ class FoodsController extends AbstractController {
         // Zpracování editačního formuláře.
         $formtags->handleRequest($request);
         if ($formtags->isSubmitted()) {
+            $food_id = $request->request->get("form")["id"];
+            $tags_ids = $request->request->get("form")["tags"];
+            $food = $this->getDoctrine()->getRepository(Food::class)->find($food_id);
+            $tags = [];
+            foreach ($tags_ids as $tag_id) {
+                $tag = $this->getDoctrine()->getRepository(Tag::class)->find($tag_id);
+                array_push($tags, $tag);
+            }
+            $food->setTags($tags);
+          //  exit;
             // TODO handle
             $this->addFlash('notice', 'Tagy byly editovány.');
         }

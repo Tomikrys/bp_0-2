@@ -213,6 +213,12 @@
         //     divsHolder.appendChild(dragged);
         // }
         else {
+            console.log(dragged);
+            console.log(dragged.classList.contains("copy"));
+            if (!dragged.classList.contains("copy")) {
+                dragged = dragged.cloneNode(true);
+                dragged.id = dragged.id + "#";
+                dragged.classList.add("copy", "true");            }
             target.appendChild(dragged);
         }
     }

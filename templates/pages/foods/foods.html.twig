@@ -177,21 +177,24 @@
         }
 
         function add_tag(e) {
+            //TODO sranda, d2l8 to random v2ci xD
             let food_id = $(e).data('id');
+                let form = document.getElementById("form_tags");
+                let checkboxes = form.getElementsByClassName("form-checkbox");
+            for (let i = 0; i < checkboxes.length; i++) {
+                checkboxes[i].checked = false;
+            }
             document.getElementById(food_id).querySelectorAll('.food_tag').forEach(
                 function(e) {
                     let tag_id = e.getAttribute('data-id');
-                    let form = document.getElementById("form_tags");
-                    let checkboxes = form.children;
                     for (let i = 0; i < checkboxes.length; i++) {
-                        console.log(checkboxes[i].checked);
-                        console.log(checkboxes[i]);
-                        console.log(checkboxes[i].getAttribute('value') === tag_id);
-                        checkboxes[i].checked = checkboxes[i].getAttribute('value') === tag_id;
+                        if (checkboxes[i].getAttribute('value') === tag_id) {
+                            checkboxes[i].checked = true;
+                        }
                     }
-
                 }
             );
+            document.getElementById('form_id').value = food_id;
             $("#addTagFormModal").modal("show");
 
 
