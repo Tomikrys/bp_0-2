@@ -142,15 +142,14 @@
                         <div class="day">
                             <h3 class="day-name">{{ day }}</h3>
                             {% for meal in settings.meals %}
-                                <h4 class="food-header" data-type="{{ meal }}" ondrop="drop(event)" ondragover="allowDrop(event)">{{ meal }}</h4>
-                                <div class="food-items-drop" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                                <h4 class="JSON-food-header food-header" data-type="{{ meal }}" ondrop="drop(event)" ondragover="allowDrop(event)">{{ meal }}</h4>
+                                <div class="JSON-food-items food-items-drop" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
                             {% endfor %}
                         </div>
                     {% endfor %}
-
-                         <button onclick="generateMenu()" class="btn btn-success">Exportovat .doc</button>
     {#            <button onclick="getMenu()" class="btn btn-primary">Náhled</button>#}
                     </div>
+                    <button onclick="generateMenu()" class="btn btn-success">Exportovat .doc</button>
                 </div>
             </div>
         </div>
@@ -193,7 +192,7 @@
                 if (menuDayItem.classList.contains("day-name")) {
                     day.day = menuDayItem.innerText;
 
-                } else if (menuDayItem.classList.contains("food-header")){
+                } else if (menuDayItem.classList.contains("JSON-food-header")){
                     if (type.type !== "") {
                         // kopie objektu, jinak by se uložila pouze reference
                         let cloneType = Object.assign({}, type);
@@ -203,7 +202,7 @@
                     //type.name= menuDayItem.getAttribute("data-type");
                     type.type= menuDayItem.innerText;
 
-                } else if (menuDayItem.classList.contains("food-item")){
+                } else if (menuDayItem.classList.contains("JSON-food-items")){
                     let menuMeals = menuDayItem.children;
                     for (let k = 0; k < menuMeals.length; k++) {
                         let meal = {id: menuMeals[k].getAttribute('data-id'), text: menuMeals[k].innerText};
@@ -214,7 +213,6 @@
             day.meals.push(type);
             menu.push(day);
         }
-        console.log(menu);
         return menu;
     }
 
@@ -263,7 +261,6 @@
 
     function getMenu() {
         let json = generate_json();
-        console.log(JSON.stringify(json));
         window.open("/menu/generate?generate=false&json=" + JSON.stringify(json), "_blank", "fullscreen=yes");
     }
 
@@ -277,7 +274,6 @@
         .then(response => response.blob())
         .then(blob => {
             let url = window.URL.createObjectURL(blob);
-            console.log(blob);
             let a = document.createElement('a');
             a.href = url;
             a.download = "menu.docx";
@@ -334,7 +330,6 @@
         if (target.classList.contains( "meal" )){
             target = ev.target.parentNode;
         }
-        console.log(target.classList);
         if (target.classList.contains( "food-list" )){
             delete_meal(ev);
             return;

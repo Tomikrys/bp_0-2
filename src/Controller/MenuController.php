@@ -109,6 +109,7 @@ class MenuController extends AbstractController {
 
     public function clear_menu_from_empty($menu) {
         $i = 0;
+        dump($menu);
         foreach ($menu as $day) {
             $empty_flag = true;
             $j = 0;
