@@ -7,6 +7,7 @@ namespace App\Controller;
 use App\Entity\Settings;
 use App\Entity\Tag;
 use App\Entity\Type;
+use http\Env\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -43,11 +44,18 @@ class SettingsController extends AbstractController {
     }
 
     /**
+     * @Route("/settings/initialize", methods={"GET", "POST"})
+     */
+    public function  initialize() {
+        $this->default_settings();
+        return new Response();
+    }
+
+    /**
      * @Route("/settings", methods={"GET", "POST"})
      */
     public function index(){
         // naplnění struktury pro výpis tabulky
-        //$this->default_settings();
         $settings = $this->getDoctrine()->getRepository(Settings::class)->find(1);
         $types = $this->getDoctrine()->getRepository(Type::class)->findAll();
         $tags = $this->getDoctrine()->getRepository(Tag::class)->findAll();
