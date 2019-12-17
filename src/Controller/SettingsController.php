@@ -47,10 +47,12 @@ class SettingsController extends AbstractController {
      */
     public function index(){
         // naplnění struktury pro výpis tabulky
+        //$this->default_settings();
         $settings = $this->getDoctrine()->getRepository(Settings::class)->find(1);
         $types = $this->getDoctrine()->getRepository(Type::class)->findAll();
+        $tags = $this->getDoctrine()->getRepository(Tag::class)->findAll();
 
-        return $this->render('pages/settings/settings.html.twig', array('settings' => $settings, 'types' => $types));
+        return $this->render('pages/settings/settings.html.twig', array('settings' => $settings, 'types' => $types, 'tags' => $tags));
     }
 
 }

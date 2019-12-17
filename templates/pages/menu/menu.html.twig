@@ -6,44 +6,158 @@
             padding: 0px 5px 0px 5px;
         }
 
-        .food-header, .food-item {
+        .meal {
+            border: 1px solid gray;
+            cursor: grab;
+            margin: 2px;
+        }
+
+        .food-header, .food-items-drop {
             margin-left: 5px;
         }
-    </style>{% endblock %}
-{% block body %}
-    <div class="row">
-        <div class="col">
-            <h1>Sestavení menu</h1>
-            <div id="foodList" class="menu-header" ondrop="drop(event)" ondragover="allowDrop(event)" >
-                {% for type,foods in foods %}
-                    <h2 id="{{ type }}">{{ type }}</h2>
-                    <div id="foodList_{{ type }}" ondrop="drop(event)" ondragover="allowDrop(event)">
-                    {% for food in foods %}
-                        <div class="meal card-header" id="meal{{ food.id }}" data-id="{{ food.id }}" data-type="{{ type }}" draggable="true" ondragstart="drag(event)">
-                            {{ food.name }}, {{ food.price }}
-                        </div>
-                    {% endfor %}
-                    </div>
-                {% endfor %}
-            </div>
-        </div>
 
-        <div class="col">
-            <h2>Jídelníček</h2>
-            <div id="page-content">
-                <div id="menuList">
-                {% for day in settings.days %}
-                    <div class="day">
-                        <h3 class="day-name">{{ day }}</h3>
-                        {% for meal in settings.meals %}
-                            <h4 class="food-header" data-type="{{ meal }}" ondrop="drop(event)" ondragover="allowDrop(event)">{{ meal }}</h4>
-                            <div class="food-item" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+        .food-items-drop:empty {
+            min-height: 30px;
+        }
+
+        .food-items-drop {
+            border: 2px dashed #373A3C;
+            border-radius: 5px;
+            background-color: #F4F4F4;
+            margin-bottom: 5px;
+        }
+
+        .row {
+            margin-left: 0px;
+            margin-right: 0px;
+        }
+
+        .menu-block {
+            width: calc(100% - 30px);
+        }
+
+        .trash-block {
+            width: 30px;
+        }
+
+        /*filters*/
+        .tag-filter-item, .type-filter-item {
+            cursor: pointer;
+        }
+        .type-filter-item {
+            margin-right: 1px;
+            padding-top: 3px;
+            padding-bottom: 3px;
+            background-color: #373A3C;
+            color: white;
+            text-align: center;
+        }
+
+        .trash-block i {
+            font-size: 30px;
+            position:sticky;
+            text-align: center;
+        }
+        #menuList, #foodList {
+            height: 70vh;
+            overflow-y: scroll;
+            padding-right: 10px;
+        }
+
+        .menu-block, .trash-block {
+            float: left;
+        }
+
+        .col-left {
+            /*padding-right: 0;*/
+        }
+        .col-right {
+            padding-left: 0;
+        }
+
+        /* width */
+        ::-webkit-scrollbar {
+          width: 4px;
+        }
+        /* Track */
+        ::-webkit-scrollbar-track {
+          background: #f1f1f1;
+        }
+        /* Handle */
+        ::-webkit-scrollbar-thumb {
+          background: #888;
+          border-radius: 6px;
+        }
+        /* Handle on hover */
+        ::-webkit-scrollbar-thumb:hover {
+          background: #555;
+        }
+    </style>
+{% endblock %}
+{% block body %}
+    <div class="menu-block">
+        <div class="row menu-pick">
+            <div id="food-picker" class="col col-left">
+                <h1>Sestavení menu</h1>
+                <input class="form-control form-control-sm" type="text" placeholder="Vyhledávání..." id="food-finder">
+                <button class="btn btn-link p-0 m-0" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">Filtry</button>
+                <div  class="collapse" id="collapseExample">
+                    <div class="row type-filter">
+                        <div class="col type-filter-item">
+                            Vše
+                        </div>
+                        {% for type in types %}
+                            <div class="col type-filter-item">
+                                {{ type.name }}
+                            </div>
                         {% endfor %}
                     </div>
-                {% endfor %}
+                    <div class="row tag-filter">
+                        {% for tag in tags %}
+                            <span class="tag-filter-item badge badge-success m-1">
+                                {{ tag.name }}
+                            </span>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div id="foodList" class="menu-header" ondrop="drop(event)" ondragover="allowDrop(event)" >
+                    {% for type,foods in foods %}
+                        <h2 id="{{ type }}">{{ type }}</h2>
+                        <div id="foodList_{{ type }}" class="food-list" ondrop="drop(event)" ondragover="allowDrop(event)">
+                        {% for food in foods %}
+                            <div class="meal card-header" id="meal{{ food.id }}" data-id="{{ food.id }}" data-type="{{ type }}" draggable="true" ondragstart="drag(event)">
+                                {{ food.name }}, {{ food.price }}
+                            </div>
+                        {% endfor %}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
 
-            <button onclick="generateMenu()" class="btn btn-success">Exportovat .doc</button>
-{#            <button onclick="getMenu()" class="btn btn-primary">Náhled</button>#}
+            <div class="col col-right">
+                <h2>Jídelníček</h2>
+                <div id="page-content">
+                    <div id="menuList">
+                    {% for day in settings.days %}
+                        <div class="day">
+                            <h3 class="day-name">{{ day }}</h3>
+                            {% for meal in settings.meals %}
+                                <h4 class="food-header" data-type="{{ meal }}" ondrop="drop(event)" ondragover="allowDrop(event)">{{ meal }}</h4>
+                                <div class="food-items-drop" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+
+                         <button onclick="generateMenu()" class="btn btn-success">Exportovat .doc</button>
+    {#            <button onclick="getMenu()" class="btn btn-primary">Náhled</button>#}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="trash-block">
+        <div id="trash" ondrop="delete_meal(event)" ondragover="allowDrop(event)">
+            <i class="fa fa-trash" aria-hidden="true"></i>
         </div>
     </div>
 
@@ -52,6 +166,17 @@
 
 {% block javascripts %}
 <script>
+    $().ready(function() {
+		var $scrollingDiv = $("#trash");
+		$(window).scroll(function(){
+		    if ($(window).scrollTop() > $("#main-nav").height()) {
+                $scrollingDiv
+                    .stop()
+                    .animate({"marginTop": ($(window).scrollTop() - $("#main-nav").height()) + "px"}, "fast" );
+            }
+		});
+	});
+
     function generate_json() {
         let menuList = document.getElementById("menuList");
         let menuDays = menuList.children;
@@ -183,7 +308,20 @@
 
     function drag(ev) {
         ev.dataTransfer.setData("text", ev.target.id);
+        //ev.style.cursor = "move";
     }
+
+    function delete_meal(ev) {
+        ev.preventDefault();
+
+        var data = ev.dataTransfer.getData("text");
+        let dragged = document.getElementById(data);
+        if (dragged.classList.contains( "copy" )){
+            dragged.remove();
+        }
+    }
+
+    let counter = 0;
 
     function drop(ev) {
         ev.preventDefault();
@@ -192,14 +330,18 @@
         let dragged = document.getElementById(data);
 
         let target = ev.target;
+
         if (target.classList.contains( "meal" )){
             target = ev.target.parentNode;
-
+        }
+        console.log(target.classList);
+        if (target.classList.contains( "food-list" )){
+            delete_meal(ev);
+            return;
         }
         if (target.classList.contains( "food-header" )){
             // target = target.parentNode.getElementsByClassName("food-item")[0];
             target = target.nextElementSibling;
-
         }
 
         if (hasParent(target, "foodList")) {
@@ -213,12 +355,10 @@
         //     divsHolder.appendChild(dragged);
         // }
         else {
-            console.log(dragged);
-            console.log(dragged.classList.contains("copy"));
             if (!dragged.classList.contains("copy")) {
                 dragged = dragged.cloneNode(true);
-                dragged.id = dragged.id + "#";
-                dragged.classList.add("copy", "true");            }
+                dragged.id = dragged.id + "#" + counter++;
+                dragged.classList.add("copy");            }
             target.appendChild(dragged);
         }
     }

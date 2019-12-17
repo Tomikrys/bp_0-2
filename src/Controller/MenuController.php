@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use App\Entity\Food;
 use App\Entity\Settings;
+use App\Entity\Tag;
 use App\Entity\Type;
 use PhpOffice\PhpWord\TemplateProcessor;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -31,8 +32,10 @@ class MenuController extends AbstractController {
             $foods[$type->getName()] = $foods_of_type;
         }
         $settings = $this->getDoctrine()->getRepository(Settings::class)->find(1);
+        $tags = $this->getDoctrine()->getRepository(Tag::class)->findAll();
 
-        return $this->render('pages/menu/menu.html.twig', array('foods' => $foods, 'settings' => $settings));
+        return $this->render('pages/menu/menu.html.twig', array('foods' => $foods, 'settings' => $settings, 'tags' => $tags,
+            'types' => $types));
     }
 
     /**

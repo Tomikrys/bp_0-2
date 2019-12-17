@@ -242,6 +242,8 @@ class FoodsController extends AbstractController {
                 array_push($tags, $tag);
             }
             $food->setTags($tags);
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->flush();
           //  exit;
             // TODO handle
             $this->addFlash('notice', 'Tagy byly editovány.');
