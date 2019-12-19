@@ -136,10 +136,6 @@ class MenuController extends AbstractController {
         $menu = json_decode ($_GET["json"], true);
         $clear_menu = $this->clear_menu_from_empty($menu);
         $doGenerate = $_GET["generate"];
-
-        dump($menu);
-        dump($clear_menu);
-        exit;
         $file = $this->export_as_word($clear_menu);
        // exit;
 
