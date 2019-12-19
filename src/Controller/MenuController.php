@@ -139,6 +139,7 @@ class MenuController extends AbstractController {
 
         dump($menu);
         dump($clear_menu);
+        exit;
         $file = $this->export_as_word($clear_menu);
        // exit;
 

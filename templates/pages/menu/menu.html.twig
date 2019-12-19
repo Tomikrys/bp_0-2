@@ -120,10 +120,10 @@
                         {% endfor %}
                     </div>
                 </div>
-                <div id="foodList" class="menu-header" ondrop="drop(event)" ondragover="allowDrop(event)" >
+                <div id="foodList" class="menu-header delete-on-drop" ondrop="drop(event)" ondragover="allowDrop(event)" >
                     {% for type,foods in foods %}
                         <h2 id="{{ type }}">{{ type }}</h2>
-                        <div id="foodList_{{ type }}" class="food-list" ondrop="drop(event)" ondragover="allowDrop(event)">
+                        <div id="foodList_{{ type }}" class="food-list delete-on-drop" ondrop="drop(event)" ondragover="allowDrop(event)">
                         {% for food in foods %}
                             <div class="meal card-header" id="meal{{ food.id }}" data-id="{{ food.id }}" data-type="{{ type }}" draggable="true" ondragstart="drag(event)">
                                 {{ food.name }}, {{ food.price }}
@@ -330,13 +330,13 @@
         if (target.classList.contains( "meal" )){
             target = ev.target.parentNode;
         }
-        if (target.classList.contains( "food-list" )){
-            delete_meal(ev);
-            return;
-        }
         if (target.classList.contains( "food-header" )){
             // target = target.parentNode.getElementsByClassName("food-item")[0];
             target = target.nextElementSibling;
+        }
+        if (target.classList.contains( "delete-on-drop" )){
+            delete_meal(ev);
+            return;
         }
 
         if (hasParent(target, "foodList")) {
