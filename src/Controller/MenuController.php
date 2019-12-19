@@ -137,8 +137,7 @@ class MenuController extends AbstractController {
         $clear_menu = $this->clear_menu_from_empty($menu);
         $doGenerate = $_GET["generate"];
 
-        dump($menu);
-        dump($clear_menu);
+        echo("ahoj");
         exit;
         $file = $this->export_as_word($clear_menu);
        // exit;
