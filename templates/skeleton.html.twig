@@ -15,7 +15,11 @@
     {#        <script src="{{ asset('offline/bootstrap.min.js') }}"></script>#}
     {#        <link rel="stylesheet" href="{{ asset('offline/bootswatch.min.css') }}" />#}
 
-    <link rel="stylesheet" href="/style/style.css" />
+    {% if app.environment == "dev" %}
+        <link rel="stylesheet" href="{{ asset('style/style.css') }}" />
+    {% else %}
+        <link rel="stylesheet" href="{{ asset('public/style/style.css') }}" />
+    {% endif %}
 
     <title>{% block title %}{% endblock %}</title>
     {% block stylesheets %}{% endblock %}
