@@ -22,13 +22,17 @@
     {#        <link rel="stylesheet" href="{{ asset('offline/bootswatch.min.css') }}" />#}
 
 {#    // todo vzřešit tenhle shit#}
-    <link rel="stylesheet" href="{{ asset('style/style.css') }}" />
-    <link rel="stylesheet" href="{{ asset('public/style/style.css') }}" />
+    {% if app.environment == "dev" %}
+        <link rel="stylesheet" href="{{ asset('style/style.css') }}" />
+    {% else %}
+        <link rel="stylesheet" href="{{ asset('public/style/style.css') }}" />
+    {% endif %}
 
     <title>{% block title %}{% endblock %}</title>
     {% block stylesheets %}{% endblock %}
 </head>
 <body>
+{{ app.environment }}
 {{ include('parts/navbar.html.twig') }}
 
 <main role="main" class="content mt-4">
