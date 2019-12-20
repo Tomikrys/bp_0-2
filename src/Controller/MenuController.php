@@ -49,33 +49,33 @@ class MenuController extends AbstractController {
 //        $price = ["35", "60"];
 
         $template->cloneBlock('block_days', count($menu), true, true);
-//        $i = 0;
-//        foreach ($menu as $day) {
-//            // zkopírování typů jídel dle pole $mealsTypes
-//            $template->cloneBlock('block_mealType#'.($i+1), count($day["meals"]), true, true);
-//            // vložení názvů dní
-//            $template->setValue('day#'.($i+1), htmlspecialchars($day["day"],ENT_COMPAT, 'UTF-8'));
-//            $j = 0;
-//            foreach ($day["meals"] as $type) {
-//                // zkopírování jídel dle pole $meals
-//                $template->cloneBlock('block_meals#'.($i+1).'#'.($j+1), count($type["meals"]), true, true);
-//                // vložení typů jídel
-//                $template->setValue('mealType#'.($i+1).'#'.($j+1), htmlspecialchars($type["type"],ENT_COMPAT, 'UTF-8'));
-//                $k = 0;
-//                foreach ($type["meals"] as $meal) {
-//                    $meal_db = $this->getDoctrine()->getRepository(Food::class)->find($meal["id"]);
-//                    // vložení jídel
-//                    $template->setValue('meal#'.($i+1).'#'.($j+1).'#'.($k+1), htmlspecialchars($meal_db->getName(),ENT_COMPAT, 'UTF-8'));
-//                    // vložení popisu
-//                    $template->setValue('description#'.($i+1).'#'.($j+1).'#'.($k+1), htmlspecialchars($meal_db->getDescription(),ENT_COMPAT, 'UTF-8'));
-//                    // vložení cen
-//                    $template->setValue('price#'.($i+1).'#'.($j+1).'#'.($k+1), htmlspecialchars($meal_db->getPrice(),ENT_COMPAT, 'UTF-8'));
-//                    $k++;
-//                }
-//                $j++;
-//            }
-//            $i++;
-//        }
+        $i = 0;
+        foreach ($menu as $day) {
+            // zkopírování typů jídel dle pole $mealsTypes
+            $template->cloneBlock('block_mealType#'.($i+1), count($day["meals"]), true, true);
+            // vložení názvů dní
+            $template->setValue('day#'.($i+1), htmlspecialchars($day["day"],ENT_COMPAT, 'UTF-8'));
+            $j = 0;
+            foreach ($day["meals"] as $type) {
+                // zkopírování jídel dle pole $meals
+                $template->cloneBlock('block_meals#'.($i+1).'#'.($j+1), count($type["meals"]), true, true);
+                // vložení typů jídel
+                $template->setValue('mealType#'.($i+1).'#'.($j+1), htmlspecialchars($type["type"],ENT_COMPAT, 'UTF-8'));
+                $k = 0;
+                foreach ($type["meals"] as $meal) {
+                    $meal_db = $this->getDoctrine()->getRepository(Food::class)->find($meal["id"]);
+                    // vložení jídel
+                    $template->setValue('meal#'.($i+1).'#'.($j+1).'#'.($k+1), htmlspecialchars($meal_db->getName(),ENT_COMPAT, 'UTF-8'));
+                    // vložení popisu
+                    $template->setValue('description#'.($i+1).'#'.($j+1).'#'.($k+1), htmlspecialchars($meal_db->getDescription(),ENT_COMPAT, 'UTF-8'));
+                    // vložení cen
+                    $template->setValue('price#'.($i+1).'#'.($j+1).'#'.($k+1), htmlspecialchars($meal_db->getPrice(),ENT_COMPAT, 'UTF-8'));
+                    $k++;
+                }
+                $j++;
+            }
+            $i++;
+        }
 
 
 //
