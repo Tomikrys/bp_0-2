@@ -122,7 +122,7 @@
                 </div>
                 <div id="foodList" class="menu-header delete-on-drop" ondrop="drop(event)" ondragover="allowDrop(event)" >
                     {% for type,foods in foods %}
-                        <h2 id="{{ type }}">{{ type }}</h2>
+                        <h2 id="{{ type }}" class="delete-on-drop">{{ type }}</h2>
                         <div id="foodList_{{ type }}" class="food-list delete-on-drop" ondrop="drop(event)" ondragover="allowDrop(event)">
                         {% for food in foods %}
                             <div class="meal card-header" id="meal{{ food.id }}" data-id="{{ food.id }}" data-type="{{ type }}" draggable="true" ondragstart="drag(event)">
@@ -334,6 +334,7 @@
             // target = target.parentNode.getElementsByClassName("food-item")[0];
             target = target.nextElementSibling;
         }
+        console.log(target);
         if (target.classList.contains( "delete-on-drop" )){
             delete_meal(ev);
             return;

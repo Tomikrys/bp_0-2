@@ -13,7 +13,6 @@ class IndexController extends AbstractController {
      * @Route("/", methods={"GET", "POST"})
      */
     public function index(){
-        dump("pepa");
         return $this->render('pages/index.html.twig', []);
     }
 }
