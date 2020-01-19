@@ -101,13 +101,13 @@
                 <h1>Sestavení menu</h1>
                 <input class="form-control form-control-sm" type="text" placeholder="Vyhledávání..." id="food-finder">
                 <button class="btn btn-link p-0 m-0" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">Filtry</button>
-                <div  class="collapse" id="collapseExample">
+                <div  class="collapse show" id="collapseExample">
                     <div class="row type-filter">
-                        <div class="col type-filter-item">
+                        <div class="col type-filter-item" onclick="filterType('')">
                             Vše
                         </div>
                         {% for type in types %}
-                            <div class="col type-filter-item">
+                            <div onclick="filterType('{{ type.name }}')" class="col type-filter-item">
                                 {{ type.name }}
                             </div>
                         {% endfor %}
@@ -122,13 +122,13 @@
                 </div>
                 <div id="foodList" class="menu-header delete-on-drop" ondrop="drop(event)" ondragover="allowDrop(event)" >
                     {% for type,foods in foods %}
-                        <h2 id="{{ type }}" class="delete-on-drop">{{ type }}</h2>
-                        <div id="foodList_{{ type }}" class="food-list delete-on-drop" ondrop="drop(event)" ondragover="allowDrop(event)">
-                        {% for food in foods %}
-                            <div class="meal card-header" id="meal{{ food.id }}" data-id="{{ food.id }}" data-type="{{ type }}" draggable="true" ondragstart="drag(event)">
-                                {{ food.name }}, {{ food.price }}
-                            </div>
-                        {% endfor %}
+                        <div id="foodList_{{ type }}" data-filter="{{ type }}" class="food-list filter-type delete-on-drop" ondrop="drop(event)" ondragover="allowDrop(event)">
+                            <h2 id="{{ type }}" class="delete-on-drop">{{ type }}</h2>
+                            {% for food in foods %}
+                                <div class="meal card-header filter-tag" id="meal{{ food.id }}" data-id="{{ food.id }}" data-type="{{ type }}" draggable="true" ondragstart="drag(event)">
+                                    {{ food.name }}, {{ food.price }}
+                                </div>
+                            {% endfor %}
                         </div>
                     {% endfor %}
                 </div>
@@ -149,7 +149,15 @@
                     {% endfor %}
     {#            <button onclick="getMenu()" class="btn btn-primary">Náhled</button>#}
                     </div>
-                    <button onclick="generateMenu()" class="btn btn-success">Exportovat .doc</button>
+                    <h3>Export</h3>
+                    <form class="form-inline mb-2">
+                        <select class="form-control" id="export_template">
+                            {% for template in templates %}
+                                <option value="{{ template.path }}">{{ template.name }}</option>
+                            {% endfor %}
+                        </select>
+                        <button onclick="generateMenu()" class="btn btn-success ml-1">Exportovat</button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -165,6 +173,19 @@
 
 {% block javascripts %}
 <script>
+    function filterType(type) {
+        let elements = document.getElementsByClassName("filter-type");
+        for (let i = 0; i < elements.length; i++) {
+            elements[i].style.display = 'none';
+            if (elements[i].getAttribute('data-filter') === type || type === "")
+                elements[i].style.display = 'block';
+        }
+    }
+
+    function filterTag(tag) {
+
+    }
+
     $().ready(function() {
 		var $scrollingDiv = $("#trash");
 		$(window).scroll(function(){
@@ -264,11 +285,13 @@
         window.open("/menu/generate?generate=false&json=" + JSON.stringify(json), "_blank", "fullscreen=yes");
     }
 
-    async function generateMenu () {
+    async function  generateMenu () {
         let json = generate_json();
+        //let template = "words/template.docx";
+        let template = document.getElementById("export_template").value;
         // window.open("/menu/generate?generate=true&json=" + JSON.stringify(json),
         //     "_blank", "width=10,height=10,top=30,left=200");
-        fetch("/menu/generate?generate=true&json=" + JSON.stringify(json), {
+        fetch("/menu/generate?generate=true&template=" + template +"&json=" + JSON.stringify(json), {
             method: 'POST'
         })
         .then(response => response.blob())

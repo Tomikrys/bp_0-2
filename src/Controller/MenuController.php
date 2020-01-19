@@ -7,7 +7,10 @@ namespace App\Controller;
 use App\Entity\Food;
 use App\Entity\Settings;
 use App\Entity\Tag;
+use App\Entity\Template;
 use App\Entity\Type;
+use PhpOffice\PhpWord\Exception\CopyFileException;
+use PhpOffice\PhpWord\Exception\CreateTemporaryFileException;
 use PhpOffice\PhpWord\TemplateProcessor;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\File;
@@ -34,15 +37,17 @@ class MenuController extends AbstractController {
         $settings = $this->getDoctrine()->getRepository(Settings::class)->find(1);
         $tags = $this->getDoctrine()->getRepository(Tag::class)->findAll();
 
+        $templates = $this->getDoctrine()->getRepository(Template::class)->findAll();
+
         return $this->render('pages/menu/menu.html.twig', array('foods' => $foods, 'settings' => $settings, 'tags' => $tags,
-            'types' => $types));
+            'types' => $types, 'templates' => $templates));
     }
 
     /**
      * @Route("/menu/try", methods={"GET", "POST"})
      */
-    public function export_as_word($menu){
-        $template = new TemplateProcessor('words/template.docx');
+    public function export_as_word($menu, $template){
+        $template = new TemplateProcessor($template);
 //        $days = ["Pondělí", "Úterý", "Středa"];
 //        $mealsTypes = ["Polévka", "Hlavní chod"];
 //        $meals = ["pivo", "jidlo"];
@@ -134,13 +139,53 @@ class MenuController extends AbstractController {
      */
     public function generate(){
         $menu = json_decode ($_GET["json"], true);
+        $template = $_GET["template"];
+        dump($template);
         $clear_menu = $this->clear_menu_from_empty($menu);
         $doGenerate = $_GET["generate"];
-        $file = $this->export_as_word($clear_menu);
+        $file = $this->export_as_word($clear_menu, $template);
        // exit;
 
         //return $this->render('pages/menu/export.html.twig', array('menu' => $menu, "generate" => $doGenerate));
         return $file;
+    }
+
+    /**
+     * @Route("/menu/generate/custom", methods={"GET", "POST"})
+     */
+    public function generate_custom() {
+//        $format_day = "{day}\n\t{meal}\n\t\t{food},{price}";
+//        $format_meal = "\n\t{meal}\n\t\t{food},{price}";
+//        $format_food = "\n\t\t{food},{price}";
+
+        $format_day = "{day}\n\t{meal}\n\t\t{food},{price}";
+        $format_meal = "\n\t{meal}\n\t\t{food},{price}";
+        $format_food = "\n\t\t{food},{price}";
+
+
+
+        $menu = $this->clear_menu_from_empty(json_decode($_GET["json"], true));
+        $day_meals = "";
+
+        foreach ($menu as $day) {
+            $meals = str_replace("{day}", $day["day"], $format_day);
+            foreach ($day["meals"] as $type) {
+                $meals = str_replace("{meal}", $type["type"], $meals);
+                foreach ($type["meals"] as $meal) {
+                    $meal_db = $this->getDoctrine()->getRepository(Food::class)->find($meal["id"]);
+                    $meals = str_replace("{food}", $meal_db->getName(), $meals);
+                    $meals = str_replace("{price}", $meal_db->getPrice(), $meals);
+                    $meals .= $format_food;
+                }
+                $meals .= $format_meal;
+            }
+            $day_meals .= $meals . $format_day;
+        }
+
+        dump($menu);
+        dump($format_day);
+        dump($day_meals);
+        exit;
     }
 
     // Old generating
@@ -155,4 +200,8 @@ class MenuController extends AbstractController {
 //
 //        return $this->render('pages/menu/export.html.twig', array('menu' => $menu, "generate" => $doGenerate));
 //    }
+
+
+
+
 }
