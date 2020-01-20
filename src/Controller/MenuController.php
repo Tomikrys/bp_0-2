@@ -13,6 +13,7 @@ use PhpOffice\PhpWord\Exception\CopyFileException;
 use PhpOffice\PhpWord\Exception\CreateTemporaryFileException;
 use PhpOffice\PhpWord\TemplateProcessor;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -50,9 +51,15 @@ class MenuController extends AbstractController {
 
     /**
      * @Route("/menu/try", methods={"GET", "POST"})
+     * @param $menu
+     * @param $template_url
+     * @return BinaryFileResponse
+     * @throws CopyFileException
+     * @throws CreateTemporaryFileException
      */
-    public function export_as_word($menu, $template){
-        $template = new TemplateProcessor($template);
+    public function export_as_word($menu, $template_url){
+        $template_url = "words/template.docx";
+        $template = new TemplateProcessor($template_url);
 //        $days = ["Pondělí", "Úterý", "Středa"];
 //        $mealsTypes = ["Polévka", "Hlavní chod"];
 //        $meals = ["pivo", "jidlo"];
@@ -68,18 +75,23 @@ class MenuController extends AbstractController {
             $j = 0;
             foreach ($day["meals"] as $type) {
                 // zkopírování jídel dle pole $meals
-                $template->cloneBlock('block_meals#'.($i+1).'#'.($j+1), count($type["meals"]), true, true);
+                $template->cloneBlock('block_meals#'.($i+1).'#'.($j+1), count($type["meals"]), true,
+                    true);
                 // vložení typů jídel
-                $template->setValue('mealType#'.($i+1).'#'.($j+1), htmlspecialchars($type["type"],ENT_COMPAT, 'UTF-8'));
+                $template->setValue('mealType#'.($i+1).'#'.($j+1), htmlspecialchars($type["type"],ENT_COMPAT,
+                    'UTF-8'));
                 $k = 0;
                 foreach ($type["meals"] as $meal) {
                     $meal_db = $this->getDoctrine()->getRepository(Food::class)->find($meal["id"]);
                     // vložení jídel
-                    $template->setValue('meal#'.($i+1).'#'.($j+1).'#'.($k+1), htmlspecialchars($meal_db->getName(),ENT_COMPAT, 'UTF-8'));
+                    $template->setValue('meal#'.($i+1).'#'.($j+1).'#'.($k+1), htmlspecialchars($meal_db->getName(),
+                        ENT_COMPAT, 'UTF-8'));
                     // vložení popisu
-                    $template->setValue('description#'.($i+1).'#'.($j+1).'#'.($k+1), htmlspecialchars($meal_db->getDescription(),ENT_COMPAT, 'UTF-8'));
+                    $template->setValue('description#'.($i+1).'#'.($j+1).'#'.($k+1),
+                        htmlspecialchars($meal_db->getDescription(),ENT_COMPAT, 'UTF-8'));
                     // vložení cen
-                    $template->setValue('price#'.($i+1).'#'.($j+1).'#'.($k+1), htmlspecialchars($meal_db->getPrice(),ENT_COMPAT, 'UTF-8'));
+                    $template->setValue('price#'.($i+1).'#'.($j+1).'#'.($k+1), htmlspecialchars($meal_db->getPrice(),
+                        ENT_COMPAT, 'UTF-8'));
                     $k++;
                 }
                 $j++;
