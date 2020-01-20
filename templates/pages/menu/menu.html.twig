@@ -161,7 +161,7 @@
     {#            <button onclick="getMenu()" class="btn btn-primary">Náhled</button>#}
                     </div>
                     <h3>Export</h3>
-                    <form class="form-inline mb-2">
+                    <form action="javascript:void(0);" class="form-inline mb-2">
                         <select class="form-control" id="export_template">
                             {% for template in templates %}
                                 <option value="{{ template.path }}">{{ template.name }}</option>
