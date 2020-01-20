@@ -58,7 +58,6 @@ class MenuController extends AbstractController {
      * @throws CreateTemporaryFileException
      */
     public function export_as_word($menu, $template_url){
-        $template_url = "words/template.docx";
         $template = new TemplateProcessor($template_url);
 //        $days = ["Pondělí", "Úterý", "Středa"];
 //        $mealsTypes = ["Polévka", "Hlavní chod"];
