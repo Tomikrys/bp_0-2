@@ -32,9 +32,9 @@ class MenuController extends AbstractController {
         $type = null;
         foreach ($types as $type) {
             $foods_of_type = $type->getFoods();
-            foreach ($foods_of_type as $food) {
-                dump($food);
-            }
+//            foreach ($foods_of_type as $food) {
+//                dump($food);
+//            }
             $foods[$type->getName()] = $foods_of_type;
         }
         //exit;
@@ -187,9 +187,9 @@ class MenuController extends AbstractController {
             $day_meals .= $meals . $format_day;
         }
 
-        dump($menu);
-        dump($format_day);
-        dump($day_meals);
+//        dump($menu);
+//        dump($format_day);
+//        dump($day_meals);
         exit;
     }
 
