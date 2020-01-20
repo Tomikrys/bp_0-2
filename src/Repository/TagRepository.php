@@ -19,6 +19,18 @@ class TagRepository extends ServiceEntityRepository
         parent::__construct($registry, Tag::class);
     }
 
+    /**
+     * Uloží tag do systému.
+     * Pokud není nastaveno ID, vloží nový, jinak provede editaci.
+     * @param Tag $tag
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    public function save(Tag $tag): void {
+        $this->getEntityManager()->persist($tag);
+        $this->getEntityManager()->flush($tag);
+    }
+
     // /**
     //  * @return Tag[] Returns an array of Tag objects
     //  */

@@ -9,6 +9,7 @@ use App\Entity\Type;
 use App\Entity\Tag;
 use App\Repository\FoodRepository;
 use App\Repository\TagRepository;
+use App\Repository\TypeRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -33,12 +34,26 @@ class FoodsController extends AbstractController {
     private $foodRepository;
 
     /**
+     * @var TagRepository
+     */
+    private $tagRepository;
+
+    /**
+     * @var TypeRepository
+     */
+    private $typeRepository;
+
+    /**
      * FoodsController constructor.
      * @param FoodRepository $foodRepository
+     * @param TagRepository $tagRepository
+     * @param TypeRepository $typeRepository
      */
-    public function __construct(FoodRepository $foodRepository)
+    public function __construct(FoodRepository $foodRepository, TagRepository $tagRepository, TypeRepository $typeRepository)
     {
         $this->foodRepository = $foodRepository;
+        $this->tagRepository = $tagRepository;
+        $this->typeRepository = $typeRepository;
     }
 
     private function make_me_form ($food, Request $request) {
@@ -79,7 +94,7 @@ class FoodsController extends AbstractController {
         $entityManager->remove($food);
         $entityManager->flush();
         $response = new Response();
-        $response->send();
+        return $response;
     }
 
     /**
@@ -275,5 +290,75 @@ class FoodsController extends AbstractController {
         return $this->render('pages/foods/foods.html.twig', array('formadd' => $formadd->createView(),
             //'table' => $table, 'types' => $types, 'tags' => $tags, 'foods' => $foods));
             'table' => $table, 'types' => $types, 'foods' => $foods, 'formAddTag' => $formaddtag->createView()));
+    }
+
+    /**
+     * @Route("/import", methods={"GET", "POST"})
+     * @param Request $request
+     * @return Response
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
+    public function import_csv(Request $request) : Response {
+        $entityManager = $this->getDoctrine()->getManager();
+        // Název|Popis|Cena|Typ|Tag|Tag
+        $import = $request->getContent();
+
+        // rozdeleni na radky
+        $line_separator = "\r\n";
+        $line = strtok($import, $line_separator);
+        while ($line !== false) {
+            $food = new Food();
+
+            // rozdeleni na zaznamy
+            $arr = explode('|', $line);
+            foreach ($arr as $i => $word) {
+                switch ($i) {
+                    //nazev
+                    case 0:
+                        $food->setName($word);
+                        break;
+                    //popis
+                    case 1:
+                        $food->setDescription($word);
+                        break;
+                    //cena
+                    case 2:
+                        $food->setPrice($word);
+                        break;
+                    //typ
+                    case 3:
+                        $type = $this->getDoctrine()->getRepository(Type::class)->findBy(array('name' => $word));
+                        if ($type == []) {
+                            $type = new Type();
+                            $type->setName($word);
+                            $this->typeRepository->save($type);
+                            $entityManager->flush();
+                            $type = $this->getDoctrine()->getRepository(Type::class)->findBy(array('name' => $word));
+                        }
+                        $food->setType($type[0]);
+                        break;
+                    //tagy
+                    default:
+                        $tag = $this->getDoctrine()->getRepository(Tag::class)->findBy(array('name' => $word));
+                        if ($tag == []) {
+                            $tag = new Tag();
+                            $tag->setName($word);
+                            $this->tagRepository->save($tag);
+                            $entityManager->flush();
+                            $tag = $this->getDoctrine()->getRepository(Tag::class)->findBy(array('name' => $word));
+                        }
+                        $food->addTag($tag[0]);
+                        break;
+                }
+            }
+            dump($food);
+            $this->foodRepository->save($food);
+            $entityManager->flush();
+            //dump($line);
+
+            $line = strtok($line_separator);
+        }
+        return new Response();
     }
 }
