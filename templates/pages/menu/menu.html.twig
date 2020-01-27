@@ -132,7 +132,7 @@
                                     {% set tags = tags ~ ", \"" ~ tag.name ~ "\" "%}
                                 {% endfor %}
                                 {% set tags = tags ~ "]"%}
-                                <div class="meal card-header filter-tags" id="meal{{ food.id }}" data-id="{{ food.id }}"
+                                <div class="meal card-header filter-tags original" id="meal{{ food.id }}" data-id="{{ food.id }}"
                                      data-type="{{ type }}" data-tags="{{ tags }}" data-description="{{ food.description }}"
                                      draggable="true" ondragstart="drag(event)">
                                     {{ food.name }}, {{ food.price }}
@@ -432,7 +432,10 @@
             if (!dragged.classList.contains("copy")) {
                 dragged = dragged.cloneNode(true);
                 dragged.id = dragged.id + "#" + counter++;
-                dragged.classList.add("copy");            }
+                dragged.classList.add("copy");
+                dragged.classList.remove("filter-tags");
+                dragged.classList.remove("original");
+            }
             target.appendChild(dragged);
         }
     }

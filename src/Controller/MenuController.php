@@ -71,6 +71,7 @@ class MenuController extends AbstractController {
             $template->cloneBlock('block_mealType#'.($i+1), count($day["meals"]), true, true);
             // vložení názvů dní
             $template->setValue('day#'.($i+1), htmlspecialchars($day["day"],ENT_COMPAT, 'UTF-8'));
+            $not_soup_counter = 0;
             $j = 0;
             foreach ($day["meals"] as $type) {
                 // zkopírování jídel dle pole $meals
@@ -82,6 +83,13 @@ class MenuController extends AbstractController {
                 $k = 0;
                 foreach ($type["meals"] as $meal) {
                     $meal_db = $this->getDoctrine()->getRepository(Food::class)->find($meal["id"]);
+                    // not_soup_counter
+                    if (htmlspecialchars($type["type"]) != "Polévka") {
+                        $template->setValue('not_soup_counter#'.($i+1).'#'.($j+1).'#'.($k+1),
+                            ++$not_soup_counter . '.   ');
+                    } else {
+                        $template->setValue('not_soup_counter#'.($i+1).'#'.($j+1).'#'.($k+1), "");
+                    }
                     // vložení jídel
                     $template->setValue('meal#'.($i+1).'#'.($j+1).'#'.($k+1), htmlspecialchars($meal_db->getName(),
                         ENT_COMPAT, 'UTF-8'));

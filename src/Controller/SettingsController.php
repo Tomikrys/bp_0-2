@@ -7,7 +7,9 @@ namespace App\Controller;
 use App\Entity\Settings;
 use App\Entity\Tag;
 use App\Entity\Type;
+use http\Env\Request;
 use http\Env\Response;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -62,5 +64,4 @@ class SettingsController extends AbstractController {
 
         return $this->render('pages/settings/settings.html.twig', array('settings' => $settings, 'types' => $types, 'tags' => $tags));
     }
-
 }
