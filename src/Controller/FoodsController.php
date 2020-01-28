@@ -77,7 +77,7 @@ class FoodsController extends AbstractController {
         $formadd->handleRequest($request);
         if ($formadd->isSubmitted() && $formadd->isValid()) {
             $this->foodRepository->save($food);
-            $this->addFlash('notice', 'Článek byl úspěšně uložen.');
+            $this->addFlash('success', 'Jídlo bylo úspěšně přidáno 2.');
         }
 
         return $formadd;
@@ -93,6 +93,7 @@ class FoodsController extends AbstractController {
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->remove($food);
         $entityManager->flush();
+        $this->addFlash('warning', 'Jídlo bylo smazáno.');
         $response = new Response();
         return $response;
     }
@@ -131,6 +132,7 @@ class FoodsController extends AbstractController {
 
         $this->fillUpFood($data, $food);
         $entityManager->flush();
+        $this->addFlash('success', 'Jídlo bylo upraveno.');
 
         $response = new Response();
         $response->send();
@@ -154,6 +156,7 @@ class FoodsController extends AbstractController {
         $this->fillUpFood($data, $food);
         $this->foodRepository->save($food);
         $entityManager->flush();
+        $this->addFlash('success', 'Jídlo bylo přidáno.');
 
         $response = new Response();
         $response->send();
@@ -261,7 +264,7 @@ class FoodsController extends AbstractController {
             $entityManager->flush();
           //  exit;
             // TODO handle
-            $this->addFlash('notice', 'Tagy byly editovány.');
+            $this->addFlash('success', 'Tagy byly editovány.');
         }
 
         return $formtags;

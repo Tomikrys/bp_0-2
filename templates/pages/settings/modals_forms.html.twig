@@ -1,0 +1,105 @@
+{% extends 'base.html.twig' %}
+{% block title %}Nastavení{% endblock %}
+{% block stylesheets %}
+    <style>
+
+    </style>
+    {% endblock %}
+{% block body %}
+    <h1>Nastavení</h1>
+    <h2>Dny na menu</h2>
+    <table id="days_menu" class="table table-hover table-sm table-bordered">
+        <thead class="thead-dark">
+        <tr>
+            <th>Název</th>
+            <th>Popis</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for day in settings.days %}
+            <tr>
+                <td>{{ day[0] }}</td>
+                <td>{{ day[1] }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <
+
+    <h2>Jídla na menu</h2>
+    <table id="days_menu" class="table table-hover table-sm table-bordered">
+        <thead class="thead-dark">
+        <tr>
+            <th>Název</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for meal in settings.meals %}
+        <tr>
+            <td>{{ meal }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+
+    <h2>Typy jídel</h2>
+    <table id="days_menu" class="table table-hover table-sm table-bordered">
+        <thead class="thead-dark">
+        <tr>
+            <th>Název</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for type in types %}
+            <tr>
+                <td>{{ type.name }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <h2>Tagy jídel</h2>
+    <table id="days_menu" class="table table-hover table-sm table-bordered">
+        <thead class="thead-dark">
+        <tr>
+            <th>Název</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for tag in tags %}
+            <tr>
+                <td>{{ tag.name }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <h2>Import jídel</h2>
+    <p>Jediný akceptovaný formát:<br><code>Název|Popis jídla|Cena|Typ|Tag|Tag</code><br>
+    Počet tagů není omezen a nejsou povinné. Pokud tag či typ neexistuje je vytvořen.</p>
+    <form action="javascript:void(0);">
+        <textarea class="form-control" name="csv" rows="10"></textarea>
+        <button onclick="importCSV(this.form)" type="submit" class="btn btn-primary mt-1 mb-2">Importovat</button>
+    </form>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+    function saveMeals() {
+        let menu_meals = document.getElementById("meals").textContent;
+
+        console.log();
+    }
+
+    function importCSV(form) {
+        let csv = form.csv.value;
+        alert(csv);
+        fetch('/import', {
+            method: 'POST', // or 'PUT'
+            body: csv
+        })
+    }
+
+
+</script>
+{% endblock %}

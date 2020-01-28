@@ -19,3 +19,10 @@ body {
 .form_tags input {
 
 }
+.table-nonfluid {
+    width: auto !important;
+}
+
+.cursor_pointer {
+    cursor: pointer;
+}

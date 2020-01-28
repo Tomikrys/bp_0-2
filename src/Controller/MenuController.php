@@ -40,7 +40,7 @@ class MenuController extends AbstractController {
         }
         //exit;
         // TODO nemůže bejt 1 žejo
-        $settings = $this->getDoctrine()->getRepository(Settings::class)->find(1);
+        $settings = $this->getDoctrine()->getRepository(Settings::class)->find(2);
         $tags = $this->getDoctrine()->getRepository(Tag::class)->findAll();
 
         $templates = $this->getDoctrine()->getRepository(Template::class)->findAll();
@@ -71,6 +71,7 @@ class MenuController extends AbstractController {
             $template->cloneBlock('block_mealType#'.($i+1), count($day["meals"]), true, true);
             // vložení názvů dní
             $template->setValue('day#'.($i+1), htmlspecialchars($day["day"],ENT_COMPAT, 'UTF-8'));
+            $template->setValue('day_description#'.($i+1), htmlspecialchars($day["description"],ENT_COMPAT, 'UTF-8'));
             $not_soup_counter = 0;
             $j = 0;
             foreach ($day["meals"] as $type) {

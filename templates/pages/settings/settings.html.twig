@@ -8,21 +8,92 @@
 {% block body %}
     <h1>Nastavení</h1>
     <h2>Dny na menu</h2>
+    <table id="days_menu" class="table table-hover table-sm table-bordered table-nonfluid">
+        <thead class="thead-dark">
+        <tr>
+            <th>Název</th>
+            <th>Popis</th>
+            <th>Úpravy</th>
+        </tr>
+        </thead>
+        <tbody>
         {% for day in settings.days %}
-            <p>{{ day }}</p>
+            <tr class="content_row">
+                <td class="content" contenteditable="true">{{ day[0] }}</td>
+                <td class="content" contenteditable="true">{{ day[1] }}</td>
+                <td onclick="delete_row(this)" class="cursor_pointer" style="text-align:center">x</td>
+            </tr>
         {% endfor %}
+        </tbody>
+    </table>
+    <button type="button" class="btn btn-success" onclick="add_row(this, 3)">Přidat řádek</button>
+    <button type="button" class="btn btn-primary" onclick="save_menu_days()">Uložit</button>
+
     <h2>Jídla na menu</h2>
+    <table id="menu_meals" class="table table-hover table-sm table-bordered table-nonfluid">
+        <thead class="thead-dark">
+        <tr>
+            <th>Název</th>
+            <th>Úpravy</th>
+        </tr>
+        </thead>
+        <tbody>
         {% for meal in settings.meals %}
-            <p>{{ meal }}</p>
+        <tr>
+            <td class="content" contenteditable="true">{{ meal }}</td>
+            <td onclick="delete_row(this)" class="cursor_pointer" style="text-align:center">x</td>
+        </tr>
         {% endfor %}
+        </tbody>
+    </table>
+    <button type="button" class="btn btn-success" onclick="add_row(this, 2)">Přidat řádek</button>
+    <button type="button" class="btn btn-primary" onclick="save_menu_meals()">Uložit</button>
+
+
     <h2>Typy jídel</h2>
+    <table id="types_settings" class="table table-hover table-sm table-bordered table-nonfluid">
+        <thead class="thead-dark">
+        <tr>
+            <th>Název</th>
+            <th>Úpravy</th>
+        </tr>
+        </thead>
+        <tbody>
         {% for type in types %}
-            <p>{{ type.name }}</p>
+            <tr>
+                <td id="type{{ type.id }}" contenteditable="true">{{ type.name }}</td>
+                <td>
+                    <button onclick="edit_type(this)" class="btn btn-sm btn-primary edit-tag" data-id="{{ type.id }}">Uložit</button>
+                    <button onclick="delete_type(this)" class="btn btn-sm btn-danger delete-tag" data-id="{{ type.id }}">Smazat</button>
+                </td>
+            </tr>
         {% endfor %}
+        </tbody>
+    </table>
+    <button type="button" class="btn btn-success" onclick="add_row_type(this)">Přidat řádek</button>
+
     <h2>Tagy jídel</h2>
+    <table id="days_menu" class="table table-hover table-sm table-bordered table-nonfluid">
+        <thead class="thead-dark">
+        <tr>
+            <th>Název</th>
+            <th>Úpravy</th>
+        </tr>
+        </thead>
+        <tbody>
         {% for tag in tags %}
-            <p>{{ tag.name }}</p>
+            <tr>
+                <td id="tag{{ tag.id }}" contenteditable="true">{{ tag.name }}</td>
+                <td>
+                    <button onclick="edit_tag(this)" class="btn btn-sm btn-primary edit-tag" data-id="{{ tag.id }}">Uložit</button>
+                    <button onclick="delete_tag(this)" class="btn btn-sm btn-danger delete-tag" data-id="{{ tag.id }}">Smazat</button>
+                </td>
+            </tr>
         {% endfor %}
+        </tbody>
+    </table>
+    <button type="button" class="btn btn-success" onclick="add_row_tag(this)">Přidat řádek</button>
+
     <h2>Import jídel</h2>
     <p>Jediný akceptovaný formát:<br><code>Název|Popis jídla|Cena|Typ|Tag|Tag</code><br>
     Počet tagů není omezen a nejsou povinné. Pokud tag či typ neexistuje je vytvořen.</p>
@@ -34,13 +105,194 @@
 
 {% block javascripts %}
 <script>
+    function edit_type(e) {
+        $("#loading").modal("show");
+        // vytežení infa z tabulky
+        const id = e.getAttribute('data-id');
+        const name = document.getElementById("type" + id).innerText;
+
+        // nacpání do struktury
+        const data = {
+            id: id,
+            name: name
+        };
+
+        // odeslání do FoodController
+        try {
+            const response = fetch('/settings/edit/type', {
+                method: 'POST', // or 'PUT'
+                body: JSON.stringify(data), // data can be `string` or {object}!
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then(res => window.location.reload());
+            const json = response.json();
+            console.log('Success:', JSON.stringify(json));
+        } catch (error) {
+            console.error('Error:', error);
+        }
+        $("#loading").modal("hide");
+    }
+
+    function edit_tag(e) {
+        $("#loading").modal("show");
+        // vytežení infa z tabulky
+        const id = e.getAttribute('data-id');
+        const name = document.getElementById("tag" + id).innerText;
+
+        // nacpání do struktury
+        const data = {
+            id: id,
+            name: name
+        };
+
+        // odeslání do FoodController
+        try {
+            const response = fetch('/settings/edit/tag', {
+                method: 'POST', // or 'PUT'
+                body: JSON.stringify(data), // data can be `string` or {object}!
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then(res => window.location.reload());
+            const json = response.json();
+            console.log('Success:', JSON.stringify(json));
+        } catch (error) {
+            console.error('Error:', error);
+        }
+        $("#loading").modal("hide");
+    }
+
+    function delete_tag(e) {
+        $("#loading").modal("show");
+        if (confirm('Opravdu?')) {
+            const id = e.getAttribute('data-id');
+
+            fetch(`/settings/delete/tag/${id}`, {
+                method: 'DELETE'
+            }).then(res => window.location.reload());
+        }
+        $("#loading").modal("hide");
+    }
+
+    function delete_type(e) {
+        $("#loading").modal("show");
+        if (confirm('Opravdu?')) {
+            const id = e.getAttribute('data-id');
+
+            fetch(`/settings/delete/type/${id}`, {
+                method: 'DELETE'
+            }).then(res => window.location.reload());
+        }
+        $("#loading").modal("hide");
+    }
+
+    function delete_row(param) {
+        let to_delete = param.parentNode;
+        to_delete.parentNode.removeChild(to_delete);
+    }
+
+    function save_menu_days() {
+        const table = document.getElementById("days_menu");
+        let data_row = Array.from(table.getElementsByClassName("content_row"));
+        let array = [];
+        console.log(data_row);
+        data_row.forEach(element => {
+            let data = element.getElementsByClassName("content");
+            console.log(data);
+            if (data[0].innerHTML !== "") array.push([data[0].innerHTML,data[1].innerHTML])
+        });
+        console.log(array);
+
+        fetch('/settings/save/days', {
+            method: 'POST', // or 'PUT'
+            body: JSON.stringify(array)
+        }).then(res => window.location.reload());
+    }
+
+    function save_menu_meals() {
+        const table = document.getElementById("menu_meals");
+        let data = Array.from(table.getElementsByClassName("content"));
+        let array = [];
+        data.forEach(element => {
+            if (element.innerHTML !== "") array.push(element.innerHTML)
+        });
+
+        fetch('/settings/save/meals', {
+            method: 'POST', // or 'PUT'
+            body: JSON.stringify(array)
+        }).then(res => window.location.reload());
+    }
+
+    function add_row_tag(e) {
+        const table = e.previousElementSibling;
+        let row = table.insertRow(-1);
+
+        let cell = row.insertCell(-1);
+        cell.id = "tag-new";
+        let editable = document.createAttribute("contenteditable");
+        editable.value = "true";
+        cell.classList.add("content");
+        cell.attributes.setNamedItem(editable);
+
+        let cell_button = row.insertCell(-1);
+        cell_button.innerHTML =
+            '<button onclick=\"edit_tag(this)\" class=\"btn btn-sm btn-primary edit-tag\" data-id=\"-new\">Uložit</button>' +
+            '<button onclick=\"delete_row(this.parentNode)\" class=\"btn btn-sm btn-danger delete-tag\">Smazat</button>';
+
+        cell_button.attributes.removeNamedItem("contenteditable");
+    }
+
+    function add_row_type(e) {
+        const table = e.previousElementSibling;
+        let row = table.insertRow(-1);
+
+        let cell = row.insertCell(-1);
+        cell.id = "type-new";
+        let editable = document.createAttribute("contenteditable");
+        editable.value = "true";
+        cell.classList.add("content");
+        cell.attributes.setNamedItem(editable);
+
+        let cell_button = row.insertCell(-1);
+        cell_button.innerHTML =
+            '<button onclick=\"edit_type(this)\" class=\"btn btn-sm btn-primary edit-type\" data-id=\"-new\">Uložit</button>' +
+            '<button onclick=\"delete_row(this.parentNode)\" class=\"btn btn-sm btn-danger delete-type\">Smazat</button>';
+
+        cell_button.attributes.removeNamedItem("contenteditable");
+    }
+
+    function add_row(e, i) {
+        const table = e.previousElementSibling;
+        let row = table.insertRow(-1);
+        row.classList.add("content_row");
+        let cell = null;
+        while (i > 0) {
+            i--;
+            cell = row.insertCell(-1);
+
+            // přidání "editovatelnosti"
+            let editable = document.createAttribute("contenteditable");
+            editable.value = "true";
+            cell.classList.add("content");
+            cell.attributes.setNamedItem(editable);
+        }
+        cell.innerHTML = '<td onclick=\"delete_row(this)\" class=\"cursor_pointer\" style=\"text-align:center\">x</td>'
+    }
+
+    function saveMeals() {
+        let menu_meals = document.getElementById("meals").textContent;
+
+        console.log();
+    }
+
     function importCSV(form) {
         let csv = form.csv.value;
         alert(csv);
         fetch('/import', {
             method: 'POST', // or 'PUT'
             body: csv
-        })
+        }).then(res => window.location.reload());
     }
 
 

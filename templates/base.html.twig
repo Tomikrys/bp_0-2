@@ -36,6 +36,21 @@
 
 <main role="main" class="content mt-4">
     <div class="container">
+        {%  for message in app.flashes('success') %}
+            <div class="alert alert-success">
+                {{ message }}
+            </div>
+        {% endfor %}
+        {%  for message in app.flashes('warning') %}
+            <div class="alert alert-warning">
+                {{ message }}
+            </div>
+        {% endfor %}
+        {%  for message in app.flashes('error') %}
+            <div class="alert alert-error">
+                {{ message }}
+            </div>
+        {% endfor %}
         {% block body %}{% endblock %}
         <!-- modal na loading -->
         <div class="modal fade" id="loading">
@@ -47,18 +62,6 @@
                 </div>
             </div>
         </div>
-
-
-        {%  for message in app.flashes('success') %}
-            <div class="alert alert-success">
-                {{ message }}
-            </div>
-        {% endfor %}
-        {%  for message in app.flashes('warning') %}
-            <div class="alert alert-warning">
-                {{ message }}
-            </div>
-        {% endfor %}
     </div>
 </main>
 {{ include('parts/footer.html.twig') }}

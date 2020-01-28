@@ -149,7 +149,7 @@
                     <div id="menuList">
                     {% for day in settings.days %}
                         <div class="day">
-                            <h3 class="day-name">{{ day }}</h3>
+                            <h3 class="day-name" data-description="{{ day[1] }}">{{ day[0] }}</h3>
                             {% for meal in settings.meals %}
                                 <h4 class="JSON-food-header food-header" data-type="{{ meal }}" ondrop="drop(event)"
                                     ondragover="allowDrop(event)">{{ meal }}</h4>
@@ -267,6 +267,7 @@
                 let menuDayItem = menuDay[j];
                 if (menuDayItem.classList.contains("day-name")) {
                     day.day = menuDayItem.innerText;
+                    day.description = menuDayItem.getAttribute('data-description');
 
                 } else if (menuDayItem.classList.contains("JSON-food-header")){
                     if (type.type !== "") {

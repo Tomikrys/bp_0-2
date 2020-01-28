@@ -4,13 +4,14 @@
 namespace App\Controller;
 
 
+use App\Entity\Food;
 use App\Entity\Settings;
 use App\Entity\Tag;
 use App\Entity\Type;
-use http\Env\Request;
 use http\Env\Response;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -21,7 +22,7 @@ class SettingsController extends AbstractController {
 
     public function default_settings() {
         $settings = new Settings();
-        $days = ["Pondělí", "Úterý", "Středa", "Čtvrtek", "Pátek"];
+        $days = [["Pondělí", "Monday"], ["Úterý", "Tuesday"], ["Středa", "Wednesday"], ["Čtvrtek", "Thursday"], ["Pátek", "Friday"]];
         $meals = ["Polévka", "Masové", "Vegetariánské"];
         $settings->setDays($days);
         $settings->setMeals($meals);
@@ -50,7 +51,6 @@ class SettingsController extends AbstractController {
      */
     public function  initialize() {
         $this->default_settings();
-        return new Response();
     }
 
     /**
@@ -58,10 +58,136 @@ class SettingsController extends AbstractController {
      */
     public function index(){
         // naplnění struktury pro výpis tabulky
-        $settings = $this->getDoctrine()->getRepository(Settings::class)->find(1);
+        $settings = $this->getDoctrine()->getRepository(Settings::class)->find(2);
         $types = $this->getDoctrine()->getRepository(Type::class)->findAll();
         $tags = $this->getDoctrine()->getRepository(Tag::class)->findAll();
+        //dump($settings);
+        //exit;
+
 
         return $this->render('pages/settings/settings.html.twig', array('settings' => $settings, 'types' => $types, 'tags' => $tags));
     }
+
+    /**
+     * @return \Symfony\Component\HttpFoundation\Response
+     * @Route("/settings/save/days", methods={"GET", "POST"})
+     */
+    public function save_days() {
+        // TODO nemuye byt 2
+        $settings = $this->getDoctrine()->getRepository(Settings::class)->find(2);
+        $json = file_get_contents('php://input');
+        $days = json_decode ($json);
+        $settings->setDays($days);
+        $this->getDoctrine()->getManager()->persist($settings);
+        $this->getDoctrine()->getManager()->flush();
+        $this->addFlash('success', 'Dny byly upraveny.');
+        $response = new \Symfony\Component\HttpFoundation\Response();
+        $response->send();
+        return $response;
+    }
+
+    /**
+     * @return \Symfony\Component\HttpFoundation\Response
+     * @Route("/settings/save/meals", methods={"GET", "POST"})
+     */
+    public function save_meals() {
+        // TODO nemuye byt 2
+        $settings = $this->getDoctrine()->getRepository(Settings::class)->find(2);
+        $json = file_get_contents('php://input');
+        $meals = json_decode ($json);
+        $settings->setMeals($meals);
+        $this->getDoctrine()->getManager()->persist($settings);
+        $this->getDoctrine()->getManager()->flush();
+        $this->addFlash('success', 'Jídla byla upravena.');
+        $response = new \Symfony\Component\HttpFoundation\Response();
+        $response->send();
+        return $response;
+    }
+
+    /**
+     * @Route("/settings/delete/type/{id}", methods={"GET", "POST", "DELETE"})
+     * @param Request $request
+     * @param $id
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function delete_type(Request $request, $id) {
+        $type = $this->getDoctrine()->getRepository(Type::class)->find($id);
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->remove($type);
+        $entityManager->flush();
+        $this->addFlash('warning', 'Typ byl smazán.');
+        $response = new \Symfony\Component\HttpFoundation\Response();
+        $response->send();
+        return $response;
+    }
+
+    /**
+     * @Route("/settings/delete/tag/{id}", methods={"GET", "POST", "DELETE"})
+     * @param Request $request
+     * @param $id
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function delete_tag(Request $request, $id) {
+        $type = $this->getDoctrine()->getRepository(Tag::class)->find($id);
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->remove($type);
+        $entityManager->flush();
+        $this->addFlash('warning', 'Tag byl smazán.');
+        $response = new \Symfony\Component\HttpFoundation\Response();
+        $response->send();
+        return $response;
+    }
+
+    /**
+     * @Route("/settings/edit/tag", methods={"GET", "POST"})
+     */
+    public function edit_tag() {
+        $json = file_get_contents('php://input');
+        $data = json_decode ($json);
+
+        $id =  $data->id;
+        $entityManager = $this->getDoctrine()->getManager();
+        $tag = $entityManager->getRepository(Tag::class)->find($id);
+
+        if (!$tag) {
+            $tag = new Tag();
+        }
+
+        $tag->setName($data->name);
+
+        $this->getDoctrine()->getManager()->persist($tag);
+        $entityManager->flush();
+        $this->addFlash('success', 'Tag byl upraven.');
+
+        $response = new \Symfony\Component\HttpFoundation\Response();
+        $response->send();
+        return $response;
+    }
+
+    /**
+     * @Route("/settings/edit/type", methods={"GET", "POST"})
+     */
+    public function edit_type() {
+        $json = file_get_contents('php://input');
+        $data = json_decode ($json);
+
+        $id =  $data->id;
+        $entityManager = $this->getDoctrine()->getManager();
+        $type = $entityManager->getRepository(Type::class)->find($id);
+
+        if (!$type) {
+            $type = new Type();
+        }
+
+        $type->setName($data->name);
+
+        $this->getDoctrine()->getManager()->persist($type);
+        $entityManager->flush();
+        $this->addFlash('success', 'Type byl upraven.');
+
+        $response = new \Symfony\Component\HttpFoundation\Response();
+        $response->send();
+        return $response;
+    }
+
 }
