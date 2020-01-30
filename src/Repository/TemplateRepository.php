@@ -19,6 +19,19 @@ class TemplateRepository extends ServiceEntityRepository
         parent::__construct($registry, Template::class);
     }
 
+    /**
+     * Uloží tag do systému.
+     * Pokud není nastaveno ID, vloží nový, jinak provede editaci.
+     * @param Template $template
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    public function save(Template $template): void {
+        $this->getEntityManager()->persist($template);
+        $this->getEntityManager()->flush($template);
+    }
+
+
     // /**
     //  * @return Template[] Returns an array of Template objects
     //  */

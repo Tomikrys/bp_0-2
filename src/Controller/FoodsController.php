@@ -155,7 +155,6 @@ class FoodsController extends AbstractController {
 
         $this->fillUpFood($data, $food);
         $this->foodRepository->save($food);
-        $entityManager->flush();
         $this->addFlash('success', 'Jídlo bylo přidáno.');
 
         $response = new Response();
@@ -336,7 +335,6 @@ class FoodsController extends AbstractController {
                             $type = new Type();
                             $type->setName($word);
                             $this->typeRepository->save($type);
-                            $entityManager->flush();
                             $type = $this->getDoctrine()->getRepository(Type::class)->findBy(array('name' => $word));
                         }
                         $food->setType($type[0]);
@@ -348,7 +346,6 @@ class FoodsController extends AbstractController {
                             $tag = new Tag();
                             $tag->setName($word);
                             $this->tagRepository->save($tag);
-                            $entityManager->flush();
                             $tag = $this->getDoctrine()->getRepository(Tag::class)->findBy(array('name' => $word));
                         }
                         $food->addTag($tag[0]);

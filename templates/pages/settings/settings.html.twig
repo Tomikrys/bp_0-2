@@ -7,8 +7,23 @@
     {% endblock %}
 {% block body %}
     <h1>Nastavení</h1>
+    <h2>Přidání šablony</h2>
+    <form class="md-form" action="doUpload" method="post" enctype="multipart/form-data">
+
+        <div class="file-field">
+            <input type="hidden" name="token" value="{{ csrf_token('upload') }}" />
+            <label for="template_name" >Název šablony</label>
+            <input class="form-control mb-1 nonfluid" type="text" id="template_name" name="template_name">
+            <div class="btn btn-outline-secondary  btn-sm float-left">
+                <input class="file-path validate" placeholder="Upload šablony" style="color:black; width:350px" type="file" name="myfile">
+            </div>
+            <button class="btn  btn-primary ml-1" type="submit">Uložit</button>
+        </div>
+    </form>
+
+
     <h2>Dny na menu</h2>
-    <table id="days_menu" class="table table-hover table-sm table-bordered table-nonfluid">
+    <table id="days_menu" class="table table-hover table-sm table-bordered nonfluid">
         <thead class="thead-dark">
         <tr>
             <th>Název</th>
@@ -30,7 +45,7 @@
     <button type="button" class="btn btn-primary" onclick="save_menu_days()">Uložit</button>
 
     <h2>Jídla na menu</h2>
-    <table id="menu_meals" class="table table-hover table-sm table-bordered table-nonfluid">
+    <table id="menu_meals" class="table table-hover table-sm table-bordered nonfluid">
         <thead class="thead-dark">
         <tr>
             <th>Název</th>
@@ -51,7 +66,7 @@
 
 
     <h2>Typy jídel</h2>
-    <table id="types_settings" class="table table-hover table-sm table-bordered table-nonfluid">
+    <table id="types_settings" class="table table-hover table-sm table-bordered nonfluid">
         <thead class="thead-dark">
         <tr>
             <th>Název</th>
@@ -73,7 +88,7 @@
     <button type="button" class="btn btn-success" onclick="add_row_type(this)">Přidat řádek</button>
 
     <h2>Tagy jídel</h2>
-    <table id="days_menu" class="table table-hover table-sm table-bordered table-nonfluid">
+    <table id="days_menu" class="table table-hover table-sm table-bordered nonfluid">
         <thead class="thead-dark">
         <tr>
             <th>Název</th>

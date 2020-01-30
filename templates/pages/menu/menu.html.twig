@@ -231,13 +231,13 @@
     }
 
     let and = true;
-    if (getCookie("filterTagsMode") !== "and") {
+    if (getCookie("filterTagsMode") !== "or") {
+        setCookie("filterTagsMode", "and", 15);
+        document.getElementById("filterTagsMode").checked = true;
+    } else {
         setCookie("filterTagsMode", "or", 15);
         and = false;
         document.getElementById("filterTagsMode").checked = false;
-    } else {
-        setCookie("filterTagsMode", "and", 15);
-        document.getElementById("filterTagsMode").checked = true;
     }
 
     function toggleTagMode(param) {
