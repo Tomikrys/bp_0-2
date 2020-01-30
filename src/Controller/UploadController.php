@@ -61,17 +61,20 @@ class UploadController extends AbstractController
 
         $file_fullname = $file->getClientOriginalName();
         $url = $uploadDir . "/" . $file_fullname;
-        $i = 0;
-        $filename_dubler = $file_fullname;
+
         $filename = substr($file_fullname, 0, strrpos($file_fullname, '.'));
         $extension = substr($file_fullname, strrpos($file_fullname, '.'));
+        $i = 0;
         while (file_exists($url)) {
             $i++;
             $filename_dubler = $filename . "-" . $i . $extension;
             $url = $uploadDir . "/" . $filename_dubler;
         }
+
         if ($i) {
             $filename .= "-" . $i . $extension;
+        } else {
+            $filename .= $extension;
         }
 
         $uploader->upload($uploadDir, $file, $filename);
