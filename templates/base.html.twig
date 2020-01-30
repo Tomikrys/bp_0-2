@@ -14,7 +14,6 @@
 {#    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>#}
     <link rel="stylesheet" href="https://bootswatch.com/4/simplex/bootstrap.min.css">
     <script src="https://kit.fontawesome.com/d595236390.js" crossorigin="anonymous"></script>
-
     {#        <link rel="stylesheet" href="{{ asset('offline/bootstrap.min.css') }}" />#}
     {#        <script src="{{ asset('offline/jquery-3.3.1.slim.min.js') }}"></script>#}
     {#        <script src="{{ asset('offline/popper.min.js') }}"></script>#}
@@ -24,8 +23,10 @@
 {#    // todo vzřešit tenhle shit#}
     {% if app.environment == "dev" %}
         <link rel="stylesheet" href="{{ asset('style/style.css') }}" />
+        <script src="{{ asset('js/script.js') }}"></script>
     {% else %}
         <link rel="stylesheet" href="{{ asset('public/style/style.css') }}" />
+        <script src="{{ asset('public/js/script.js') }}"></script>
     {% endif %}
 
     <title>{% block title %}{% endblock %}</title>
