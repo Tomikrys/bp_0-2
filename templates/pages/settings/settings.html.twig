@@ -7,9 +7,31 @@
     {% endblock %}
 {% block body %}
     <h1>Nastavení</h1>
-    <h2>Přidání šablony</h2>
-    <form class="md-form" action="doUpload" method="post" enctype="multipart/form-data">
+    <h2>Správa šablon</h2>
+    <table id="days_menu" class="table table-hover table-sm table-bordered nonfluid">
+    <thead class="thead-dark">
+    <tr>
+        <th>Název</th>
+        <th>Soubor</th>
+        <th>Úpravy</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for template in templates %}
+        <tr>
+            <td id="template{{ template.id }}" contenteditable="true">{{ template.name }}</td>
+            <td id="template{{ template.id }}">{{ template.path }}</td>
+            <td>
+                <button onclick="edit_template(this)" class="btn btn-sm btn-primary edit-template" data-id="{{ template.id }}">Uložit</button>
+                <button onclick="delete_template(this)" class="btn btn-sm btn-danger delete-template" data-id="{{ template.id }}">Smazat</button>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
 
+    <h3>Přidání šablony</h3>
+    <form class="md-form" action="doUpload" method="post" enctype="multipart/form-data">
         <div class="file-field">
             <input type="hidden" name="token" value="{{ csrf_token('upload') }}" />
             <label for="template_name" >Název šablony</label>
@@ -120,6 +142,35 @@
 
 {% block javascripts %}
 <script>
+    function edit_template(e) {
+        $("#loading").modal("show");
+        // vytežení infa z tabulky
+        const id = e.getAttribute('data-id');
+        const name = document.getElementById("template" + id).innerText;
+
+        // nacpání do struktury
+        const data = {
+            id: id,
+            name: name
+        };
+
+        // odeslání do FoodController
+        try {
+            const response = fetch('/settings/edit/template', {
+                method: 'POST', // or 'PUT'
+                body: JSON.stringify(data), // data can be `string` or {object}!
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then(res => window.location.reload());
+            const json = response.json();
+            console.log('Success:', JSON.stringify(json));
+        } catch (error) {
+            console.error('Error:', error);
+        }
+        $("#loading").modal("hide");
+    }
+
     function edit_type(e) {
         $("#loading").modal("show");
         // vytežení infa z tabulky
@@ -292,7 +343,8 @@
             cell.classList.add("content");
             cell.attributes.setNamedItem(editable);
         }
-        cell.innerHTML = '<td onclick=\"delete_row(this)\" class=\"cursor_pointer\" style=\"text-align:center\">x</td>'
+        cell.innerHTML = '<td onclick=\"delete_row(this)\" class=\"cursor_pointer\" style=\"text-align:center\">x</td>';
+        cell.attributes.removeNamedItem("contenteditable");
     }
 
     function saveMeals() {

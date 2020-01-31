@@ -7,6 +7,7 @@ namespace App\Controller;
 use App\Entity\Food;
 use App\Entity\Settings;
 use App\Entity\Tag;
+use App\Entity\Template;
 use App\Entity\Type;
 use http\Env\Response;
 use Psr\Log\LoggerInterface;
@@ -61,11 +62,12 @@ class SettingsController extends AbstractController {
         $settings = $this->getDoctrine()->getRepository(Settings::class)->find(2);
         $types = $this->getDoctrine()->getRepository(Type::class)->findAll();
         $tags = $this->getDoctrine()->getRepository(Tag::class)->findAll();
-        //dump($settings);
-        //exit;
+        $templates = $this->getDoctrine()->getRepository(Template::class)->findAll();
+//        dump($templates);
+//        exit;
 
 
-        return $this->render('pages/settings/settings.html.twig', array('settings' => $settings, 'types' => $types, 'tags' => $tags));
+        return $this->render('pages/settings/settings.html.twig', array('settings' => $settings, 'types' => $types, 'tags' => $tags, 'templates' => $templates));
     }
 
     /**
@@ -158,6 +160,32 @@ class SettingsController extends AbstractController {
         $this->getDoctrine()->getManager()->persist($tag);
         $entityManager->flush();
         $this->addFlash('success', 'Tag byl upraven.');
+
+        $response = new \Symfony\Component\HttpFoundation\Response();
+        $response->send();
+        return $response;
+    }
+
+    /**
+     * @Route("/settings/edit/template", methods={"GET", "POST"})
+     */
+    public function edit_template() {
+        $json = file_get_contents('php://input');
+        $data = json_decode ($json);
+
+        $id =  $data->id;
+        $entityManager = $this->getDoctrine()->getManager();
+        $template = $entityManager->getRepository(Template::class)->find($id);
+
+        if (!$template) {
+            $template = new Template();
+        }
+
+        $template->setName($data->name);
+
+        $this->getDoctrine()->getManager()->persist($template);
+        $entityManager->flush();
+        $this->addFlash('success', 'Šablona byla upravena.');
 
         $response = new \Symfony\Component\HttpFoundation\Response();
         $response->send();
