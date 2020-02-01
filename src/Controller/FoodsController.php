@@ -352,7 +352,7 @@ class FoodsController extends AbstractController {
                         break;
                 }
             }
-            dump($food);
+            //dump($food);
             $this->foodRepository->save($food);
             $entityManager->flush();
             //dump($line);
