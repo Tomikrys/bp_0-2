@@ -59,7 +59,7 @@ class SettingsController extends AbstractController {
      */
     public function index(){
         // naplnění struktury pro výpis tabulky
-        $settings = $this->getDoctrine()->getRepository(Settings::class)->find(2);
+        $settings = $this->getDoctrine()->getRepository(Settings::class)->find(1);
         $types = $this->getDoctrine()->getRepository(Type::class)->findAll();
         $tags = $this->getDoctrine()->getRepository(Tag::class)->findAll();
         $templates = $this->getDoctrine()->getRepository(Template::class)->findAll();
@@ -76,7 +76,7 @@ class SettingsController extends AbstractController {
      */
     public function save_days() {
         // TODO nemuye byt 2
-        $settings = $this->getDoctrine()->getRepository(Settings::class)->find(2);
+        $settings = $this->getDoctrine()->getRepository(Settings::class)->find(1);
         $json = file_get_contents('php://input');
         $days = json_decode ($json);
         $settings->setDays($days);
@@ -94,7 +94,7 @@ class SettingsController extends AbstractController {
      */
     public function save_meals() {
         // TODO nemuye byt 2
-        $settings = $this->getDoctrine()->getRepository(Settings::class)->find(2);
+        $settings = $this->getDoctrine()->getRepository(Settings::class)->find(1);
         $json = file_get_contents('php://input');
         $meals = json_decode ($json);
         $settings->setMeals($meals);

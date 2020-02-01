@@ -40,7 +40,7 @@ class MenuController extends AbstractController {
         }
         //exit;
         // TODO nemůže bejt 1 žejo
-        $settings = $this->getDoctrine()->getRepository(Settings::class)->find(2);
+        $settings = $this->getDoctrine()->getRepository(Settings::class)->find(1);
         $tags = $this->getDoctrine()->getRepository(Tag::class)->findAll();
 
         $templates = $this->getDoctrine()->getRepository(Template::class)->findAll();
