@@ -4,13 +4,10 @@
 namespace App\Controller;
 
 
-use App\Entity\Food;
 use App\Entity\Settings;
 use App\Entity\Tag;
 use App\Entity\Template;
 use App\Entity\Type;
-use http\Env\Response;
-use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -30,21 +27,21 @@ class SettingsController extends AbstractController {
         $this->getDoctrine()->getManager()->persist($settings);
         $this->getDoctrine()->getManager()->flush();
 
-        $types = ["polévka", "jídlo"];
-        foreach ($types as $type) {
-            $new_type = new Type();
-            $new_type->setName($type);
-            $this->getDoctrine()->getManager()->persist($new_type);
-            $this->getDoctrine()->getManager()->flush();
-        }
-
-        $tags = ["vege", "spicy", "beef", "lamb", "shrink"];
-        foreach ($tags as $tag) {
-            $new_tag = new Tag();
-            $new_tag->setName($tag);
-            $this->getDoctrine()->getManager()->persist($new_tag);
-            $this->getDoctrine()->getManager()->flush();
-        }
+//        $types = ["polévka", "jídlo"];
+//        foreach ($types as $type) {
+//            $new_type = new Type();
+//            $new_type->setName($type);
+//            $this->getDoctrine()->getManager()->persist($new_type);
+//            $this->getDoctrine()->getManager()->flush();
+//        }
+//
+//        $tags = ["vege", "spicy", "beef", "lamb", "shrink"];
+//        foreach ($tags as $tag) {
+//            $new_tag = new Tag();
+//            $new_tag->setName($tag);
+//            $this->getDoctrine()->getManager()->persist($new_tag);
+//            $this->getDoctrine()->getManager()->flush();
+//        }
     }
 
     /**
@@ -118,6 +115,26 @@ class SettingsController extends AbstractController {
         $entityManager->remove($type);
         $entityManager->flush();
         $this->addFlash('warning', 'Typ byl smazán.');
+        $response = new \Symfony\Component\HttpFoundation\Response();
+        $response->send();
+        return $response;
+    }
+
+    /**
+     * @Route("/settings/delete/template/{id}", methods={"GET", "POST", "DELETE"})
+     * @param Request $request
+     * @param $id
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function delete_template(Request $request, $id) {
+        $type = $this->getDoctrine()->getRepository(Template::class)->find($id);
+        $entityManager = $this->getDoctrine()->getManager();
+        $media = new Media();
+        dump($media);
+        exit;
+        $entityManager->remove($type);
+        $entityManager->flush();
+        $this->addFlash('warning', 'Šablona byla smazán.');
         $response = new \Symfony\Component\HttpFoundation\Response();
         $response->send();
         return $response;
