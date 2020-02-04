@@ -48,6 +48,24 @@ class Template
         return $this->path;
     }
 
+    public function getDisplayPath($url = null): ?string {
+        $path = "~/";
+        if ($url) {
+            return $path . $url;
+        } else {
+            return $path . $this->getPath();
+        }
+    }
+
+    public function getRealPath($url = null): ?string {
+        $path = "../words/";
+        if ($url) {
+            return $path . $url;
+        } else {
+            return $path . $this->getPath();
+        }
+    }
+
     public function setPath(string $path): self
     {
         $this->path = $path;

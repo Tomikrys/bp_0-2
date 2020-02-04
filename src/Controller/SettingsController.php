@@ -9,7 +9,9 @@ use App\Entity\Tag;
 use App\Entity\Template;
 use App\Entity\Type;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -68,7 +70,7 @@ class SettingsController extends AbstractController {
     }
 
     /**
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      * @Route("/settings/save/days", methods={"GET", "POST"})
      */
     public function save_days() {
@@ -80,13 +82,13 @@ class SettingsController extends AbstractController {
         $this->getDoctrine()->getManager()->persist($settings);
         $this->getDoctrine()->getManager()->flush();
         $this->addFlash('success', 'Dny byly upraveny.');
-        $response = new \Symfony\Component\HttpFoundation\Response();
+        $response = new Response();
         $response->send();
         return $response;
     }
 
     /**
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      * @Route("/settings/save/meals", methods={"GET", "POST"})
      */
     public function save_meals() {
@@ -98,7 +100,7 @@ class SettingsController extends AbstractController {
         $this->getDoctrine()->getManager()->persist($settings);
         $this->getDoctrine()->getManager()->flush();
         $this->addFlash('success', 'Jídla byla upravena.');
-        $response = new \Symfony\Component\HttpFoundation\Response();
+        $response = new Response();
         $response->send();
         return $response;
     }
@@ -107,7 +109,7 @@ class SettingsController extends AbstractController {
      * @Route("/settings/delete/type/{id}", methods={"GET", "POST", "DELETE"})
      * @param Request $request
      * @param $id
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function delete_type(Request $request, $id) {
         $type = $this->getDoctrine()->getRepository(Type::class)->find($id);
@@ -115,7 +117,7 @@ class SettingsController extends AbstractController {
         $entityManager->remove($type);
         $entityManager->flush();
         $this->addFlash('warning', 'Typ byl smazán.');
-        $response = new \Symfony\Component\HttpFoundation\Response();
+        $response = new Response();
         $response->send();
         return $response;
     }
@@ -124,18 +126,18 @@ class SettingsController extends AbstractController {
      * @Route("/settings/delete/template/{id}", methods={"GET", "POST", "DELETE"})
      * @param Request $request
      * @param $id
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function delete_template(Request $request, $id) {
-        $type = $this->getDoctrine()->getRepository(Template::class)->find($id);
+        $template = $this->getDoctrine()->getRepository(Template::class)->find($id);
         $entityManager = $this->getDoctrine()->getManager();
-        $media = new Media();
-        dump($media);
-        exit;
-        $entityManager->remove($type);
+        $filesystem = new Filesystem();
+        //$filesystem->remove(['symlink', '/path/to/directory', 'activity.log']);
+        $filesystem->remove($template->getRealPath());
+        $entityManager->remove($template);
         $entityManager->flush();
         $this->addFlash('warning', 'Šablona byla smazán.');
-        $response = new \Symfony\Component\HttpFoundation\Response();
+        $response = new Response();
         $response->send();
         return $response;
     }
@@ -144,7 +146,7 @@ class SettingsController extends AbstractController {
      * @Route("/settings/delete/tag/{id}", methods={"GET", "POST", "DELETE"})
      * @param Request $request
      * @param $id
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function delete_tag(Request $request, $id) {
         $type = $this->getDoctrine()->getRepository(Tag::class)->find($id);
@@ -152,7 +154,7 @@ class SettingsController extends AbstractController {
         $entityManager->remove($type);
         $entityManager->flush();
         $this->addFlash('warning', 'Tag byl smazán.');
-        $response = new \Symfony\Component\HttpFoundation\Response();
+        $response = new Response();
         $response->send();
         return $response;
     }
@@ -178,7 +180,7 @@ class SettingsController extends AbstractController {
         $entityManager->flush();
         $this->addFlash('success', 'Tag byl upraven.');
 
-        $response = new \Symfony\Component\HttpFoundation\Response();
+        $response = new Response();
         $response->send();
         return $response;
     }
@@ -188,7 +190,7 @@ class SettingsController extends AbstractController {
      */
     public function edit_template() {
         $json = file_get_contents('php://input');
-        $data = json_decode ($json);
+        $data = json_decode($json);
 
         $id =  $data->id;
         $entityManager = $this->getDoctrine()->getManager();
@@ -204,7 +206,7 @@ class SettingsController extends AbstractController {
         $entityManager->flush();
         $this->addFlash('success', 'Šablona byla upravena.');
 
-        $response = new \Symfony\Component\HttpFoundation\Response();
+        $response = new Response();
         $response->send();
         return $response;
     }
@@ -230,7 +232,7 @@ class SettingsController extends AbstractController {
         $entityManager->flush();
         $this->addFlash('success', 'Type byl upraven.');
 
-        $response = new \Symfony\Component\HttpFoundation\Response();
+        $response = new Response();
         $response->send();
         return $response;
     }

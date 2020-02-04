@@ -20,7 +20,7 @@
     {% for template in templates %}
         <tr>
             <td id="template{{ template.id }}" contenteditable="true">{{ template.name }}</td>
-            <td id="template{{ template.id }}">{{ template.path }}</td>
+            <td id="template{{ template.id }}"><a href="{{ template.realpath }}">{{ template.displaypath }}</a></td>
             <td>
                 <button onclick="edit_template(this)" class="btn btn-sm btn-primary edit-template" data-id="{{ template.id }}">Uložit</button>
                 <button onclick="delete_template(this)" class="btn btn-sm btn-danger delete-template" data-id="{{ template.id }}">Smazat</button>
@@ -235,6 +235,18 @@
             const id = e.getAttribute('data-id');
 
             fetch(`/settings/delete/tag/${id}`, {
+                method: 'DELETE'
+            }).then(res => window.location.reload());
+        }
+        $("#loading").modal("hide");
+    }
+
+    function delete_template(e) {
+        $("#loading").modal("show");
+        if (confirm('Opravdu?')) {
+            const id = e.getAttribute('data-id');
+
+            fetch(`/settings/delete/template/${id}`, {
                 method: 'DELETE'
             }).then(res => window.location.reload());
         }

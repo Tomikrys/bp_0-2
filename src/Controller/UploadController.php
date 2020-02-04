@@ -80,7 +80,8 @@ class UploadController extends AbstractController
         $uploader->upload($uploadDir, $file, $filename);
         $templatename = $request->request->get('template_name');
         $template = new Template();
-        $template->setPath($url);
+
+        $template->setPath(basename($url));
 
         $i = 0;
         $templatename_dubler = $templatename;
