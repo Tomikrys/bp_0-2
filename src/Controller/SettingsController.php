@@ -54,7 +54,7 @@ class SettingsController extends AbstractController {
     }
 
     /**
-     * @Route("/settings", methods={"GET", "POST"})
+     * @Route("/settings", name="/settings", methods={"GET", "POST"})
      */
     public function index(){
         // naplnění struktury pro výpis tabulky
@@ -136,7 +136,7 @@ class SettingsController extends AbstractController {
         $filesystem->remove($template->getRealPath());
         $entityManager->remove($template);
         $entityManager->flush();
-        $this->addFlash('warning', 'Šablona byla smazán.');
+        $this->addFlash('warning', 'Šablona byla smazána.');
         $response = new Response();
         $response->send();
         return $response;
