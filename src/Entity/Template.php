@@ -58,7 +58,7 @@ class Template
     }
 
     public function getRealPath($url = null): ?string {
-        $path = "../words/";
+        $path = "../public/words/";
         if ($url) {
             return $path . $url;
         } else {
