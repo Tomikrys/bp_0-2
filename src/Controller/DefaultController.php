@@ -41,4 +41,11 @@ class DefaultController extends AbstractController {
             </body>
         </html>");
     }
+
+    /**
+     * @Route("/testaws", name="/bring_me_back", methods={"GET", "POST", "DELETE"})
+     */
+    public function testaws() {
+        return $this->render('testaws.html.twig');
+    }
 }
