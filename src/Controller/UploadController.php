@@ -11,6 +11,7 @@ use Aws\S3\S3Client;
 use Aws\S3\Transfer;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -55,6 +56,18 @@ class UploadController extends AbstractController {
         } catch (AwsException $e) {
             echo $e->getMessage() . "\n";
         }
+        echo "success";
+
+//        //require('vendor/autoload.php');
+//// this will simply read AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY from env vars
+//        $s3 = new S3Client([
+//            'version'  => '2006-03-01',
+//            'region'   => 'us-east-1',
+//        ]);
+//        $bucket = $_ENV['S3_BUCKET']?: die('No "S3_BUCKET" config var in found in env!');
+//        $file = $this->file(new File('words/result.docx'));
+//        $upload = $s3->upload($bucket, 'words/result.docx', $file, 'public-read');
+//        echo $upload->get('ObjectURL');
     }
 
     /**
