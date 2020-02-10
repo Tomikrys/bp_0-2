@@ -43,7 +43,7 @@ class UploadController extends AbstractController {
     public function aws_upload($path){
         try {
             $s3Client = new S3Client([
-                'region' => 'eu-frankfurt',
+                'region' => 'eu-central-1',
                 'version' => 'latest',
                 'credentials' => CredentialProvider::env()
             ]);
