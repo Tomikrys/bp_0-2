@@ -5,6 +5,10 @@ namespace App\Controller;
 use App\Entity\Template;
 use App\Repository\TemplateRepository;
 use App\Service\FileUploader;
+use Aws\Credentials\CredentialProvider;
+use Aws\Exception\AwsException;
+use Aws\S3\S3Client;
+use Aws\S3\Transfer;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -26,6 +30,31 @@ class UploadController extends AbstractController {
     public function __construct(TemplateRepository $templateRepository)
     {
         $this->templateRepository = $templateRepository;
+    }
+
+    /**
+     * @Route("/aws", name="aws")
+     */
+    public function try() {
+        $path = "./words/template.docx";
+        $this->aws_upload($path);
+    }
+
+    public function aws_upload($path){
+        try {
+            $s3Client = new S3Client([
+                'region' => 'eu-frankfurt',
+                'version' => 'latest',
+                'credentials' => CredentialProvider::env()
+            ]);
+            $result = $s3Client->putObject([
+                'Bucket'     => 'menickajednoduse',
+                'Key'        => $path,
+                'SourceFile' => $path,
+            ]);
+        } catch (AwsException $e) {
+            echo $e->getMessage() . "\n";
+        }
     }
 
     /**
