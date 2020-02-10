@@ -36,19 +36,19 @@ class UploadController extends AbstractController {
      * @Route("/aws", name="aws")
      */
     public function try() {
-        $path = "./words/template.docx";
+        $path = "/words/template.docx";
         $this->aws_upload($path);
     }
 
     public function aws_upload($path){
         try {
             $s3Client = new S3Client([
-                'region' => 'eu-central-1',
+                'region' => 'us-east-1',
                 'version' => 'latest',
                 'credentials' => CredentialProvider::env()
             ]);
             $result = $s3Client->putObject([
-                'Bucket'     => 'menickajednoduse',
+                'Bucket'     => getenv('S3_BUCKET'),
                 'Key'        => $path,
                 'SourceFile' => $path,
             ]);
