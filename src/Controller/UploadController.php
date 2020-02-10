@@ -8,6 +8,7 @@ use App\Service\FileUploader;
 use Aws\Credentials\CredentialProvider;
 use Aws\Exception\AwsException;
 use Aws\S3\S3Client;
+use http\Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -47,14 +48,13 @@ class UploadController extends AbstractController {
                 'credentials' => CredentialProvider::env()
             ]);
             $result = $s3Client->putObject([
-                'Bucket'     => getenv('S3_BUCKET'),
+                'Bucket'     => $_ENV["S3_BUCKET"],
                 'Key'        => $path,
                 'SourceFile' => $path,
             ]);
         } catch (AwsException $e) {
             echo $e->getMessage() . "\n";
         }
-        echo "success";
 
 //        //require('vendor/autoload.php');
 //// this will simply read AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY from env vars
@@ -119,6 +119,12 @@ class UploadController extends AbstractController {
         }
 
         $uploader->upload($uploadDir, $file, $filename);
+        try {
+            $this->aws_upload($url);
+            echo $url;
+        } catch (Exception $e) {
+
+        }
 
 //        $s3 = new Aws\S3\S3Client([
 //            'version'  => '2006-03-01',
