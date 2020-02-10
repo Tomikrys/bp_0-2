@@ -36,7 +36,7 @@ class UploadController extends AbstractController {
      * @Route("/aws", name="aws")
      */
     public function try() {
-        $path = "/words/template.docx";
+        $path = "./words/template.docx";
         $this->aws_upload($path);
     }
 
