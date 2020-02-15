@@ -36,11 +36,14 @@ class UploadController extends AbstractController {
      * @Route("/aws", name="aws")
      */
     public function try() {
-        $path = "./words/template.docx";
+        $path = "./words/zomato.docx";
         $this->aws_upload($path);
+        return new Response();
     }
 
     public function aws_upload($path){
+        putenv("AWS_ACCESS_KEY_ID=AKIAVEKPVHFC4QT6CW4Q");
+        putenv("AWS_SECRET_ACCESS_KEY=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");
         try {
             $s3Client = new S3Client([
                 'region' => 'us-east-1',
@@ -119,9 +122,10 @@ class UploadController extends AbstractController {
         }
 
         $uploader->upload($uploadDir, $file, $filename);
+        // todo aws
+        $path = './words/' . $filename;
         try {
-            $this->aws_upload($url);
-            echo $url;
+            $this->aws_upload($path);
         } catch (Exception $e) {
 
         }
