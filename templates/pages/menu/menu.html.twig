@@ -173,6 +173,7 @@
                             {% endfor %}
                         </select>
                         <button onclick="generateMenu()" class="btn btn-success ml-1">Exportovat</button>
+                        <button onclick="saveMenu()" class="btn btn-success ml-1">Uložit do historie</button>
                     </form>
                 </div>
             </div>
@@ -189,6 +190,83 @@
 
 {% block javascripts %}
 <script>
+    function saveMenu() {
+        $("#loading").modal("show");
+        update_url();
+        let date = new Date("11. 02. 2020");
+        let data = {json: generate_json(), date: date};
+        const response = fetch('/history/add', {
+            method: 'POST', // or 'PUT'
+            body: JSON.stringify(data), // data can be `string` or {object}!
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        $("#loading").modal("hide");
+
+    }
+
+    let url = new URL(location.href);
+    let json = url.searchParams.get('json');
+    if (json != null) {
+        update_menulist(JSON.parse(json))
+    }
+
+    function update_menulist(json) {
+        let menulist = document.getElementById('menuList');
+        menulist.innerHTML='';
+        let i = 0;
+        while (json[i]) {
+            // Název dnu
+            let day =
+                "<div class=\"day\">\n" +
+                "     <h3 class=\"day-name\" data-description=\"" + json[i].description + "\">" + json[i].day +"</h3>\n";
+
+            let j = 0;
+            while (json[i].meals[j]) {
+                // název typu jídla
+                day += "<h4 class=\"JSON-food-header food-header\" data-type=\""+ json[i].meals[j].type +"\" ondrop=\"drop(event)\" ondragover=\"allowDrop(event)\">"+ json[i].meals[j].type +"</h4>";
+                // kontejner na jídla
+                day += "<div class=\"JSON-food-items food-items-drop\" ondrop=\"drop(event)\" ondragover=\"allowDrop(event)\">";
+
+                let k = 0;
+                while (json[i].meals[j].meals[k]) {
+                    let food = document.getElementById("meal" + json[i].meals[j].meals[k].id);
+                    food.classList.add("copy");
+                    food.classList.remove("filter-tags");
+                    food.classList.remove("original");
+                    if (food) {
+                        day += food.outerHTML;
+                    }
+                    k++;
+                }
+
+                day += "</div>"; // kontejner na jídla
+                j++;
+            }
+
+            day += "</div>"; // název dnu
+            menulist.innerHTML += day;
+            console.log(json[i]);
+            i++;
+        }
+    }
+
+    function update_url() {
+        let url = new URL(location.href);
+        let json = generate_json();
+        url.searchParams.set('json', JSON.stringify(json));
+        //TODO ječí to
+        window.history.pushState('test', 'Title', url);
+    }
+
+    function get_url_template() {
+
+    }
+
+    function get_url_foods() {
+
+    }
 
     let filter_tags = [];
 
@@ -327,7 +405,8 @@
                 } else if (menuDayItem.classList.contains("JSON-food-items")){
                     let menuMeals = menuDayItem.children;
                     for (let k = 0; k < menuMeals.length; k++) {
-                        let meal = {id: menuMeals[k].getAttribute('data-id'), text: menuMeals[k].innerText};
+                        //let meal = {id: menuMeals[k].getAttribute('data-id'), text: menuMeals[k].innerText};
+                        let meal = {id: menuMeals[k].getAttribute('data-id')};
                         type.meals.push(meal);
                     }
                 }
@@ -484,6 +563,7 @@
             }
             target.appendChild(dragged);
         }
+        update_url();
     }
 </script>
 {% endblock %}

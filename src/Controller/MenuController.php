@@ -24,7 +24,7 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class MenuController extends AbstractController {
     /**
-     * @Route("/menu", methods={"GET", "POST"})
+     * @Route("/menu", name="menu", methods={"GET", "POST"})
      */
     public function index(){
         // naplnění struktury pro výpis tabulky
