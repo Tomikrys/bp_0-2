@@ -29,6 +29,12 @@ class Tag {
 
     private $tags_array;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="tags")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $user;
+
     public function getTagsArray () {
         return $this->tags_array;
     }
@@ -86,6 +92,18 @@ class Tag {
             $this->foods->removeElement($food);
             $food->removeTag($this);
         }
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
 
         return $this;
     }

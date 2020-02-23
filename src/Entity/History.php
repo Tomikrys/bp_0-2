@@ -26,6 +26,12 @@ class History
      */
     private $json = [];
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="histories")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $user;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -56,6 +62,18 @@ class History
     public function setJson(array $json): self
     {
         $this->json = $json;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
 
         return $this;
     }
