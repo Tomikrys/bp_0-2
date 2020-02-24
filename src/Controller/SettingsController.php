@@ -278,15 +278,15 @@ class SettingsController extends AbstractController {
         $user = $this->getUser();
 
         $type = $entityManager->getRepository(Type::class)->find($id);
+        if (!$type) {
+            $type = new Type();
+            $type->setUser($user);
+        }
+
         if ($user != $type->getUser()) {
             //TODO Error
             $this->addFlash('warning', 'Neoprávněný přístup.');
             exit;
-        }
-
-
-        if (!$type) {
-            $type = new Type();
         }
 
         $type->setName($data->name);

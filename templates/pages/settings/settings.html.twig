@@ -370,7 +370,11 @@
 
     function importCSV(form) {
         let csv = form.csv.value;
+        while (csv.indexOf('\t') > -1) {
+            csv=csv.replace('\t','');
+        }
         alert(csv);
+        console.log(csv);
         fetch('/import', {
             method: 'POST', // or 'PUT'
             body: csv
