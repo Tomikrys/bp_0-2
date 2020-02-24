@@ -29,7 +29,9 @@ class HistoryController extends AbstractController {
      * @Route("/history", methods={"GET", "POST"})
      */
     public function index(){
-        $history = $this->getDoctrine()->getRepository(History::class)->findAll();
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        $user = $this->getUser();
+        $history = $this->getDoctrine()->getRepository(History::class)->findOneBy(['user' => $user]);
         $prepared_history = null;
         $i = 0;
         foreach ($history as $week) {
@@ -43,19 +45,22 @@ class HistoryController extends AbstractController {
      * @Route("/history/add", methods={"GET", "POST"})
      */
     public function add() {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         // TODO dod2lat a6 bude klit. :)
         $json = file_get_contents('php://input');
         $data = json_decode ($json);
-        dump($json);
-        dump($data);
+        //dump($json);
+        //dump($data);
         $history = new History();
         $history->setDateFrom($data->date);
         $date = new DateTime();
-        dump($data->date);
-        dump($data->json);
-        dump(json_encode($data->json));
+        //dump($data->date);
+        //dump($data->json);
+        //dump(json_encode($data->json));
         $history->setJson(json_encode($data->json));
-        dump($history);
+        //dump($history);
+
+        $history->setUser($this->getUser());
 
         return new Response();
     }

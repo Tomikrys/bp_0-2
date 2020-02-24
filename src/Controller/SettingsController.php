@@ -19,49 +19,52 @@ use Symfony\Component\Routing\Annotation\Route;
  * @package App\Controller
  */
 class SettingsController extends AbstractController {
-
-    public function default_settings() {
-        $settings = new Settings();
-        $days = [["Pondělí", "Monday"], ["Úterý", "Tuesday"], ["Středa", "Wednesday"], ["Čtvrtek", "Thursday"], ["Pátek", "Friday"]];
-        $meals = ["Polévka", "Masové", "Vegetariánské"];
-        $settings->setDays($days);
-        $settings->setMeals($meals);
-        $this->getDoctrine()->getManager()->persist($settings);
-        $this->getDoctrine()->getManager()->flush();
-
-//        $types = ["polévka", "jídlo"];
-//        foreach ($types as $type) {
-//            $new_type = new Type();
-//            $new_type->setName($type);
-//            $this->getDoctrine()->getManager()->persist($new_type);
-//            $this->getDoctrine()->getManager()->flush();
-//        }
-//
-//        $tags = ["vege", "spicy", "beef", "lamb", "shrink"];
-//        foreach ($tags as $tag) {
-//            $new_tag = new Tag();
-//            $new_tag->setName($tag);
-//            $this->getDoctrine()->getManager()->persist($new_tag);
-//            $this->getDoctrine()->getManager()->flush();
-//        }
-    }
-
     /**
      * @Route("/settings/initialize", methods={"GET", "POST"})
      */
-    public function  initialize() {
-        $this->default_settings();
+    public function default_settings() {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        $settings = new Settings();
+        $days = [["Pondělí", "Monday"], ["Úterý", "Tuesday"], ["Středa", "Wednesday"], ["Čtvrtek", "Thursday"], ["Pátek", "Friday"]];
+        $meals = ["Polévka", "Hlavní chod"];
+        $settings->setDays($days);
+        $settings->setMeals($meals);
+        $settings->setUser($this->getUser());
+        $this->getDoctrine()->getManager()->persist($settings);
+        $this->getDoctrine()->getManager()->flush();
+
+        $types = ["polévka", "jídlo", "salát"];
+        foreach ($types as $type) {
+            $new_type = new Type();
+            $new_type->setName($type);
+            $new_type->setUser($this->getUser());
+            $this->getDoctrine()->getManager()->persist($new_type);
+            $this->getDoctrine()->getManager()->flush();
+        }
+
+        $tags = ["vege", "spicy", "beef", "lamb", "shrink"];
+        foreach ($tags as $tag) {
+            $new_tag = new Tag();
+            $new_tag->setName($tag);
+            $new_tag->setUser($this->getUser());
+            $this->getDoctrine()->getManager()->persist($new_tag);
+            $this->getDoctrine()->getManager()->flush();
+        }
+        return new Response();
     }
+
 
     /**
      * @Route("/settings", name="/settings", methods={"GET", "POST"})
      */
     public function index(){
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        $user = $this->getUser();
         // naplnění struktury pro výpis tabulky
-        $settings = $this->getDoctrine()->getRepository(Settings::class)->find(1);
-        $types = $this->getDoctrine()->getRepository(Type::class)->findAll();
-        $tags = $this->getDoctrine()->getRepository(Tag::class)->findAll();
-        $templates = $this->getDoctrine()->getRepository(Template::class)->findAll();
+        $settings = $this->getDoctrine()->getRepository(Settings::class)->findOneBy(['user' => $user]);
+        $types = $this->getDoctrine()->getRepository(Type::class)->findBy(['user' => $user]);
+        $tags = $this->getDoctrine()->getRepository(Tag::class)->findBy(['user' => $user]);
+        $templates = $this->getDoctrine()->getRepository(Template::class)->findBy(['user' => $user]);
 //        dump($templates);
 //        exit;
 
@@ -74,11 +77,14 @@ class SettingsController extends AbstractController {
      * @Route("/settings/save/days", methods={"GET", "POST"})
      */
     public function save_days() {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        $user = $this->getUser();
         // TODO nemuye byt 2
-        $settings = $this->getDoctrine()->getRepository(Settings::class)->find(1);
+        $settings = $this->getDoctrine()->getRepository(Settings::class)->findOneBy(['user' => $user]);
         $json = file_get_contents('php://input');
         $days = json_decode ($json);
         $settings->setDays($days);
+
         $this->getDoctrine()->getManager()->persist($settings);
         $this->getDoctrine()->getManager()->flush();
         $this->addFlash('success', 'Dny byly upraveny.');
@@ -92,8 +98,10 @@ class SettingsController extends AbstractController {
      * @Route("/settings/save/meals", methods={"GET", "POST"})
      */
     public function save_meals() {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        $user = $this->getUser();
         // TODO nemuye byt 2
-        $settings = $this->getDoctrine()->getRepository(Settings::class)->find(1);
+        $settings = $this->getDoctrine()->getRepository(Settings::class)->findOneBy(['user' => $user]);
         $json = file_get_contents('php://input');
         $meals = json_decode ($json);
         $settings->setMeals($meals);
@@ -112,7 +120,14 @@ class SettingsController extends AbstractController {
      * @return Response
      */
     public function delete_type(Request $request, $id) {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        $user = $this->getUser();
         $type = $this->getDoctrine()->getRepository(Type::class)->find($id);
+        if ($user != $type->getUser()) {
+            //TODO Error
+            $this->addFlash('warning', 'Neoprávněný přístup.');
+            exit;
+        }
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->remove($type);
         $entityManager->flush();
@@ -129,7 +144,14 @@ class SettingsController extends AbstractController {
      * @return Response
      */
     public function delete_template(Request $request, $id) {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        $user = $this->getUser();
         $template = $this->getDoctrine()->getRepository(Template::class)->find($id);
+        if ($user != $template->getUser()) {
+            //TODO Error
+            $this->addFlash('warning', 'Neoprávněný přístup.');
+            exit;
+        }
         $entityManager = $this->getDoctrine()->getManager();
         $filesystem = new Filesystem();
         //$filesystem->remove(['symlink', '/path/to/directory', 'activity.log']);
@@ -149,7 +171,14 @@ class SettingsController extends AbstractController {
      * @return Response
      */
     public function delete_tag(Request $request, $id) {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        $user = $this->getUser();
         $type = $this->getDoctrine()->getRepository(Tag::class)->find($id);
+        if ($user != $type->getUser()) {
+            //TODO Error
+            $this->addFlash('warning', 'Neoprávněný přístup.');
+            exit;
+        }
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->remove($type);
         $entityManager->flush();
@@ -168,7 +197,14 @@ class SettingsController extends AbstractController {
 
         $id =  $data->id;
         $entityManager = $this->getDoctrine()->getManager();
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        $user = $this->getUser();
         $tag = $entityManager->getRepository(Tag::class)->find($id);
+        if ($user != $tag->getUser()) {
+            //TODO Error
+            $this->addFlash('warning', 'Neoprávněný přístup.');
+            exit;
+        }
 
         if (!$tag) {
             $tag = new Tag();
@@ -194,7 +230,14 @@ class SettingsController extends AbstractController {
 
         $id =  $data->id;
         $entityManager = $this->getDoctrine()->getManager();
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        $user = $this->getUser();
         $template = $entityManager->getRepository(Template::class)->find($id);
+        if ($user != $template->getUser()) {
+            //TODO Error
+            $this->addFlash('warning', 'Neoprávněný přístup.');
+            exit;
+        }
 
         if (!$template) {
             $template = new Template();
@@ -220,7 +263,17 @@ class SettingsController extends AbstractController {
 
         $id =  $data->id;
         $entityManager = $this->getDoctrine()->getManager();
+
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        $user = $this->getUser();
+
         $type = $entityManager->getRepository(Type::class)->find($id);
+        if ($user != $type->getUser()) {
+            //TODO Error
+            $this->addFlash('warning', 'Neoprávněný přístup.');
+            exit;
+        }
+
 
         if (!$type) {
             $type = new Type();

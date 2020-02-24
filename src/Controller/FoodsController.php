@@ -147,6 +147,7 @@ class FoodsController extends AbstractController {
      * @Route("/foods/add", methods={"POST"})
      */
     public function addTableFood(Request $request) {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $json = file_get_contents('php://input');
         $data = json_decode ($json);
 
@@ -154,6 +155,7 @@ class FoodsController extends AbstractController {
         $entityManager = $this->getDoctrine()->getManager();
 
         $this->fillUpFood($data, $food);
+        $food->setUser($this->getUser());
         $this->foodRepository->save($food);
         $this->addFlash('success', 'Jídlo bylo přidáno.');
 
@@ -275,6 +277,7 @@ class FoodsController extends AbstractController {
      * @Route("/foods", methods={"GET", "POST"})
      */
     public function index(Request $request) : Response {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $food = new Food();
         $formadd = $this->make_me_form($food, $request);
         $formaddtag = $this->make_addtag_form($request);

@@ -82,6 +82,7 @@ class UploadController extends AbstractController {
      * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function index(Request $request, string $uploadDir, FileUploader $uploader, LoggerInterface $logger) {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $token = $request->get("token");
 
         if (!$this->isCsrfTokenValid('upload', $token))
@@ -104,7 +105,7 @@ class UploadController extends AbstractController {
 
 
         $file_fullname = $file->getClientOriginalName();
-        $url = $uploadDir . "/" . $file_fullname;
+        $url = $uploadDir . "/" . $this->getUser()->getCleanUsername() . "/" . $file_fullname;
 
         $filename = substr($file_fullname, 0, strrpos($file_fullname, '.'));
         $extension = substr($file_fullname, strrpos($file_fullname, '.'));
@@ -152,6 +153,7 @@ class UploadController extends AbstractController {
             $templatename .= "-". $i;
         }
         $template->setName($templatename);
+        $template->setUser($this->getUser());
 
         $this->templateRepository->save($template);
 

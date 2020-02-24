@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Settings;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
@@ -59,6 +60,17 @@ class SecurityController extends AbstractController
         return $this->render('security/login.html.twig', ['last_username' => $lastUsername, 'error' => $error]);
     }
 
+    public function default_settings($user) {
+        $settings = new Settings();
+        $days = [];
+        $meals = [];
+        $settings->setDays($days);
+        $settings->setMeals($meals);
+        $settings->setUser($user);
+        $this->getDoctrine()->getManager()->persist($settings);
+        $this->getDoctrine()->getManager()->flush();
+    }
+
     /**
      * @Route("/register", name="register")
      * @param AuthenticationUtils $authenticationUtils
@@ -101,6 +113,7 @@ class SecurityController extends AbstractController
                     $this->addFlash('error', 'Uživatel s emailovou adresou \'' . $user->getEmail() . '\' již existuje.');
                     return $this->redirect($this->generateUrl('register'));
                 }
+                $this->default_settings($user);
                 $this->addFlash('success', 'Uživatel \'' . $user->getEmail() . '\' byl úspěšně přidán.');
                 $this->addFlash('info', 'Prosím, přihlaste se.');
                 return $this->redirect($this->generateUrl('app_login'));
@@ -108,7 +121,6 @@ class SecurityController extends AbstractController
                 $this->addFlash('error', 'Uživatel nemohl být přidán, špatně vyplněný formulář.');
             }
         }
-
 
         return $this->render('security/register.html.twig', array('last_username' => $lastUsername, 'formadd' => $formadd->createView()));
     }
