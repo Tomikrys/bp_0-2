@@ -79,11 +79,16 @@ class SettingsController extends AbstractController {
     public function save_days() {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $user = $this->getUser();
-        // TODO nemuye byt 2
         $settings = $this->getDoctrine()->getRepository(Settings::class)->findOneBy(['user' => $user]);
+        if (!$settings) {
+            //TODO Error
+            $this->addFlash('warning', 'Neoprávněný přístup.');
+            exit;
+        }
         $json = file_get_contents('php://input');
         $days = json_decode ($json);
         $settings->setDays($days);
+        dump($days);
 
         $this->getDoctrine()->getManager()->persist($settings);
         $this->getDoctrine()->getManager()->flush();
@@ -102,6 +107,11 @@ class SettingsController extends AbstractController {
         $user = $this->getUser();
         // TODO nemuye byt 2
         $settings = $this->getDoctrine()->getRepository(Settings::class)->findOneBy(['user' => $user]);
+        if (!$settings) {
+            //TODO Error
+            $this->addFlash('warning', 'Neoprávněný přístup.');
+            exit;
+        }
         $json = file_get_contents('php://input');
         $meals = json_decode ($json);
         $settings->setMeals($meals);

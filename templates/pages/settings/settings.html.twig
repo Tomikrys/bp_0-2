@@ -8,7 +8,7 @@
 {% block body %}
     <h1>Nastavení</h1>
     <h2>Správa šablon</h2>
-    <table id="days_menu" class="table table-hover table-sm table-bordered nonfluid">
+    <table id="template" class="table table-hover table-sm table-bordered nonfluid">
     <thead class="thead-dark">
     <tr>
         <th>Název</th>
@@ -268,6 +268,7 @@
     function delete_row(param) {
         let to_delete = param.parentNode;
         to_delete.parentNode.removeChild(to_delete);
+        console.log(to_delete);
     }
 
     function save_menu_days() {
@@ -355,8 +356,10 @@
             cell.classList.add("content");
             cell.attributes.setNamedItem(editable);
         }
-        cell.innerHTML = '<td onclick=\"delete_row(this)\" class=\"cursor_pointer\" style=\"text-align:center\">x</td>';
-        cell.attributes.removeNamedItem("contenteditable");
+         cell.outerHTML = '<td onclick=\"delete_row(this)\" class=\"cursor_pointer\" style=\"text-align:center\"><i class="fas fa-times"></i></td>';
+        // cell.classList.remove("content");
+        // cell.innerHTML = '<i class="fas fa-times"></i>';
+        // cell.attributes.removeNamedItem("contenteditable");
     }
 
     function saveMeals() {
