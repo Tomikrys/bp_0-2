@@ -102,6 +102,11 @@ class User implements UserInterface
         return (string) $this->email;
     }
 
+    public function getCleanUsername(): string
+    {
+        return (string) str_replace(array('.', '@'), "",  $this->getUsername());
+    }
+
     /**
      * @see UserInterface
      */
