@@ -35,6 +35,7 @@ class MenuController extends AbstractController {
         $type = null;
         foreach ($types as $type) {
             $foods_of_type = $type->getFoods();
+            // TODO useless??
             foreach ($foods_of_type as $food) {
                 if ($food->getUser() != $user) {
                     break;
