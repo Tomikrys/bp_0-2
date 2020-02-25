@@ -8,6 +8,8 @@ use App\Service\FileUploader;
 use Aws\Credentials\CredentialProvider;
 use Aws\Exception\AwsException;
 use Aws\S3\S3Client;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 use http\Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -36,11 +38,14 @@ class UploadController extends AbstractController {
      * @Route("/aws", name="aws")
      */
     public function try() {
-        $path = "./words/template.docx";
+        $path = "./words/zomato.docx";
         $this->aws_upload($path);
+        return new Response();
     }
 
     public function aws_upload($path){
+        putenv("AWS_ACCESS_KEY_ID=AKIAVEKPVHFC4QT6CW4Q");
+        putenv("AWS_SECRET_ACCESS_KEY=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");
         try {
             $s3Client = new S3Client([
                 'region' => 'us-east-1',
@@ -68,21 +73,27 @@ class UploadController extends AbstractController {
 //        echo $upload->get('ObjectURL');
     }
 
+    function does_url_exists($url) {
+        return @fopen($url, 'r') ? true : false;
+    }
+
     /**
      * @Route("/doUpload", name="upload")
      * @param Request $request
      * @param string $uploadDir
      * @param FileUploader $uploader
      * @param LoggerInterface $logger
+     * @param null $clean_username
      * @return Response
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws ORMException
+     * @throws OptimisticLockException
      */
     public function index(Request $request, string $uploadDir, FileUploader $uploader, LoggerInterface $logger) {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        $clean_username = $this->getUser()->getCleanUsername();
         $token = $request->get("token");
 
-        if (!$this->isCsrfTokenValid('upload', $token))
-        {
+        if (!$this->isCsrfTokenValid('upload', $token)){
             $logger->info("CSRF failure");
 
             $this->addFlash('error', 'Nepovolená operace.');
@@ -92,24 +103,26 @@ class UploadController extends AbstractController {
 
         $file = $request->files->get('myfile');
 
-        if (empty($file))
-        {
+        if (empty($file)){
             $this->addFlash('error', 'Nebyl zadán soubor.');
 //            return new Response("No file specified",
 //                Response::HTTP_UNPROCESSABLE_ENTITY, ['content-type' => 'text/plain']);
         }
 
-
         $file_fullname = $file->getClientOriginalName();
-        $url = $uploadDir . "/" . $file_fullname;
+        $url = $uploadDir . "/" . $clean_username . "/" . $file_fullname;
 
         $filename = substr($file_fullname, 0, strrpos($file_fullname, '.'));
         $extension = substr($file_fullname, strrpos($file_fullname, '.'));
+
+        $AWSpath = "https://menickajednodusecz.s3.amazonaws.com/words/";
+
+        $AWSurl = $AWSpath . $clean_username . "/" . $file_fullname;
         $i = 0;
-        while (file_exists($url)) {
+        while ($this->does_url_exists($AWSurl)) {
             $i++;
             $filename_dubler = $filename . "-" . $i . $extension;
-            $url = $uploadDir . "/" . $filename_dubler;
+            $AWSurl = $AWSpath . $clean_username . "/" . $filename_dubler;
         }
 
         if ($i) {
@@ -118,10 +131,11 @@ class UploadController extends AbstractController {
             $filename .= $extension;
         }
 
-        $uploader->upload($uploadDir, $file, $filename);
+
+        $uploader->upload($uploadDir. "/" . $clean_username, $file, $filename);
+        $path = './words/' . $clean_username . "/" . $filename;
         try {
-            $this->aws_upload($url);
-            echo $url;
+            $this->aws_upload($path);
         } catch (Exception $e) {
 
         }
@@ -136,7 +150,7 @@ class UploadController extends AbstractController {
         $templatename = $request->request->get('template_name');
         $template = new Template();
 
-        $template->setPath(basename($url));
+        $template->setPath(basename($AWSurl));
 
         $i = 0;
         $templatename_dubler = $templatename;
@@ -148,6 +162,7 @@ class UploadController extends AbstractController {
             $templatename .= "-". $i;
         }
         $template->setName($templatename);
+        $template->setUser($this->getUser());
 
         $this->templateRepository->save($template);
 

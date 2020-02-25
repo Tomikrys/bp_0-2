@@ -24,26 +24,31 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class MenuController extends AbstractController {
     /**
-     * @Route("/menu", methods={"GET", "POST"})
+     * @Route("/menu", name="menu", methods={"GET", "POST"})
      */
     public function index(){
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        $user = $this->getUser();
         // naplnění struktury pro výpis tabulky
-        $types = $this->getDoctrine()->getRepository(Type::class)->findAll();
+        $types = $this->getDoctrine()->getRepository(Type::class)->findBy(['user' => $user]);
         $foods = null;
         $type = null;
         foreach ($types as $type) {
             $foods_of_type = $type->getFoods();
-//            foreach ($foods_of_type as $food) {
-//                dump($food);
-//            }
+            // TODO useless??
+            foreach ($foods_of_type as $food) {
+                if ($food->getUser() != $user) {
+                    break;
+                }
+            }
             $foods[$type->getName()] = $foods_of_type;
         }
         //exit;
         // TODO nemůže bejt 1 žejo
-        $settings = $this->getDoctrine()->getRepository(Settings::class)->find(1);
-        $tags = $this->getDoctrine()->getRepository(Tag::class)->findAll();
+        $settings = $this->getDoctrine()->getRepository(Settings::class)->findOneBy(['user' => $user]);
+        $tags = $this->getDoctrine()->getRepository(Tag::class)->findBy(['user' => $user]);
 
-        $templates = $this->getDoctrine()->getRepository(Template::class)->findAll();
+        $templates = $this->getDoctrine()->getRepository(Template::class)->findBy(['user' => $user]);
 
         return $this->render('pages/menu/menu.html.twig', array('foods' => $foods, 'settings' => $settings, 'tags' => $tags,
             'types' => $types, 'templates' => $templates));
@@ -59,7 +64,7 @@ class MenuController extends AbstractController {
      */
     public function export_as_word($menu, $template_url){
         $template_for_url = new Template();
-        $template = new TemplateProcessor($template_for_url->getRealPath($template_url));
+        $template = new TemplateProcessor($template_for_url->getRealPath($template_url, $this->getUser()));
 //        $days = ["Pondělí", "Úterý", "Středa"];
 //        $mealsTypes = ["Polévka", "Hlavní chod"];
 //        $meals = ["pivo", "jidlo"];
@@ -226,8 +231,4 @@ class MenuController extends AbstractController {
 //
 //        return $this->render('pages/menu/export.html.twig', array('menu' => $menu, "generate" => $doGenerate));
 //    }
-
-
-
-
 }

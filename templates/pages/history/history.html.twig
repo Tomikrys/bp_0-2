@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+{% block title %}Historie menu{% endblock %}
+{% block stylesheets %}
+
+{% endblock %}
+{% block body %}
+    <h1>Historie menu</h1>
+    {% for week in history %}
+        <a href="{{ week.url }}" style="color: black">
+            <div class="mb-3">
+                <h4 class="history_date" style="width: 100%">{{ week.date }}<i onclick="delete_history({{ week.id }})" class="nolink fa fa-trash" style="float: right" aria-hidden="true"></i></h4>
+                <table class="table">
+                    <tr>
+                        {% for day in week.table.days %}
+                                    <th>
+                                        {{ day }}
+                                    </th>
+                        {% endfor %}
+                    </tr>
+                    {% for meals in week.table.meals %}
+                        <tr>
+                            {% for meal in meals %}
+                                {% if meal != null %}
+                                    {% for meal2 in meal %}
+                                        <td>
+                                            {{ meal2.name }}
+                                        </td>
+                                    {% endfor %}
+                                {% else %}
+                                    <td></td>
+                                {% endif %}
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </table>
+
+            </div>
+        </a>
+    {% endfor %}
+{% endblock %}
+
+{% block javascripts %}
+<script>
+    $(".nolink").click(function(e){
+        e.preventDefault();
+    });
+    function delete_history(id) {
+        $("#loading").modal("show");
+        if (confirm('Opravdu?')) {
+            fetch(`/history/delete/${id}`, {
+                method: 'DELETE'
+            }).then(res => window.location.reload());
+        }
+        $("#loading").modal("hide");
+    }
+</script>
+{% endblock %}

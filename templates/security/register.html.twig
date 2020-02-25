@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Registrace{% endblock %}
+
+{% block body %}
+    {% if app.user %}
+        <div class="mb-3">
+            Jste přihlášeni jako {{ app.user.username }}, <a href="{{ path('app_logout') }}">Odhlásit</a>
+        </div>
+    {% else %}
+        <h1 class="h3 mb-3 font-weight-normal">Registrute se</h1>
+        {{ form_start(formadd) }}
+        {{ form_widget(formadd) }}
+        {{ form_end(formadd) }}
+        <p>Pokud již máte účet, můžete se <a href="/login">přihlásit zde</a>.</p>
+    {% endif %}
+{% endblock %}

@@ -8,7 +8,7 @@
 {% block body %}
     <h1>Nastavení</h1>
     <h2>Správa šablon</h2>
-    <table id="days_menu" class="table table-hover table-sm table-bordered nonfluid">
+    <table id="template" class="table table-hover table-sm table-bordered nonfluid">
     <thead class="thead-dark">
     <tr>
         <th>Název</th>
@@ -58,7 +58,7 @@
             <tr class="content_row">
                 <td class="content" contenteditable="true">{{ day[0] }}</td>
                 <td class="content" contenteditable="true">{{ day[1] }}</td>
-                <td onclick="delete_row(this)" class="cursor_pointer" style="text-align:center">x</td>
+                <td onclick="delete_row(this)" class="cursor_pointer" style="text-align:center"><i class="fas fa-times"></i></td>
             </tr>
         {% endfor %}
         </tbody>
@@ -78,7 +78,7 @@
         {% for meal in settings.meals %}
         <tr>
             <td class="content" contenteditable="true">{{ meal }}</td>
-            <td onclick="delete_row(this)" class="cursor_pointer" style="text-align:center">x</td>
+            <td onclick="delete_row(this)" class="cursor_pointer" style="text-align:center"><i class="fas fa-times"></i></td>
         </tr>
         {% endfor %}
         </tbody>
@@ -268,6 +268,7 @@
     function delete_row(param) {
         let to_delete = param.parentNode;
         to_delete.parentNode.removeChild(to_delete);
+        console.log(to_delete);
     }
 
     function save_menu_days() {
@@ -355,8 +356,10 @@
             cell.classList.add("content");
             cell.attributes.setNamedItem(editable);
         }
-        cell.innerHTML = '<td onclick=\"delete_row(this)\" class=\"cursor_pointer\" style=\"text-align:center\">x</td>';
-        cell.attributes.removeNamedItem("contenteditable");
+         cell.outerHTML = '<td onclick=\"delete_row(this)\" class=\"cursor_pointer\" style=\"text-align:center\"><i class="fas fa-times"></i></td>';
+        // cell.classList.remove("content");
+        // cell.innerHTML = '<i class="fas fa-times"></i>';
+        // cell.attributes.removeNamedItem("contenteditable");
     }
 
     function saveMeals() {
@@ -367,7 +370,11 @@
 
     function importCSV(form) {
         let csv = form.csv.value;
+        while (csv.indexOf('\t') > -1) {
+            csv=csv.replace('\t','');
+        }
         alert(csv);
+        console.log(csv);
         fetch('/import', {
             method: 'POST', // or 'PUT'
             body: csv

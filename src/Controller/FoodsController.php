@@ -147,6 +147,7 @@ class FoodsController extends AbstractController {
      * @Route("/foods/add", methods={"POST"})
      */
     public function addTableFood(Request $request) {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $json = file_get_contents('php://input');
         $data = json_decode ($json);
 
@@ -154,6 +155,7 @@ class FoodsController extends AbstractController {
         $entityManager = $this->getDoctrine()->getManager();
 
         $this->fillUpFood($data, $food);
+        $food->setUser($this->getUser());
         $this->foodRepository->save($food);
         $this->addFlash('success', 'Jídlo bylo přidáno.');
 
@@ -275,19 +277,21 @@ class FoodsController extends AbstractController {
      * @Route("/foods", methods={"GET", "POST"})
      */
     public function index(Request $request) : Response {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        $user = $this->getUser();
         $food = new Food();
         $formadd = $this->make_me_form($food, $request);
         $formaddtag = $this->make_addtag_form($request);
 
         // získání seznamu typů z databáze
-        $types = $this->getDoctrine()->getRepository(Type::class)->findAll();
+        $types = $this->getDoctrine()->getRepository(Type::class)->findBy(['user' => $user]);
 
         // promněnné pro výpis
         $table['name'] = "foods";
         $table['headers'] = array("Název", "Popis", "Cena", "Tagy", "Typ");
 
         // získání seznamu jídel
-        $foods = $this->getDoctrine()->getRepository(Food::class)->findAll();
+        $foods = $this->getDoctrine()->getRepository(Food::class)->findBy(['user' => $user]);
 
         return $this->render('pages/foods/foods.html.twig', array('formadd' => $formadd->createView(),
             //'table' => $table, 'types' => $types, 'tags' => $tags, 'foods' => $foods));
@@ -302,6 +306,8 @@ class FoodsController extends AbstractController {
      * @throws OptimisticLockException
      */
     public function import_csv(Request $request) : Response {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        $user = $this->getUser();
         $entityManager = $this->getDoctrine()->getManager();
         // Název|Popis|Cena|Typ|Tag|Tag
         $import = $request->getContent();
@@ -310,7 +316,9 @@ class FoodsController extends AbstractController {
         $line_separator = "\r\n";
         $line = strtok($import, $line_separator);
         while ($line !== false) {
+
             $food = new Food();
+            $food->setUser($user);
 
             // rozdeleni na zaznamy
             $arr = explode('|', $line);
@@ -330,25 +338,27 @@ class FoodsController extends AbstractController {
                         break;
                     //typ
                     case 3:
-                        $type = $this->getDoctrine()->getRepository(Type::class)->findBy(array('name' => $word));
+                        $type = $this->getDoctrine()->getRepository(Type::class)->findOneBy(array('user' => $user, 'name' => $word));
                         if ($type == []) {
                             $type = new Type();
                             $type->setName($word);
+                            $type->setUser($this->getUser());
                             $this->typeRepository->save($type);
-                            $type = $this->getDoctrine()->getRepository(Type::class)->findBy(array('name' => $word));
+                            $type = $this->getDoctrine()->getRepository(Type::class)->findOneBy(array('user' => $user, 'name' => $word));
                         }
-                        $food->setType($type[0]);
+                        $food->setType($type);
                         break;
                     //tagy
                     default:
-                        $tag = $this->getDoctrine()->getRepository(Tag::class)->findBy(array('name' => $word));
+                        $tag = $this->getDoctrine()->getRepository(Tag::class)->findOneBy(array('user' => $user, 'name' => $word));
                         if ($tag == []) {
                             $tag = new Tag();
                             $tag->setName($word);
+                            $tag->setUser($this->getUser());
                             $this->tagRepository->save($tag);
-                            $tag = $this->getDoctrine()->getRepository(Tag::class)->findBy(array('name' => $word));
+                            $tag = $this->getDoctrine()->getRepository(Tag::class)->findOneBy(array('user' => $user, 'name' => $word));
                         }
-                        $food->addTag($tag[0]);
+                        $food->addTag($tag);
                         break;
                 }
             }

@@ -26,6 +26,12 @@ class Template
      */
     private $path;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="templates")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $user;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -57,18 +63,35 @@ class Template
         }
     }
 
-    public function getRealPath($url = null): ?string {
-        $path = "../public/words/";
+    public function getRealPath($url = null, $user = null): ?string {
+        if ($user == null) {
+            $user = $this->getUser();
+        }
+        $user = $user->getCleanUsername();
+        $path = "https://menickajednodusecz.s3.amazonaws.com/words/";
+        //$path = "../public/words/";
         if ($url) {
-            return $path . $url;
+            return $path . $user . '/' . $url;
         } else {
-            return $path . $this->getPath();
+            return $path . $user . '/' . $this->getPath();
         }
     }
 
     public function setPath(string $path): self
     {
         $this->path = $path;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
 
         return $this;
     }
