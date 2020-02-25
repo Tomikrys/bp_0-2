@@ -85,8 +85,7 @@ class UploadController extends AbstractController {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $token = $request->get("token");
 
-        if (!$this->isCsrfTokenValid('upload', $token))
-        {
+        if (!$this->isCsrfTokenValid('upload', $token)){
             $logger->info("CSRF failure");
 
             $this->addFlash('error', 'Nepovolená operace.');
@@ -96,35 +95,34 @@ class UploadController extends AbstractController {
 
         $file = $request->files->get('myfile');
 
-        if (empty($file))
-        {
+        if (empty($file)){
             $this->addFlash('error', 'Nebyl zadán soubor.');
 //            return new Response("No file specified",
 //                Response::HTTP_UNPROCESSABLE_ENTITY, ['content-type' => 'text/plain']);
         }
-
 
         $file_fullname = $file->getClientOriginalName();
         $url = $uploadDir . "/" . $this->getUser()->getCleanUsername() . "/" . $file_fullname;
 
         $filename = substr($file_fullname, 0, strrpos($file_fullname, '.'));
         $extension = substr($file_fullname, strrpos($file_fullname, '.'));
-        $i = 0;
-        while (file_exists($url)) {
-            $i++;
-            $filename_dubler = $filename . "-" . $i . $extension;
-            $url = $uploadDir . "/" . $filename_dubler;
-        }
 
-        if ($i) {
-            $filename .= "-" . $i . $extension;
-        } else {
-            $filename .= $extension;
-        }
+//        $i = 0;
+//        while (file_exists($url)) {
+//            $i++;
+//            $filename_dubler = $filename . "-" . $i . $extension;
+//            $url = $uploadDir . "/" . $filename_dubler;
+//        }
 
-        $uploader->upload($uploadDir, $file, $filename);
+//        if ($i) {
+//            $filename .= "-" . $i . $extension;
+//        } else {
+//            $filename .= $extension;
+//        }
+
+        $uploader->upload($uploadDir. "/" . $this->getUser()->getCleanUsername(), $file, $file_fullname);
         // todo aws
-        $path = './words/' . $filename;
+        $path = './words/' . $this->getUser()->getCleanUsername() . "/" . $file_fullname;
         try {
             $this->aws_upload($path);
         } catch (Exception $e) {
