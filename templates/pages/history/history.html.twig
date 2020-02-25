@@ -5,11 +5,35 @@
 {% endblock %}
 {% block body %}
     <h1>Historie menu</h1>
-    <a href="http://localhost:8000/menu?template=pepa&json=%5B%7B%22day%22%3A%22Pond%C4%9Bl%C3%AD%22%2C%22meals%22%3A%5B%7B%22type%22%3A%22Pol%C3%A9vka%22%2C%22meals%22%3A%5B%5D%7D%2C%7B%22type%22%3A%22Masov%C3%A9%22%2C%22meals%22%3A%5B%5D%7D%2C%7B%22type%22%3A%22Vegetari%C3%A1nsk%C3%A9%22%2C%22meals%22%3A%5B%5D%7D%5D%2C%22description%22%3A%22Monday%22%7D%2C%7B%22day%22%3A%22%C3%9Ater%C3%BD%22%2C%22meals%22%3A%5B%7B%22type%22%3A%22Pol%C3%A9vka%22%2C%22meals%22%3A%5B%5D%7D%2C%7B%22type%22%3A%22Masov%C3%A9%22%2C%22meals%22%3A%5B%5D%7D%2C%7B%22type%22%3A%22Vegetari%C3%A1nsk%C3%A9%22%2C%22meals%22%3A%5B%5D%7D%5D%2C%22description%22%3A%22Tuesday%22%7D%2C%7B%22day%22%3A%22St%C5%99eda%22%2C%22meals%22%3A%5B%7B%22type%22%3A%22Pol%C3%A9vka%22%2C%22meals%22%3A%5B%5D%7D%2C%7B%22type%22%3A%22Masov%C3%A9%22%2C%22meals%22%3A%5B%5D%7D%2C%7B%22type%22%3A%22Vegetari%C3%A1nsk%C3%A9%22%2C%22meals%22%3A%5B%5D%7D%5D%2C%22description%22%3A%22Wednesday%22%7D%2C%7B%22day%22%3A%22%C4%8Ctvrtek%22%2C%22meals%22%3A%5B%7B%22type%22%3A%22Pol%C3%A9vka%22%2C%22meals%22%3A%5B%5D%7D%2C%7B%22type%22%3A%22Masov%C3%A9%22%2C%22meals%22%3A%5B%5D%7D%2C%7B%22type%22%3A%22Vegetari%C3%A1nsk%C3%A9%22%2C%22meals%22%3A%5B%5D%7D%5D%2C%22description%22%3A%22Thursday%22%7D%2C%7B%22day%22%3A%22P%C3%A1tek%22%2C%22meals%22%3A%5B%7B%22type%22%3A%22Pol%C3%A9vka%22%2C%22meals%22%3A%5B%5D%7D%2C%7B%22type%22%3A%22Masov%C3%A9%22%2C%22meals%22%3A%5B%5D%7D%2C%7B%22type%22%3A%22Vegetari%C3%A1nsk%C3%A9%22%2C%22meals%22%3A%5B%5D%7D%5D%2C%22description%22%3A%22Friday%22%7D%5D&foods=prdel">10. 3. 2020</a>
     {% for week in history %}
-        <a href="{{ week.url }}">
-            <div>
-                {{ week.date }}
+        <a href="{{ week.url }}" style="color: black">
+            <div class="mb-3">
+                <h4 class="history_date">{{ week.date }}</h4>
+                <table class="table">
+                    <tr>
+                        {% for day in week.table.days %}
+                                    <th>
+                                        {{ day }}
+                                    </th>
+                        {% endfor %}
+                    </tr>
+                    {% for meals in week.table.meals %}
+                        <tr>
+                            {% for meal in meals %}
+                                {% if meal != null %}
+                                    {% for meal2 in meal %}
+                                        <td>
+                                            {{ meal2.name }}
+                                        </td>
+                                    {% endfor %}
+                                {% else %}
+                                    <td></td>
+                                {% endif %}
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </table>
+
             </div>
         </a>
     {% endfor %}

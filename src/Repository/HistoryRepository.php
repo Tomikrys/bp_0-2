@@ -19,6 +19,11 @@ class HistoryRepository extends ServiceEntityRepository
         parent::__construct($registry, History::class);
     }
 
+    public function save(History $history): void {
+        $this->getEntityManager()->persist($history);
+        $this->getEntityManager()->flush($history);
+    }
+
     // /**
     //  * @return History[] Returns an array of History objects
     //  */
