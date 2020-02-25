@@ -18,6 +18,7 @@ use PhpOffice\PhpWord\TemplateProcessor;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -52,12 +53,15 @@ class HistoryController extends AbstractController {
         $i = 0;
         if ($history != null) {
             foreach ($history as $week) {
+                $prepared_history[$i]['id'] = $week->getId();
+                $prepared_history[$i]['sortdate'] = $week->getDateFrom();
                 $prepared_history[$i]['date'] = $week->getDateFromFormatted();
-                $prepared_history[$i]['url'] = '/menu?json=' . json_encode($week->getJson());
+                $prepared_history[$i]['url'] = '/menu?date=' . $week->getDateFromFormatted() . '&json=' . json_encode($week->getJson());
                 $prepared_history[$i]['table'] = $this->make_table_form_json($week->getJson());
                 $i++;
             }
         }
+        usort($prepared_history, function($a, $b) {return $a['sortdate']->getTimestamp() - $b['sortdate']->getTimestamp();});
         dump($prepared_history);
         return $this->render('pages/history/history.html.twig', array('history' => $prepared_history));
     }
@@ -157,5 +161,21 @@ class HistoryController extends AbstractController {
         }
         //dump($out);
         return $this->cleanArray($out);
+    }
+
+    /**
+     * @param Request $request
+     * @param $id
+     * @Route("/history/delete/{id}", methods={"DELETE"})
+     * @return Response
+     */
+    public function delete(Request $request, $id) {
+        $food = $this->getDoctrine()->getRepository(History::class)->find($id);
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->remove($food);
+        $entityManager->flush();
+        $this->addFlash('warning', 'Záznam byl smazán z historie.');
+        $response = new Response();
+        return $response;
     }
 }
