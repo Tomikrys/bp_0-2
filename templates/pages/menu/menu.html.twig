@@ -104,6 +104,7 @@
             color: #ccc;
         }
     </style>
+    <link id="bsdp-css" href="https://unpkg.com/bootstrap-datepicker@1.9.0/dist/css/bootstrap-datepicker3.min.css" rel="stylesheet">
 {% endblock %}
 {% block body %}
     <div class="menu-block">
@@ -166,6 +167,10 @@
 
             <div class="col col-right">
                 <h2>Jídelníček</h2>
+                <div class="form-group row">
+                    <label for="datepicker" class="col-form-label">Datum prvního dne menu</label>
+                    <input id="datepicker" type="text" class="col ml-2 form-control form-control-sm">
+                </div>
                 <div id="page-content">
                     <div id="menuList">
                     {% for day in settings.days %}
@@ -205,6 +210,8 @@
 {% endblock %}
 
 {% block javascripts %}
+    <script src="https://unpkg.com/bootstrap-datepicker@1.9.0/dist/js/bootstrap-datepicker.min.js"></script>
+    <script src="https://unpkg.com/bootstrap-datepicker@1.9.0/dist/locales/bootstrap-datepicker.cs.min.js" charset="UTF-8"></script>
 <script>
 
     function filterSearchDismiss() {
@@ -213,10 +220,53 @@
         food_finder.value = '';
     }
 
+    $('#datepicker').datepicker({
+        format: "dd. mm. yyyy",
+        weekStart: 1,
+        startDate: "-today",
+        language: "cs",
+        daysOfWeekHighlighted: "1",
+        calendarWeeks: true,
+        todayHighlight: true,
+        autoclose: true,
+        defaultViewDate: { year: 1977, month: 04, day: 25 }
+    });
+
+
+    function get_nearest_monday() {
+        let today = new Date();
+        while (today.getDay() !== 1) {
+            today.setDate(today.getDate() + 1);
+        }
+
+        let dd = today.getDate();
+        let mm = today.getMonth() + 1; //January is 0!
+
+        let yyyy = today.getFullYear();
+        if (dd < 10) {
+            dd = '0' + dd;
+        }
+        if (mm < 10) {
+            mm = '0' + mm;
+        }
+        return dd + '. ' + mm + '. ' + yyyy;
+    }
+
+    function get_date_separated($stringdate) {
+        let regexpNames =  /(?<dd>\d+). (?<mm>\d+). (?<yyyy>\d+)/mg;
+        let match = regexpNames.exec($stringdate);
+        return {dd: match.groups.dd, mm: match.groups.mm, yyyy: match.groups.yyyy}
+    }
+
+    document.getElementById('datepicker').value = get_nearest_monday();
+
     function saveMenu() {
         $("#loading").modal("show");
         update_url();
-        let date = new Date("11. 02. 2020");
+        console.log(document.getElementById('datepicker').value);
+        let date_values = get_date_separated(document.getElementById('datepicker').value);
+        let date = Date.parse(date_values.mm + '/' + date_values.dd + '/' + date_values.yyyy);
+        console.log(date);
         let data = {json: generate_json(), date: date};
         const response = fetch('/history/add', {
             method: 'POST', // or 'PUT'
