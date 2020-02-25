@@ -67,9 +67,8 @@ class SettingsController extends AbstractController {
         $templates = $this->getDoctrine()->getRepository(Template::class)->findBy(['user' => $user]);
 //        dump($templates);
 //        exit;
-
-
-        return $this->render('pages/settings/settings.html.twig', array('settings' => $settings, 'types' => $types, 'tags' => $tags, 'templates' => $templates));
+        return $this->render('pages/settings/settings.html.twig', array('settings' => $settings, 'types' => $types, 'tags' => $tags,
+            'templates' => $templates));
     }
 
     /**
