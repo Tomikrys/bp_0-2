@@ -284,6 +284,14 @@
     if (json != null) {
         update_menulist(JSON.parse(json))
     }
+    let date = url.searchParams.get('date');
+    if (date != null) {
+        update_date(date);
+    }
+
+    function update_date(date) {
+        document.getElementById('datepicker').value = date;
+    }
 
     function update_menulist(json) {
         let menulist = document.getElementById('menuList');
@@ -331,14 +339,6 @@
         url.searchParams.set('json', JSON.stringify(json));
         //TODO ječí to
         window.history.pushState('test', 'Title', url);
-    }
-
-    function get_url_template() {
-
-    }
-
-    function get_url_foods() {
-
     }
 
     let filter_tags = [];
