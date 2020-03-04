@@ -259,6 +259,7 @@
         console.log(document.getElementById('datepicker').value);
         let date_values = get_date_separated(document.getElementById('datepicker').value);
         let date = Date.parse(date_values.mm + '/' + date_values.dd + '/' + date_values.yyyy);
+        date += 3600000; // fix timezone to GMT
         console.log(date);
         let data = {json: generate_json(), date: date};
         const response = fetch('/history/add', {
