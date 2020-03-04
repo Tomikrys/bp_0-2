@@ -12,15 +12,12 @@
             margin: 2px;
         }
 
-        .food-header, .food-items-drop {
+        .food-header, .drop-container {
             margin-left: 5px;
         }
 
-        .food-items-drop:empty {
+        .drop-container {
             min-height: 30px;
-        }
-
-        .food-items-drop {
             border: 2px dashed #373A3C;
             border-radius: 5px;
             background-color: #F4F4F4;
@@ -112,7 +109,6 @@
             <div id="food-picker" class="col col-left">
                 <h1>Sestavení menu</h1>
                 <div class="btn-group" style="width: 100%">
-{#                    <input id="searchinput" type="search" class="form-control">#}
                     <input onkeyup="filterSearch(this.value);" class="form-control form-control-sm" type="text" placeholder="Vyhledávání..." id="food-finder">
                     <span onclick="filterSearchDismiss();" id="searchclear" class="glyphicon glyphicon-remove-circle"><i class="fas fa-times"></i></span>
                 </div>
@@ -142,11 +138,10 @@
                         <label class="custom-control-label" for="filterTagsMode">and</label>
                     </div>
                 </div>
-                <div id="foodList" class="menu-header delete-on-drop" ondrop="drop(event)" ondragover="allowDrop(event)" >
+                <div id="foodList" class="menu-header">
                     {% for type,foods in foods %}
-                        <div id="foodList_{{ type }}" data-filter="{{ type }}" class="food-list filter-type delete-on-drop"
-                             ondrop="drop(event)" ondragover="allowDrop(event)">
-                            <h2 id="{{ type }}" class="delete-on-drop">{{ type }}</h2>
+                        <div id="foodList_{{ type }}" data-filter="{{ type }}" class="food-list filter-type dragula get-container">
+                            <h2 id="{{ type }}">{{ type }}</h2>
                             {% for food in foods %}
                                 {# TODO bez toho prázdnýho možná no#}
                                 {% set tags = "[ \"\" " %}
@@ -154,9 +149,8 @@
                                     {% set tags = tags ~ ", \"" ~ tag.name ~ "\" "%}
                                 {% endfor %}
                                 {% set tags = tags ~ "]"%}
-                                <div class="meal card-header filter-tags original" id="meal{{ food.id }}" data-id="{{ food.id }}"
-                                     data-type="{{ type }}" data-tags="{{ tags }}" data-description="{{ food.description }}"
-                                     draggable="true" ondragstart="drag(event)">
+                                <div class="meal card-header filter-tags" id="meal{{ food.id }}" data-id="{{ food.id }}"
+                                     data-type="{{ type }}" data-tags="{{ tags }}" data-description="{{ food.description }}">
                                     {{ food.name }}, {{ food.price }}
                                 </div>
                             {% endfor %}
@@ -177,10 +171,10 @@
                         <div class="day">
                             <h3 class="day-name" data-description="{{ day[1] }}">{{ day[0] }}</h3>
                             {% for meal in settings.meals %}
-                                <h4 class="JSON-food-header food-header" data-type="{{ meal }}" ondrop="drop(event)"
-                                    ondragover="allowDrop(event)">{{ meal }}</h4>
-                                <div class="JSON-food-items food-items-drop" ondrop="drop(event)"
-                                     ondragover="allowDrop(event)"></div>
+                                <h4 class="JSON-food-header food-header" data-type="{{ meal }}"{# ondrop="drop(event)"
+                                    ondragover="allowDrop(event)"#}>{{ meal }}</h4>
+                                <div class="JSON-food-items dragula drop-container {#food-items-drop#}" {#ondrop="drop(event)"
+                                     ondragover="allowDrop(event)"#}></div>
                             {% endfor %}
                         </div>
                     {% endfor %}
@@ -201,7 +195,7 @@
         </div>
     </div>
     <div class="trash-block">
-        <div id="trash" ondrop="delete_meal(event)" ondragover="allowDrop(event)">
+        <div id="trash" {#ondrop="delete_meal(event)" ondragover="allowDrop(event)" #}>
             <i class="fa fa-trash" aria-hidden="true"></i>
         </div>
     </div>
@@ -213,7 +207,6 @@
     <script src="https://unpkg.com/bootstrap-datepicker@1.9.0/dist/js/bootstrap-datepicker.min.js"></script>
     <script src="https://unpkg.com/bootstrap-datepicker@1.9.0/dist/locales/bootstrap-datepicker.cs.min.js" charset="UTF-8"></script>
 <script>
-
     function filterSearchDismiss() {
         filterSearch('');
         let food_finder = document.getElementById('food-finder');
@@ -306,9 +299,9 @@
             let j = 0;
             while (json[i].meals[j]) {
                 // název typu jídla
-                day += "<h4 class=\"JSON-food-header food-header\" data-type=\""+ json[i].meals[j].type +"\" ondrop=\"drop(event)\" ondragover=\"allowDrop(event)\">"+ json[i].meals[j].type +"</h4>";
+                day += "<h4 class=\"JSON-food-header food-header\" data-type=\""+ json[i].meals[j].type +"\">"+ json[i].meals[j].type +"</h4>";
                 // kontejner na jídla
-                day += "<div class=\"JSON-food-items food-items-drop\" ondrop=\"drop(event)\" ondragover=\"allowDrop(event)\">";
+                day += "<div class=\"JSON-food-items dragula drop-container\">";
 
                 let k = 0;
                 while (json[i].meals[j].meals[k]) {
@@ -491,49 +484,6 @@
         return menu;
     }
 
-        // for html_to_doc
-    // function generate_json_old() {
-    //     let menuList = document.getElementById("menuList");
-    //     let menuDays = menuList.children;
-    //
-    //     let menu = [];
-    //
-    //     for (let i = 0; i < menuDays.length; i++) {
-    //         let menuDay = menuDays[i].children;
-    //         let day = {name: "", meals: []};
-    //         let type = {name: "", meals: []};
-    //
-    //         for (let j = 0; j < menuDay.length; j++) {
-    //             let menuDayItem = menuDay[j];
-    //             if (menuDayItem.classList.contains("day-name")) {
-    //                 day.name = menuDayItem.innerText;
-    //
-    //             } else if (menuDayItem.classList.contains("food-header")){
-    //                 if (type.name !== "") {
-    //                     // kopie objektu, jinak by se uložila pouze reference
-    //                     let cloneType = Object.assign({}, type);
-    //                     day.meals.push(cloneType);
-    //                     type.meals = [];
-    //                 }
-    //                 //type.name= menuDayItem.getAttribute("data-type");
-    //                 type.name= menuDayItem.innerText;
-    //
-    //             } else if (menuDayItem.classList.contains("food-item")){
-    //                 let menuMeals = menuDayItem.children;
-    //                 for (let k = 0; k < menuMeals.length; k++) {
-    //                     let meal = {id: menuMeals[k].id, name: menuMeals[k].innerText};
-    //                     type.meals.push(meal);
-    //                 }
-    //             }
-    //         }
-    //         day.meals.push(type);
-    //         menu.push(day);
-    //     }
-    //     console.log(menu);
-    //     return menu;
-    // }
-
-
     function getMenu() {
         let json = generate_json();
         window.open("/menu/generate?generate=false&json=" + JSON.stringify(json), "_blank", "fullscreen=yes");
@@ -574,70 +524,86 @@
         }
         return false;
     }
+    //
+    // function allowDrop(ev) {
+    //     ev.preventDefault();
+    // }
+    //
+    // function drag(ev) {
+    //     ev.dataTransfer.setData("text", ev.target.id);
+    //     //ev.style.cursor = "move";
+    // }
+    //
+    // function delete_meal(ev) {
+    //     ev.preventDefault();
+    //
+    //     var data = ev.dataTransfer.getData("text");
+    //     let dragged = document.getElementById(data);
+    //     if (dragged.classList.contains( "copy" )){
+    //         dragged.remove();
+    //     }
+    // }
+    //
+    // let counter = 0;
+    //
+    // function drop(ev) {
+    //     ev.preventDefault();
+    //
+    //     var data = ev.dataTransfer.getData("text");
+    //     let dragged = document.getElementById(data);
+    //
+    //     let target = ev.target;
+    //
+    //     if (target.classList.contains( "meal" )){
+    //         target = ev.target.parentNode;
+    //     }
+    //     if (target.classList.contains( "food-header" )){
+    //         // target = target.parentNode.getElementsByClassName("food-item")[0];
+    //         target = target.nextElementSibling;
+    //     }
+    //     console.log(target);
+    //     if (target.classList.contains( "delete-on-drop" )){
+    //         delete_meal(ev);
+    //         return;
+    //     }
+    //
+    //     if (hasParent(target, "foodList")) {
+    //         let divsHolderId = "foodList_" + (dragged.getAttribute('data-type'));
+    //         let divsHolder = document.getElementById(divsHolderId);
+    //         divsHolder.appendChild(dragged);
+    //     }
+    //     // if (hasParent(target, "menuList")) {
+    //     //     let divsHolderId = "menuList_" + (dragged.getAttribute('data-type'));
+    //     //     let divsHolder = document.getElementById(divsHolderId);
+    //     //     divsHolder.appendChild(dragged);
+    //     // }
+    //     else {
+    //         if (!dragged.classList.contains("copy")) {
+    //             dragged = dragged.cloneNode(true);
+    //             dragged.id = dragged.id + "#" + counter++;
+    //             dragged.classList.add("copy");
+    //             dragged.classList.remove("filter-tags");
+    //             dragged.classList.remove("original");
+    //         }
+    //         target.appendChild(dragged);
+    //     }
+    //     update_url();
+    // }
 
-    function allowDrop(ev) {
-        ev.preventDefault();
-    }
-
-    function drag(ev) {
-        ev.dataTransfer.setData("text", ev.target.id);
-        //ev.style.cursor = "move";
-    }
-
-    function delete_meal(ev) {
-        ev.preventDefault();
-
-        var data = ev.dataTransfer.getData("text");
-        let dragged = document.getElementById(data);
-        if (dragged.classList.contains( "copy" )){
-            dragged.remove();
-        }
-    }
-
-    let counter = 0;
-
-    function drop(ev) {
-        ev.preventDefault();
-
-        var data = ev.dataTransfer.getData("text");
-        let dragged = document.getElementById(data);
-
-        let target = ev.target;
-
-        if (target.classList.contains( "meal" )){
-            target = ev.target.parentNode;
-        }
-        if (target.classList.contains( "food-header" )){
-            // target = target.parentNode.getElementsByClassName("food-item")[0];
-            target = target.nextElementSibling;
-        }
-        console.log(target);
-        if (target.classList.contains( "delete-on-drop" )){
-            delete_meal(ev);
-            return;
-        }
-
-        if (hasParent(target, "foodList")) {
-            let divsHolderId = "foodList_" + (dragged.getAttribute('data-type'));
-            let divsHolder = document.getElementById(divsHolderId);
-            divsHolder.appendChild(dragged);
-        }
-        // if (hasParent(target, "menuList")) {
-        //     let divsHolderId = "menuList_" + (dragged.getAttribute('data-type'));
-        //     let divsHolder = document.getElementById(divsHolderId);
-        //     divsHolder.appendChild(dragged);
-        // }
-        else {
-            if (!dragged.classList.contains("copy")) {
-                dragged = dragged.cloneNode(true);
-                dragged.id = dragged.id + "#" + counter++;
-                dragged.classList.add("copy");
-                dragged.classList.remove("filter-tags");
-                dragged.classList.remove("original");
-            }
-            target.appendChild(dragged);
-        }
+    boxArray = document.getElementsByClassName("dragula");
+    boxes = Array.prototype.slice.call(boxArray);
+    dragula({
+        containers: boxes,
+        copy: function (el, source) {
+            return source.classList.contains('get-container')
+        },
+        accepts: function (el, target) {
+            return target.classList.contains('drop-container')
+        },
+        removeOnSpill: true,
+        ignoreInputTextSelection: false
+    }).on('drop', function(el) {
         update_url();
-    }
+    });
 </script>
 {% endblock %}

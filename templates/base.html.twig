@@ -23,10 +23,11 @@
 {#    // todo vzřešit tenhle shit#}
     {% if app.environment == "dev" %}
         <link rel="stylesheet" href="{{ asset('style/style.css') }}" />
-        <script src="{{ asset('js/script.js') }}"></script>
+
+        <link rel="stylesheet" href="{{ asset('style/dragula.min.css') }}" />
     {% else %}
         <link rel="stylesheet" href="{{ asset('public/style/style.css') }}" />
-        <script src="{{ asset('public/js/script.js') }}"></script>
+        <link rel="stylesheet" href="{{ asset('public/style/dragula.min.css') }}" />
     {% endif %}
 
     <title>{% block title %}{% endblock %}</title>
@@ -66,6 +67,14 @@
     </div>
 </main>
 {{ include('parts/footer.html.twig') }}
+{#    // todo vzřešit tenhle shit#}
+{% if app.environment == "dev" %}
+    <script src="{{ asset('js/script.js') }}"></script>
+    <script src="{{ asset('js/dragula.min.js') }}"></script>
+{% else %}
+    <script src="{{ asset('public/js/script.js') }}"></script>
+    <script src="{{ asset('public/js/dragula.min.js') }}"></script>
+{% endif %}
 {% block javascripts %}{% endblock %}
 </body>
 </html>
