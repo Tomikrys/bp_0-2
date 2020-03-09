@@ -109,6 +109,13 @@ class Food {
         return $this;
     }
 
+    public function setTypeById(int $id, $entityManager): self {
+        $repo = $entityManager->getRepository(Type::class);
+        $type = $repo->findOneBy(array('id' => $id));
+        $this->type = $type;
+        return $this;
+    }
+
     public function setType(?Type $type): self
     {
         $this->type = $type;

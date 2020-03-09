@@ -106,9 +106,8 @@ class FoodsController extends AbstractController {
         $food->setName($data->name);
         $food->setDescription($data->description);
         $food->setprice($data->price);
-        // TODO
         $entityManager = $this->getDoctrine()->getManager();
-        $food->setTypeByString($data->type, $entityManager);
+        $food->setTypeById($data->type, $entityManager);
     }
 
     /**

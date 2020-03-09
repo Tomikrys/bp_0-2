@@ -26,9 +26,9 @@
                     <select class="food_type form-control">
                         {% for type in types %}
                             {% if type.name == food.type.name %}
-                                <option selected="">{{ food.type.name }}</option>
+                                <option selected="" data-id="{{ food.type.id }}">{{ food.type.name }}</option>
                             {% else %}
-                                <option>{{ type.name }}</option>
+                                <option data-id="{{ type.id }}">{{ type.name }}</option>
                             {% endif %}
                         {% endfor %}
                     </select>

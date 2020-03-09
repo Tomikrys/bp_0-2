@@ -139,7 +139,7 @@
                 '<select class="food_type form-control">\n' +
                 '   <option selected></option>' +
                 '   {% for type in types %}\n'+
-                '       <option>{{ type.name }}</option>\n'+
+                '       <option data-id="{{ type.id }}">{{ type.name }}</option>\n'+
                 '   {% endfor %}\n'+
                 '</select>';
 
@@ -157,7 +157,7 @@
             const description = e.target.parentElement.parentElement.getElementsByClassName("food_description")[0].innerText;
             const price = e.target.parentElement.parentElement.getElementsByClassName("food_price")[0].innerText;
             const selector = e.target.parentElement.parentElement.getElementsByClassName("food_type")[0];
-            const type = selector[selector.selectedIndex].value;
+            const type = selector[selector.selectedIndex].getAttribute('data-id');
             // napere to do struktury
             const food = {
                 id: e.target.getAttribute('data-id'),
