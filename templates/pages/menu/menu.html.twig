@@ -297,8 +297,7 @@
             headers: {
                 'Content-Type': 'application/json'
             }
-        });
-        $("#loading").modal("hide");
+        }).then(res => window.location.reload());
 
     }
 
