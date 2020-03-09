@@ -45,15 +45,14 @@
         }
 
         function delete_food(e) {
-            $("#loading").modal("show");
             if (confirm('Opravdu?')) {
+                $("#loading").modal("show");
                 const id = e.target.getAttribute('data-id');
 
                 fetch(`/foods/delete/${id}`, {
                     method: 'DELETE'
                 }).then(res => window.location.reload());
             }
-            $("#loading").modal("hide");
         }
 
         // function edit_tags(e) {
@@ -74,7 +73,7 @@
 
             // řešení selektu
             var selector = document.getElementById(id).getElementsByClassName("food_type")[0];
-            var type = selector[selector.selectedIndex].value;
+            var type = selector[selector.selectedIndex].getAttribute('data-id');
 
             // nacpání do struktury
             const data = {
