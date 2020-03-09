@@ -87,7 +87,7 @@ class SettingsController extends AbstractController {
         $json = file_get_contents('php://input');
         $days = json_decode ($json);
         $settings->setDays($days);
-        dump($days);
+        //dump($days);
 
         $this->getDoctrine()->getManager()->persist($settings);
         $this->getDoctrine()->getManager()->flush();

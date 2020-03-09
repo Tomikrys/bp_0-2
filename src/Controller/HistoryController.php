@@ -62,7 +62,7 @@ class HistoryController extends AbstractController {
             }
         }
         usort($prepared_history, function($a, $b) {return $a['sortdate']->getTimestamp() - $b['sortdate']->getTimestamp();});
-        dump($prepared_history);
+        //dump($prepared_history);
         return $this->render('pages/history/history.html.twig', array('history' => $prepared_history));
     }
 
