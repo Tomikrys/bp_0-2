@@ -230,8 +230,8 @@
     }
 
     function delete_tag(e) {
-        $("#loading").modal("show");
         if (confirm('Opravdu?')) {
+            $("#loading").modal("show");
             const id = e.getAttribute('data-id');
 
             fetch(`/settings/delete/tag/${id}`, {
@@ -242,8 +242,8 @@
     }
 
     function delete_template(e) {
-        $("#loading").modal("show");
         if (confirm('Opravdu?')) {
+            $("#loading").modal("show");
             const id = e.getAttribute('data-id');
 
             fetch(`/settings/delete/template/${id}`, {
@@ -254,8 +254,8 @@
     }
 
     function delete_type(e) {
-        $("#loading").modal("show");
         if (confirm('Opravdu?')) {
+            $("#loading").modal("show");
             const id = e.getAttribute('data-id');
 
             fetch(`/settings/delete/type/${id}`, {
