@@ -34,15 +34,6 @@ class UploadController extends AbstractController {
         $this->templateRepository = $templateRepository;
     }
 
-    /**
-     * @Route("/aws", name="aws")
-     */
-    public function try() {
-        $path = "./words/zomato.docx";
-        $this->aws_upload($path);
-        return new Response();
-    }
-
     public function aws_upload($path){
         putenv("AWS_ACCESS_KEY_ID=AKIAVEKPVHFC4QT6CW4Q");
         putenv("AWS_SECRET_ACCESS_KEY=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");
