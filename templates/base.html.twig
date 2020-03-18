@@ -71,10 +71,13 @@
 {% if app.environment == "dev" %}
     <script src="{{ asset('js/script.js') }}"></script>
     <script src="{{ asset('js/dragula.min.js') }}"></script>
+    <script src="{{ asset('js/sorttable.js') }}"></script>
 {% else %}
     <script src="{{ asset('public/js/script.js') }}"></script>
     <script src="{{ asset('public/js/dragula.min.js') }}"></script>
+    <script src="{{ asset('public/js/sorttable.js') }}"></script>
 {% endif %}
+<script>sorttable.sort_alpha = function(a,b) { return a[0].localeCompare(b[0]); }</script>
 {% block javascripts %}{% endblock %}
 </body>
 </html>

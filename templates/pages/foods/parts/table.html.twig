@@ -1,10 +1,10 @@
-<table id="foods" class="table table-hover table-sm table-bordered">
+<table id="foods" class="table table-hover table-sm table-bordered sortable">
     <thead class="thead-dark">
     <tr>
         {% for header in table.headers %}
-            <th>{{ header }}</th>
+            <th class="{{ header.class }}">{{ header.name }}</th>
         {% endfor %}
-        <th>
+        <th class="sorttable_nosort">
             Úpravy
         </th>
     </tr>

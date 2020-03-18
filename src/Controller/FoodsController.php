@@ -287,7 +287,14 @@ class FoodsController extends AbstractController {
 
         // promněnné pro výpis
         $table['name'] = "foods";
-        $table['headers'] = array("Název", "Popis", "Cena", "Tagy", "Typ");
+        $table['headers'] =
+            [
+                ["name"=>"Název", "class"=>""],
+                ["name"=>"Popis", "class"=>""],
+                ["name"=>"Cena", "class"=>""],
+                ["name"=>"Tagy", "class"=>"sorttable_nosort"],
+                ["name"=>"Typ", "class"=>"sorttable_nosort"]
+            ];
 
         // získání seznamu jídel
         $foods = $this->getDoctrine()->getRepository(Food::class)->findBy(['user' => $user]);
