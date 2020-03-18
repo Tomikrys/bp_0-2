@@ -35,7 +35,8 @@
                 </td>
                 <td>
                     <a href="#" class="btn btn-sm btn-primary edit-food d-none" data-id="{{ food.id }}">Uložit</a>
-                    <a href="#" class="btn btn-sm btn-danger delete-food" data-id="{{ food.id }}">Smazat</a>
+                    <a href="#" class="btn btn-sm btn-danger delete-food d-none" data-id="{{ food.id }}">Smazat</a>
+                    <input type="checkbox" class="select_food">
                 </td>
             </tr>
         {% endfor %}

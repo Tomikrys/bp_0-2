@@ -55,6 +55,10 @@
             $('#foods tr').on("DOMSubtreeModified", function(){
                 add_to_changed_foods(this);
             });
+
+            $('#foods input.select_food').on("click", function(){
+                select_food(this.closest("tr").id);
+            });
         });
 
         function delete_food(id) {
@@ -235,6 +239,13 @@
             }
         }
 
+        function remove_from_array(array, element) {
+            let index = array.indexOf(element);
+            if (index > -1) {
+                array.splice(index, 1);
+            }
+        }
+
         function isNumber(n) {
             return !isNaN(parseFloat(n)) && isFinite(n);
         }
@@ -264,6 +275,7 @@
             console.log(changed_foods);
         }
 
+
         function save_all_changed() {
             changed_foods.forEach(function (food) {
                 edit_food(food);
@@ -277,5 +289,18 @@
 
             window.location.reload();
         }
+
+        let selected_foods = [];
+        function select_food(id) {
+            push_if_not_there(selected_foods, id);
+            let selector = '#' + id;
+            let $input = $("#" + id).find("input.select_food").get()[0];
+            console.log($input.checked);
+            if (!$input.checked) {
+                remove_from_array(selected_foods, id);
+            }
+            console.log(selected_foods);
+        }
+
     </script>
 {% endblock %}
