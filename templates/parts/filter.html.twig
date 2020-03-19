@@ -1,0 +1,30 @@
+<div class="btn-group" style="width: 100%">
+    <input onkeyup="filterSearch(this.value);" class="form-control form-control-sm" type="text" placeholder="Vyhledávání..." id="food-finder">
+    <span onclick="filterSearchDismiss();" id="searchclear" class="glyphicon glyphicon-remove-circle"><i class="fas fa-times"></i></span>
+</div>
+
+<button class="btn btn-link p-0 m-0" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">Filtry</button>
+<div  class="collapse show" id="collapseExample">
+    <div class="row type-filter">
+        <div class="col type-filter-item" onclick="filterType('')">
+            Vše
+        </div>
+        {% for type in types %}
+            <div onclick="filterType('{{ type.name }}')" class="col type-filter-item">
+                {{ type.name }}
+            </div>
+        {% endfor %}
+    </div>
+    <div class="row tag-filter">
+        {% for tag in tags %}
+            <span onclick="filterTag(this)" class="tag-filter-item badge badge-danger m-1">
+                                {{ tag.name }}
+                            </span>
+        {% endfor %}
+    </div>
+    <div class="custom-control custom-switch" style="display: inline; padding:0">
+        <span style="margin-right: 40px;">or</span>
+        <input onclick="toggleTagMode(this)" type="checkbox" class="custom-control-input" id="filterTagsMode" checked="">
+        <label class="custom-control-label" for="filterTagsMode">and</label>
+    </div>
+</div>

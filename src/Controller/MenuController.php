@@ -43,8 +43,7 @@ class MenuController extends AbstractController {
             }
             $foods[$type->getName()] = $foods_of_type;
         }
-        //exit;
-        // TODO nemůže bejt 1 žejo
+
         $settings = $this->getDoctrine()->getRepository(Settings::class)->findOneBy(['user' => $user]);
         $tags = $this->getDoctrine()->getRepository(Tag::class)->findBy(['user' => $user]);
 

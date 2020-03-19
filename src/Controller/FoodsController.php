@@ -218,7 +218,8 @@ class FoodsController extends AbstractController {
     }
 
     private function make_addtag_form (Request $request) {
-        $tags = $this->getDoctrine()->getRepository(Tag::class)->findAll();
+        $user = $this->getUser();
+        $tags = $this->getDoctrine()->getRepository(Tag::class)->findBy(['user' => $user]);;
         $tags_choices = [];
         foreach ($tags as $tag) {
             $tags_choices = $this->array_push_assoc($tags_choices, $tag->getName(),  $tag->getId());
@@ -237,7 +238,7 @@ class FoodsController extends AbstractController {
                 'choices' => $tags_choices,
                 'choice_attr' => function($choice, $key, $value) {
                     // adds a class like attending_yes, attending_no, etc
-                    return ['class' => 'form-checkbox'];
+                    return ['class' => 'form-checkbox add_tag_modal_checkbox'];
                 },
                 'expanded' => true,
                 'multiple' => true,
@@ -245,7 +246,7 @@ class FoodsController extends AbstractController {
             ])
             ->add('submit', SubmitType::class, array(
                 'label' => 'Uložit',
-                'attr' => array('class' => 'btn btn btn-success mt-3', 'data-dissmiss' => 'modal')) )
+                'attr' => array('class' => 'btn btn btn-success add_tag_modal_button', 'data-dissmiss' => 'modal')) )
             ->getForm();
 
         // Zpracování editačního formuláře.
@@ -299,9 +300,10 @@ class FoodsController extends AbstractController {
         // získání seznamu jídel
         $foods = $this->getDoctrine()->getRepository(Food::class)->findBy(['user' => $user]);
 
+        $tags = $this->getDoctrine()->getRepository(Tag::class)->findBy(['user' => $user]);
+
         return $this->render('pages/foods/foods.html.twig', array('formadd' => $formadd->createView(),
-            //'table' => $table, 'types' => $types, 'tags' => $tags, 'foods' => $foods));
-            'table' => $table, 'types' => $types, 'foods' => $foods, 'formAddTag' => $formaddtag->createView()));
+            'table' => $table, 'types' => $types, 'foods' => $foods, 'tags' => $tags, 'formAddTag' => $formaddtag->createView()));
     }
 
     /**

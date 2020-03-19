@@ -2,16 +2,23 @@
     <thead class="thead-dark">
     <tr>
         {% for header in table.headers %}
-            <th class="{{ header.class }}">{{ header.name }}</th>
+            <th class="{{ header.class }} align-middle">{{ header.name }}</th>
         {% endfor %}
-        <th class="sorttable_nosort">
-            Úpravy
+        <th class="sorttable_nosort align-middle" nowrap="nowrap">
+            <input type="checkbox" id="select_all_foods" class="select_food_style">
+            <span>Úpravy</span>
         </th>
     </tr>
     </thead>
     <tbody>
         {% for food in foods %}
-            <tr id="{{ food.id }}">
+            {# TODO bez toho prázdnýho možná no#}
+            {% set tags = "[ \"\" " %}
+            {% for tag in food.tags %}
+                {% set tags = tags ~ ", \"" ~ tag.name ~ "\" "%}
+            {% endfor %}
+            {% set tags = tags ~ "]"%}
+            <tr id="{{ food.id }}" class="filter-tags filter-type" data-type="{{ food.type.name }}" data-tags="{{ tags }}">
                 {#                        <td>{{ food.id }}</td>#}
                 <th class="food_name" contenteditable="true">{{ food.name }}</th>
                 <td class="food_description" contenteditable="true">{{ food.description }}</td>
@@ -33,10 +40,10 @@
                         {% endfor %}
                     </select>
                 </td>
-                <td>
+                <td class="align-middle">
                     <a href="#" class="btn btn-sm btn-primary edit-food d-none" data-id="{{ food.id }}">Uložit</a>
                     <a href="#" class="btn btn-sm btn-danger delete-food d-none" data-id="{{ food.id }}">Smazat</a>
-                    <input type="checkbox" class="select_food">
+                    <input type="checkbox" class="select_food select_food_style" data-id="{{ food.id }}">
                 </td>
             </tr>
         {% endfor %}
