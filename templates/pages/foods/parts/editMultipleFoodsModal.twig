@@ -1,0 +1,67 @@
+<!-- modal na přidání tagu -->
+<div class="modal fade" id="editMultipleFoodsModal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">
+                    Upravít více jídel. počet: <span id="multiple_edit_count"></span><br><small>projeví se pouze to, co zde změníte</small>
+                </h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th style="border-top: none;" class="text-left">Změnit cenu</th>
+                            <th style="border-top: none;" class="text-left">Změnit typ</th>
+                            <th style="border-top: none;" class="text-center">Přidat tagy všem</th>
+                            <th style="border-top: none;" class="text-center">
+                                <small>co odškrknete bude odmazáno ze všech vybraných</small><br>
+                                Odebrat tagy všem
+                            </th>
+                        </tr>
+                    </thead>
+                        <tbody>
+                        <tr>
+                            <td>
+                                <div class="input-group mb-3">
+                                    <input id="multiple_edit_price" type="number" class="form-control" style="width: 60px;">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">Kč</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <select id="multiple_edit_types" class="food_type form-control">
+                                    <option selected></option>
+                                    {% for type in types %}
+                                        <option data-id="{{ type.id }}">{{ type.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                            <td>
+                                {{ form_start(editFoodFormAddTag, {'attr': {'id': 'editFoodFormAddTag'}}) }}
+                                {{ form_widget(editFoodFormAddTag) }}
+                                {{ form_end(editFoodFormAddTag) }}
+                            </td>
+                            <td>
+                                {{ form_start(editFoodFormRemoveTag, {'attr': {'id': 'editFoodFormRemoveTag'}}) }}
+                                {{ form_widget(editFoodFormRemoveTag) }}
+                                {{ form_end(editFoodFormRemoveTag) }}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button type="submit" class="btn btn-success" onclick="save_multiple_changes()" data-dismiss="modal" style="float:right">Uložit</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+   // form_tags
+</script>

@@ -42,6 +42,23 @@
             column-count: 3;
         }
 
+        #editMultipleFoodsModal .edit_multiple_foods_tag_form {
+            -webkit-column-count: 2;
+            -moz-column-count: 2;
+            column-count: 2;
+        }
+        @media only screen and (max-width: 1000px) {
+            #editMultipleFoodsModal .edit_multiple_foods_tag_form {
+                -webkit-column-count: 1;
+                -moz-column-count: 1;
+                column-count: 1;
+            }
+        }
+        @media only screen and (max-width: 1000px) {
+            .modal-lg {
+                max-width: 700px;
+            }
+        }
         #form_tags label {
             display: block;
             float: left;
@@ -68,8 +85,8 @@
         {{ include('parts/filter.html.twig') }}
     </div>
     <div class="mb-2">
-        <button id="delete_selected" class="btn btn-danger" onclick="delete_selected()">Odstranit vybrané</button>
-        <button id="edit_selected" class="btn btn-info" onclick="edit_selected()">Editovat vybrané</button>
+        <button class="btn btn-danger delete_selected" onclick="delete_selected()">Odstranit vybrané</button>
+        <button class="btn btn-info edit_selected" onclick="edit_selected()">Editovat vybrané</button>
         <button type="button" class="btn btn-success" onclick="add_row_for_new_food()">Přidat řádek</button>
         <button type="button" class="btn btn-warning" onclick="save_all_changed()">Uložit změny</button>
     </div>
@@ -77,20 +94,21 @@
     <div class="foods-block">
         {{ include('pages/foods/parts/table.html.twig') }}
 
-        {{ include('pages/foods/parts/formAddTag.html.twig') }}
+        {{ include('pages/foods/parts/formAddTagModal.html.twig') }}
+        {{ include('pages/foods/parts/editMultipleFoodsModal.twig') }}
         <div class="mb-2">
-            <button id="delete_selected" class="btn btn-danger" onclick="delete_selected()">Odstranit vzbrané</button>
-            <button id="edit_selected" class="btn btn-info" onclick="edit_selected()">Editovat vybrané</button>
+            <button class="btn btn-danger delete_selected" onclick="delete_selected()">Odstranit vzbrané</button>
+            <button class="btn btn-info edit_selected" onclick="edit_selected()">Editovat vybrané</button>
             <button type="button" class="btn btn-success" onclick="add_row_for_new_food()">Přidat řádek</button>
             <button type="button" class="btn btn-warning" onclick="save_all_changed()">Uložit změny</button>
         </div>
     </div>
     <div class="scrolling-block">
         <div id="scrolling" class="edit_buttons">
-            <button id="delete_selected" class="btn btn-danger" onclick="delete_selected()">
+            <button class="btn btn-danger delete_selected" onclick="delete_selected()">
                 <i class="fa fa-trash" aria-hidden="true"></i>
             </button>
-            <button id="edit_selected" class="btn btn-info" onclick="edit_selected()">
+            <button class="btn btn-info edit_selected" onclick="edit_selected()">
                 <i class="fa fa-edit" aria-hidden="true"></i>
             </button>
             <button type="button" class="btn btn-success" onclick="add_row_for_new_food()">
@@ -135,10 +153,12 @@
                 });
                 $('#select_all_foods').on("click", function () {
                     toggle_all_checkboxes(this);
+                    manage_avaliability_of_edit_and_delete_button();
                 })
             }
 
             only_numbers_listener();
+            manage_avaliability_of_edit_and_delete_button();
 
             $('#foods tr').on("DOMSubtreeModified", function(){
                 add_to_changed_foods(this);
@@ -146,6 +166,7 @@
 
             $('#foods input.select_food').on("click", function(){
                 select_food(this.closest("tr").id);
+                manage_avaliability_of_edit_and_delete_button();
             });
 
             $('.tag-filter-item').on("click", function(){
@@ -176,16 +197,20 @@
         //     $("#loading").modal("hide");
         // }
 
-        function edit_food(id) {
+        function edit_food(id, price = null, type = null) {
             $("#loading").modal("show");
             // vytežení infa z tabulky
             const name = document.getElementById(id).getElementsByClassName("food_name")[0].innerText;
             const description = document.getElementById(id).getElementsByClassName("food_description")[0].innerText;
-            const price = document.getElementById(id).getElementsByClassName("food_price")[0].innerText;
+            if (!price) {
+                price = document.getElementById(id).getElementsByClassName("food_price")[0].innerText;
+            }
 
             // řešení selektu
-            var selector = document.getElementById(id).getElementsByClassName("food_type")[0];
-            var type = selector[selector.selectedIndex].getAttribute('data-id');
+            if (!type) {
+                var selector = document.getElementById(id).getElementsByClassName("food_type")[0];
+                type = selector[selector.selectedIndex].getAttribute('data-id');
+            }
 
             // nacpání do struktury
             const data = {
@@ -213,6 +238,30 @@
             $("#loading").modal("hide");
         }
 
+        function edit_tags(id, add_tags, remove_other_tags) {
+            // nacpání do struktury
+            const data = {
+                id: id,
+                add_tags: add_tags,
+                remove_other_tags: remove_other_tags,
+            };
+
+            // odeslání do FoodController
+            try {
+                const response = fetch('/foods/edit-tags', {
+                    method: 'PATCH', // or 'PUT'
+                    body: JSON.stringify(data), // data can be `string` or {object}!
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                const json = response.json();
+                console.log('Success:', JSON.stringify(json));
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
         // přidání řádku a buňek do tabulky
         function add_row_for_new_food() {
             const foods = document.getElementById('foods');
@@ -237,7 +286,7 @@
             while (document.getElementById(id)) {
                 id = "adding" + i;
                 i += 1;
-                console.log(id);
+                //console.log(id);
             }
 
             row.id = id;
@@ -275,7 +324,7 @@
 
         // funke k přidání jídla
         function add_food(id) {
-            console.log(id);
+            //console.log(id);
             $("#loading").modal("show");
             // vytáhne si z přidaného řádku info
             const name = document.getElementById(id).getElementsByClassName("food_name")[0].innerText;
@@ -319,7 +368,7 @@
                 function(e) {
                     let tag_id = e.getAttribute('data-id');
                     for (let i = 0; i < checkboxes.length; i++) {
-                        console.log([checkboxes[i].getAttribute('value'), tag_id]);
+                        //console.log([checkboxes[i].getAttribute('value'), tag_id]);
                         if (checkboxes[i].getAttribute('value') === tag_id) {
                             checkboxes[i].checked = true;
                         }
@@ -371,7 +420,7 @@
         let changed_foods = [];
         function add_to_changed_foods(e) {
             push_if_not_there(changed_foods, e.id);
-            console.log(changed_foods);
+            //console.log(changed_foods);
         }
 
 
@@ -381,7 +430,7 @@
             });
 
             let adding_foods = document.getElementsByClassName("adding_row");
-            console.log(adding_foods);
+            //console.log(adding_foods);
             for(let i = 0; i < adding_foods.length; i++) {
                 add_food(adding_foods[i].id);
             }
@@ -394,11 +443,11 @@
             push_if_not_there(selected_foods, id);
             let selector = '#' + id;
             let $input = $("#" + id).find("input.select_food").get()[0];
-            console.log($input.checked);
+            //console.log($input.checked);
             if (!$input.checked) {
                 remove_from_array(selected_foods, id);
             }
-            console.log(selected_foods);
+            //console.log(selected_foods);
         }
 
         function delete_selected() {
@@ -435,7 +484,6 @@
             }
         }
 
-
         function toggle_all_checkboxes($checkbox) {
             let $status = $checkbox.checked;
             if ($status) {
@@ -443,8 +491,153 @@
             } else {
                 clear_selected_foods()
             }
-
         }
 
+        function manage_avaliability_of_edit_and_delete_button() {
+            let foods = document.getElementById("foods");
+            let checkboxes = foods.getElementsByClassName("select_food");
+            let hidden_flag = false;
+            for (let i = 0; i < checkboxes.length; i++) {
+                if (isVisible(checkboxes[i]) && checkboxes[i].checked) {
+                    hidden_flag = true;
+                }
+            }
+            if (hidden_flag) {
+                $(".delete_selected").prop('disabled', false);
+                $(".edit_selected").prop('disabled', false);
+            } else {
+                $(".delete_selected").prop('disabled', true);
+                $(".edit_selected").prop('disabled', true);
+            }
+        }
+
+        function select_right_tags () {
+            let form_add = document.getElementById("editFoodFormAddTag").getElementsByClassName("edit_multiple_foods_tag_form")[0];
+            let form_add_checkboxes = form_add.getElementsByClassName("form-checkbox");
+            for (let i = 0; i < form_add_checkboxes.length; i++) {
+                form_add_checkboxes[i].checked = false;
+                form_add_checkboxes[i].disabled = false;
+            }
+
+            let form_remove = document.getElementById("editFoodFormRemoveTag").getElementsByClassName("edit_multiple_foods_tag_form")[0];
+            let form_remove_checkboxes = form_remove.getElementsByClassName("form-checkbox");
+            for (let i = 0; i < form_remove_checkboxes.length; i++) {
+                form_remove_checkboxes[i].checked = false;
+                form_remove_checkboxes[i].disabled = false;
+            }
+
+            let all_tags_unique = [];
+            let all_tags = [];
+            selected_foods.forEach(function (food_id) {
+                document.getElementById(food_id).querySelectorAll('.food_tag').forEach(
+                    function(food) {
+                        let tag_id = food.getAttribute('data-id');
+                        push_if_not_there(all_tags_unique, tag_id);
+                        all_tags.push(tag_id);
+                    }
+                );
+            });
+
+            for (let i = 0; i < form_add_checkboxes.length; i++) {
+                let checkbox_value =  form_add_checkboxes[i].getAttribute('value');
+                if (all_tags.filter(i => i === checkbox_value).length === selected_foods.length) {
+                    form_add_checkboxes[i].checked = true;
+                    form_add_checkboxes[i].disabled = true;
+                }
+            }
+
+            for (let i = 0; i < form_remove_checkboxes.length; i++) {
+                if (all_tags_unique.indexOf(form_remove_checkboxes[i].getAttribute('value')) !== -1) {
+                    form_remove_checkboxes[i].checked = true;
+                } else {
+                    form_remove_checkboxes[i].disabled = true;
+                }
+            }
+        }
+
+        function select_right_type() {
+            let first_run = true;
+            let all_types = null;
+            let types_flag = true;
+            selected_foods.forEach(function (food_id) {
+                let selector = document.getElementById(food_id).getElementsByClassName("food_type")[0];
+                let type = selector[selector.selectedIndex].value;
+                if (first_run) {
+                    first_run = false;
+                    all_types = type;
+                } else {
+                    if (all_types !== type) {
+                        types_flag = false;
+                    }
+                }
+            });
+            if (types_flag) {
+                $("#multiple_edit_types").val(all_types);
+            } else {
+                $("#multiple_edit_types").val("");
+            }
+        }
+
+        function select_right_price() {
+            let first_run = true;
+            let all_prices = null;
+            let prices_flag = true;
+            selected_foods.forEach(function (food_id) {
+                const price = document.getElementById(food_id).getElementsByClassName("food_price")[0].innerText;
+                if (first_run) {
+                    first_run = false;
+                    all_prices = price;
+                } else {
+                    if (all_prices !== price) {
+                        prices_flag = false;
+                    }
+                }
+            });
+            if (prices_flag) {
+                $("#multiple_edit_price").val(all_prices);
+            } else {
+                $("#multiple_edit_price").val("");
+            }
+        }
+
+        function edit_selected() {
+            select_right_tags();
+            select_right_type();
+            select_right_price();
+            $("#multiple_edit_count").text(selected_foods.length);
+
+            $("#editMultipleFoodsModal").modal("show");
+        }
+
+        function save_multiple_changes() {
+            $("#loading").modal("show");
+            let price = $("#multiple_edit_price").val();
+            const selector = document.getElementById("multiple_edit_types");
+            const type = selector[selector.selectedIndex].getAttribute('data-id');
+
+            let $add_tags = [];
+            $("#editFoodFormAddTag input.add_tag_modal_checkbox").each(function() {
+                if ($(this).is(':checked')) {
+                    $add_tags.push($(this).val());
+                }
+            });
+
+            let $remove_other_tags = [];
+            $("#editFoodFormRemoveTag input.add_tag_modal_checkbox").each(function() {
+                if ($(this).is(':checked')){
+                    $remove_other_tags.push($(this).val());
+                }
+            });
+
+            selected_foods.forEach(function (food_id) {
+                if (price || type) {
+                    console.log(food_id, price, type);
+                    edit_food(food_id, price, type);
+                }
+                console.log(food_id, $add_tags, $remove_other_tags);
+                edit_tags(food_id, $add_tags, $remove_other_tags);
+            });
+            //window.location.reload();
+        }
     </script>
 {% endblock %}

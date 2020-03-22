@@ -140,6 +140,14 @@ class Food {
         return $this;
     }
 
+    public function addTagById(int $id, $entityManager): self
+    {
+        $repo = $entityManager->getRepository(Tag::class);
+        $tag = $repo->findOneBy(array('id' => $id));
+        $this->addTag($tag);
+        return $this;
+    }
+
     public function removeTag(Tag $tag): self
     {
         if ($this->tag->contains($tag)) {
@@ -148,7 +156,6 @@ class Food {
 
         return $this;
     }
-
 
     public function setTags(array $new_tags): self {
         $old_tags = $this->getTags()->toArray();

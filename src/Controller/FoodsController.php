@@ -56,6 +56,13 @@ class FoodsController extends AbstractController {
         $this->typeRepository = $typeRepository;
     }
 
+    /**
+     * @param $food
+     * @param Request $request
+     * @return \Symfony\Component\Form\FormInterface
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
     private function make_me_form ($food, Request $request) {
         // Vytváření editačního formuláře podle entity článku.
         $formadd = $this->createFormBuilder($food)
@@ -87,6 +94,7 @@ class FoodsController extends AbstractController {
      * @param Request $request
      * @param $id
      * @Route("/foods/delete/{id}", methods={"DELETE"})
+     * @return Response
      */
     public function delete(Request $request, $id) {
         $food = $this->getDoctrine()->getRepository(Food::class)->find($id);
@@ -138,6 +146,69 @@ class FoodsController extends AbstractController {
         return $response;
     }
 
+
+    /**
+     * @param Request $request
+     * @return Response
+     * @throws ORMException
+     * @throws OptimisticLockException
+     * @Route("foods/edit-tags", methods={"PATCH"})
+     */
+    public function editTableFoodTags(Request $request) {
+        $json = file_get_contents('php://input');
+        $data = json_decode ($json);
+
+        $id =  $data->id;
+        $add_tags_ids = $data->add_tags;
+        $remove_other_tags_ids = $data->remove_other_tags;
+        $entityManager = $this->getDoctrine()->getManager();
+        $food = $entityManager->getRepository(Food::class)->find($id);
+
+        if (!$food) {
+            throw $this->createNotFoundException(
+                'Nenalezeno jídlo pro id '.$id
+            );
+        }
+
+        $user = $this->getUser();
+        $tags = $entityManager->getRepository(Tag::class)->findBy(['user' => $user]);
+
+        $remove_other_tags = [];
+        foreach ($remove_other_tags_ids as $id) {
+            $tag = $entityManager->getRepository(Tag::class)->find($id);
+            array_push($remove_other_tags, $tag);
+        }
+
+        $remove_tags = array_udiff($tags, $remove_other_tags,
+            function ($obj_a, $obj_b) {
+                return $obj_a->getId() - $obj_b->getId();
+            }
+        );
+
+        $add_tags = [];
+        foreach ($add_tags_ids as $id) {
+            $tag = $entityManager->getRepository(Tag::class)->find($id);
+            array_push($add_tags, $tag);
+        }
+
+        // random věci to dělá, jenom to horní, nechápu proš
+
+        foreach ($remove_tags as $remove_tag) {
+            $food->removeTag($remove_tag);
+        }
+
+        foreach ($add_tags as $add_tag) {
+            $food->addTag($add_tag);
+        }
+
+        $this->foodRepository->save($food);
+        $this->addFlash('success', 'Jídlo bylo upraveno.');
+
+        $response = new Response();
+        $response->send();
+        return $response;
+    }
+
     /**
      * @param Request $request
      * @return Response
@@ -163,58 +234,48 @@ class FoodsController extends AbstractController {
         return $response;
     }
 
-//    /**
-//     * @param Request $request
-//     * @return Response
-//     * @Route("/foods/{id}/editTags", methods={"PATCH"})
-//     */
-//    public function editTags(Request $request) : Response {
-//        $food = $this->getDoctrine()->getRepository(Food::class)->find($id);
-//
-//        // získání seznamu typů z databáze
-//        $all_tags = $this->getDoctrine()->getRepository(Tag::class)->findAll();
-//        $form_tags = null;
-//        foreach ($all_tags as $tag) {
-//            $form_tags[$tag->getName()] = $tag->getId();
-//        }
-//
-//        $add_tags = new Tag();
-//        // Dole to pak použiju k vyhledání toho hráča, co se má uložit
-//        // v Tags je připravenna proměnná, do které se pole uloží
-//        $form_add_tag = $this->createFormBuilder($add_tags)
-//            ->add('tags_array', ChoiceType::class, array(
-//                'choices'  => $form_tags,
-//                'multiple' => true,
-//                'expanded' => true,
-//                'attr' => array('class' => 'form-group'),
-//                'label' => 'Dostupné tagy' ))
-//            ->add('submit', SubmitType::class, array(
-//                'label' => 'Uložit',
-//                'attr' => array('class' => 'btn btn btn-success mt-3', 'data-dissmiss' => 'modal')) )
-//            ->getForm();
-//
-//        // Zpracování add formuláře.
-//        $form_add_tag->handleRequest($request);
-//        if ($form_add_tag->isSubmitted() && $form_add_tag->isValid()) {
-//            foreach ($food->getTags() as $tag) {
-//                $food->removeTag($tag);
-//            }
-//
-//            foreach ($add_tags->getTagsArray() as $tag) {
-//                $food->addTag($tag);
-//            }
-////            // sic je tady getName, tak do name jsem výše uložil ID toho hráča, takže se hledá podle ID, sorry.
-////            $team->addPlayer($player);
-////            $this->getDoctrine()->getManager()->persist($team);
-////            $this->getDoctrine()->getManager()->flush();
-////            $this->addFlash('success', 'Hráč \'' . $player->getName() . '\' byl úspěšně  do týmu \'' . $team->getName() . '\'.');
-////            return $this->redirect($request->getUri());
-//        }
-//    }
-
+    /**
+     * @param $array
+     * @param $key
+     * @param $value
+     * @return mixed
+     */
     function array_push_assoc($array, $key, $value){
         $array[$key] = $value;
         return $array;
+    }
+
+    /**
+     * @return \Symfony\Component\Form\FormInterface
+     */
+    function make_edittags_on_multiple_foods_form(){
+    $user = $this->getUser();
+    $tags = $this->getDoctrine()->getRepository(Tag::class)->findBy(['user' => $user]);;
+    $tags_choices = [];
+    foreach ($tags as $tag) {
+        $tags_choices = $this->array_push_assoc($tags_choices, $tag->getName(),  $tag->getId());
+    }
+
+    //        <input type="checkbox" class="custom-control-input" id="customCheck1" checked="">
+    //      <label class="custom-control-label" for="customCheck1">Check this custom checkbox</label>
+
+    return $this->createFormBuilder()
+        ->add('id', NumberType::class, [
+            'label' => false,
+            'attr' => array('class' => 'd-none')
+        ])
+        ->add('tags', ChoiceType::class, [
+            'label' => false,
+            'choices' => $tags_choices,
+            'choice_attr' => function($choice, $key, $value) {
+                // adds a class like attending_yes, attending_no, etc
+                return ['class' => 'form-checkbox add_tag_modal_checkbox'];
+            },
+            'expanded' => true,
+            'multiple' => true,
+            'attr' => array('class' => 'custom-control custom-checkbox edit_multiple_foods_tag_form')
+        ])
+        ->getForm();
     }
 
     private function make_addtag_form (Request $request) {
@@ -274,6 +335,8 @@ class FoodsController extends AbstractController {
     /**
      * @param Request $request
      * @return Response
+     * @throws ORMException
+     * @throws OptimisticLockException
      * @Route("/foods", methods={"GET", "POST"})
      */
     public function index(Request $request) : Response {
@@ -282,6 +345,7 @@ class FoodsController extends AbstractController {
         $food = new Food();
         $formadd = $this->make_me_form($food, $request);
         $formaddtag = $this->make_addtag_form($request);
+        $formeditfoodtag = $this->make_edittags_on_multiple_foods_form($request);
 
         // získání seznamu typů z databáze
         $types = $this->getDoctrine()->getRepository(Type::class)->findBy(['user' => $user]);
@@ -303,7 +367,9 @@ class FoodsController extends AbstractController {
         $tags = $this->getDoctrine()->getRepository(Tag::class)->findBy(['user' => $user]);
 
         return $this->render('pages/foods/foods.html.twig', array('formadd' => $formadd->createView(),
-            'table' => $table, 'types' => $types, 'foods' => $foods, 'tags' => $tags, 'formAddTag' => $formaddtag->createView()));
+            'table' => $table, 'types' => $types, 'foods' => $foods, 'tags' => $tags,
+            'formAddTag' => $formaddtag->createView(), 'editFoodFormAddTag' => $formeditfoodtag->createView(),
+            'editFoodFormRemoveTag' => $formeditfoodtag->createView()));
     }
 
     /**
