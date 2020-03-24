@@ -102,9 +102,9 @@ class Food {
         return $this->type;
     }
 
-    public function setTypeByString(string $str, $entityManager): self {
+    public function setTypeByString(string $str, $entityManager, $user): self {
         $repo = $entityManager->getRepository(Type::class);
-        $type = $repo->findOneBy(array('name' => $str));
+        $type = $repo->findOneBy(['user' => $user, 'name' => $str]);
         $this->type = $type;
         return $this;
     }

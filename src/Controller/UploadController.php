@@ -34,36 +34,6 @@ class UploadController extends AbstractController {
         $this->templateRepository = $templateRepository;
     }
 
-    public function aws_upload($path){
-        putenv("AWS_ACCESS_KEY_ID=AKIAVEKPVHFC4QT6CW4Q");
-        putenv("AWS_SECRET_ACCESS_KEY=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");
-        try {
-            $s3Client = new S3Client([
-                'region' => 'us-east-1',
-                'version' => 'latest',
-                'credentials' => CredentialProvider::env()
-            ]);
-            $result = $s3Client->putObject([
-                'Bucket'     => $_ENV["S3_BUCKET"],
-                'Key'        => $path,
-                'SourceFile' => $path,
-            ]);
-        } catch (AwsException $e) {
-            echo $e->getMessage() . "\n";
-        }
-
-//        //require('vendor/autoload.php');
-//// this will simply read AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY from env vars
-//        $s3 = new S3Client([
-//            'version'  => '2006-03-01',
-//            'region'   => 'us-east-1',
-//        ]);
-//        $bucket = $_ENV['S3_BUCKET']?: die('No "S3_BUCKET" config var in found in env!');
-//        $file = $this->file(new File('words/result.docx'));
-//        $upload = $s3->upload($bucket, 'words/result.docx', $file, 'public-read');
-//        echo $upload->get('ObjectURL');
-    }
-
     function does_url_exists($url) {
         return @fopen($url, 'r') ? true : false;
     }
@@ -74,7 +44,6 @@ class UploadController extends AbstractController {
      * @param string $uploadDir
      * @param FileUploader $uploader
      * @param LoggerInterface $logger
-     * @param null $clean_username
      * @return Response
      * @throws ORMException
      * @throws OptimisticLockException
@@ -88,16 +57,12 @@ class UploadController extends AbstractController {
             $logger->info("CSRF failure");
 
             $this->addFlash('error', 'Nepovolená operace.');
-//            return new Response("Operation not allowed",  Response::HTTP_BAD_REQUEST,
-//                ['content-type' => 'text/plain']);
         }
 
         $file = $request->files->get('myfile');
 
         if (empty($file)){
             $this->addFlash('error', 'Nebyl zadán soubor.');
-//            return new Response("No file specified",
-//                Response::HTTP_UNPROCESSABLE_ENTITY, ['content-type' => 'text/plain']);
         }
 
         $file_fullname = $file->getClientOriginalName();
@@ -126,17 +91,10 @@ class UploadController extends AbstractController {
         $uploader->upload($uploadDir. "/" . $clean_username, $file, $filename);
         $path = './words/' . $clean_username . "/" . $filename;
         try {
-            $this->aws_upload($path);
+            $uploader->aws_upload($path);
         } catch (Exception $e) {
 
         }
-
-//        $s3 = new Aws\S3\S3Client([
-//            'version'  => '2006-03-01',
-//            'region'   => 'us-east-1',
-//        ]);
-//        $bucket = getenv('S3_BUCKET')?: die('No "S3_BUCKET" config var in found in env!');
-        //$upload = $s3->upload($bucket, $_FILES['userfile']['name'], fopen($_FILES['userfile']['tmp_name'], 'rb'), 'public-read');
 
         $templatename = $request->request->get('template_name');
         $template = new Template();
@@ -158,8 +116,6 @@ class UploadController extends AbstractController {
         $this->templateRepository->save($template);
 
         $this->addFlash('success', 'Šablona byla nahrána.');
-//        return new Response("File uploaded",  Response::HTTP_OK,
-//            ['content-type' => 'text/plain']);
         return $this->redirect($this->generateUrl('/settings'));
     }
 }

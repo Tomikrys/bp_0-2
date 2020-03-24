@@ -250,7 +250,7 @@ class FoodsController extends AbstractController {
      */
     function make_edittags_on_multiple_foods_form(){
     $user = $this->getUser();
-    $tags = $this->getDoctrine()->getRepository(Tag::class)->findBy(['user' => $user]);;
+    $tags = $this->getDoctrine()->getRepository(Tag::class)->findBy(['user' => $user]);
     $tags_choices = [];
     foreach ($tags as $tag) {
         $tags_choices = $this->array_push_assoc($tags_choices, $tag->getName(),  $tag->getId());

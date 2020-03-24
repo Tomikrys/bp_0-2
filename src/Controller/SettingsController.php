@@ -19,40 +19,6 @@ use Symfony\Component\Routing\Annotation\Route;
  * @package App\Controller
  */
 class SettingsController extends AbstractController {
-    /**
-     * @Route("/settings/initialize", methods={"GET", "POST"})
-     */
-    public function default_settings() {
-        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
-        $settings = new Settings();
-        $days = [["Pondělí", "Monday"], ["Úterý", "Tuesday"], ["Středa", "Wednesday"], ["Čtvrtek", "Thursday"], ["Pátek", "Friday"]];
-        $meals = ["Polévka", "Hlavní chod"];
-        $settings->setDays($days);
-        $settings->setMeals($meals);
-        $settings->setUser($this->getUser());
-        $this->getDoctrine()->getManager()->persist($settings);
-        $this->getDoctrine()->getManager()->flush();
-
-        $types = ["polévka", "jídlo", "salát"];
-        foreach ($types as $type) {
-            $new_type = new Type();
-            $new_type->setName($type);
-            $new_type->setUser($this->getUser());
-            $this->getDoctrine()->getManager()->persist($new_type);
-            $this->getDoctrine()->getManager()->flush();
-        }
-
-        $tags = ["vege", "spicy", "beef", "lamb", "shrink"];
-        foreach ($tags as $tag) {
-            $new_tag = new Tag();
-            $new_tag->setName($tag);
-            $new_tag->setUser($this->getUser());
-            $this->getDoctrine()->getManager()->persist($new_tag);
-            $this->getDoctrine()->getManager()->flush();
-        }
-        return new Response();
-    }
-
 
     /**
      * @Route("/settings", name="/settings", methods={"GET", "POST"})

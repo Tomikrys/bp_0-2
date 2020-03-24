@@ -5,6 +5,10 @@ body {
     display: flex;
     flex-direction: column;
 }
+
+nav .btn-custom-dropdown {
+    border: 1px solid #27292b;
+}
 .content {
     flex: 1 0 auto;
 }

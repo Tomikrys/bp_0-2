@@ -2,11 +2,20 @@
 
 namespace App\Controller;
 
+use App\Entity\Food;
+use App\Entity\History;
 use App\Entity\Settings;
+use App\Entity\Tag;
+use App\Entity\Template;
+use App\Entity\Type;
 use App\Entity\User;
 use App\Repository\UserRepository;
+use App\Service\FileUploader;
+use DateTime;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
+use Psr\Container\ContainerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -60,7 +69,186 @@ class SecurityController extends AbstractController
         return $this->render('security/login.html.twig', ['last_username' => $lastUsername, 'error' => $error]);
     }
 
+    /**
+     * @Route("/settings/initialize", methods={"GET", "POST"})
+     * @param $user
+     * @return Response
+     */
     public function default_settings($user) {
+        $settings = $this->getDoctrine()->getRepository(Settings::class)->findOneBy(['user' => $user]);
+        if (!$settings) {
+            $settings = new Settings();
+        }
+        $days = [["Pondělí", "Monday"], ["Úterý", "Tuesday"], ["Středa", "Wednesday"], ["Čtvrtek", "Thursday"], ["Pátek", "Friday"]];
+        $meals = ["Polévka", "Hlavní chod"];
+        $settings->setDays($days);
+        $settings->setMeals($meals);
+        $settings->setUser($user);
+        $this->getDoctrine()->getManager()->persist($settings);
+        $this->getDoctrine()->getManager()->flush();
+
+        $types = ["polévka", "jídlo", "salát"];
+        foreach ($types as $type) {
+            $new_type = new Type();
+            $new_type->setName($type);
+            $new_type->setUser($user);
+            $this->getDoctrine()->getManager()->persist($new_type);
+            $this->getDoctrine()->getManager()->flush();
+        }
+
+        $tags = ["vege", "spicy", "chicken", "pork", "beef", "fish"];
+        foreach ($tags as $tag) {
+            $new_tag = new Tag();
+            $new_tag->setName($tag);
+            $new_tag->setUser($user);
+            $this->getDoctrine()->getManager()->persist($new_tag);
+            $this->getDoctrine()->getManager()->flush();
+        }
+
+        return new Response();
+    }
+
+    /**
+     * @param $user
+     * @Route("/settings/default_foods", methods={"GET", "POST"})
+     */
+    public function fill_default_foods($user) {
+        $this->add_new_food("Česneková polévka", "Se sýrem a opečeným chlebem",
+            "20", "polévka", ["vege"], $user);
+        $this->add_new_food("Kuřecí vývar", "Poctivý český vývar, bez bujónu",
+            "20", "polévka", ["chicken"], $user);
+        $this->add_new_food("Vepřové kostky po myslivecku", "Podávané s opékanými bramborami a tatarkou",
+            "99", "jídlo", ["pork", "spicy"], $user);
+        $this->add_new_food("Grilovaný vepřový steak na žampionech", "Podávané s hranolkami a smetanovým dipem",
+            "99", "jídlo", ["pork", "spicy"], $user);
+        $this->add_new_food("Grilovaný vepřový steak na žampionech", "Podávané s hranolkami a smetanovým dipem",
+            "99", "jídlo", ["pork", "spicy"], $user);
+        $this->add_new_food("Tagliatelle s kuřecím ragů", "Dlouhé ploché těstoviny, sypané parmezánem",
+            "99", "jídlo", ["chicken", "spicy"], $user);
+        $this->add_new_food("Čerstvý zeleninový salát", "S anglickým roasbeefem a kaparovým dresinkem, kaiserka",
+            "125", "salát", ["beef"], $user);
+        $this->add_new_food("Salát s tuňákem", "Zelenina, tuňák, vejce a smetanovým dresing, kaiserka",
+            "125", "salát", ["fish"], $user);
+    }
+
+    /**
+     * @param $user
+     * @Route("/settings/history_record", methods={"GET", "POST"})
+     * @throws \Exception
+     */
+    public function add_random_history($user) {
+        $history = new History();
+        $history->setUser($user);
+        // Kvůli posunutí časových zon, jinak to dá pondělí
+        $next_monday = strtotime(date('d-m-Y', strtotime('next week Tuesday')));
+        $date = new DateTime("@" . intval($next_monday));
+        $history->setDateFrom($date);
+        $settings = $this->getDoctrine()->getRepository(Settings::class)->findOneBy(['user' => $user]);
+
+        $foodRepository = $this->getDoctrine()->getRepository(Food::class);
+        $typeRepository = $this->getDoctrine()->getRepository(Type::class);
+        $type = $typeRepository->findOneBy(['user' => $user,'name' => 'polévka']);
+        $soups = $foodRepository->findBy(['user' => $user,'type' => $type]);
+        $type = $typeRepository->findOneBy(['user' => $user,'name' => 'jídlo']);
+        $main = $foodRepository->findBy(['user' => $user,'type' => $type]);
+        $type = $typeRepository->findOneBy(['user' => $user,'name' => 'salát']);
+        $salads = $foodRepository->findBy(['user' => $user,'type' => $type]);
+
+        $data = [];
+        foreach ($settings->getDays() as $day) {
+            $data_day["day"] = $day[0];
+            $data_day["description"] = $day[1];
+            $data_day["meals"] = [];
+            $data_meal["meals"] = [];
+            foreach ($settings->getMeals() as $meal) {
+               $data_meal["type"] = $meal;
+               $meals = [];
+               if ($meal == 'Polévka') {
+                   $randIndex = array_rand($soups);
+                   $meals = [["id" => $soups[$randIndex]->getId()]];
+               } else {
+                   $randIndex1 = array_rand($main, 2);
+                   $randIndex2 = array_rand($salads);
+                   $meals = [["id" => $main[$randIndex1[0]]->getId()],
+                             ["id" => $main[$randIndex1[1]]->getId()],
+                             ["id" => $salads[$randIndex2]->getId()]];
+               }
+               $data_meal["meals"] = $meals;
+               array_push($data_day["meals"], $data_meal);
+            }
+            //$data_day["meals"] = $data_meal;
+            array_push($data, $data_day);
+        }
+
+        $history->setJson($data);
+        $this->getDoctrine()->getManager()->persist($history);
+        $this->getDoctrine()->getManager()->flush();
+    }
+
+
+    public function add_new_food($name, $description, $price, $type, $tags, $user) {
+        $sample_food = new Food();
+        $sample_food->setName($name);
+        $sample_food->setDescription($description);
+        $sample_food->setPrice($price);
+        $entityManager = $this->getDoctrine()->getManager();
+        $sample_food->setTypeByString($type, $entityManager, $user);
+        foreach ($tags as $tag_string) {
+            $tag = $this->getDoctrine()->getRepository(Tag::class)->findOneBy(['user' => $user, 'name' => $tag_string]);
+            if ($tag) {
+                $sample_food->addTag($tag);
+            } else {
+                $this->addFlash('error', 'Tag \'' . $tag_string . '\' nenalezen.');
+            }
+        }
+        $sample_food->setUser($user);
+        $this->getDoctrine()->getManager()->persist($sample_food);
+        $this->getDoctrine()->getManager()->flush();
+    }
+
+
+    /**
+     * @Route("/settings/default_templates", methods={"GET", "POST"})
+     * @param $user
+     * @param FileUploader $uploader
+     */
+    public function add_default_templates($user, FileUploader $uploader) {
+        $clean_username = $user->getCleanUsername();
+        $filesystem = new Filesystem();
+
+        $filesystem->mkdir('/words/' . $clean_username);
+
+        $path = 'words/' . $clean_username . '/template.docx';
+        $filesystem->copy('words/template.docx', $path,
+            true);
+        $this->add_new_template("menu", "template.docx", $user);
+        $uploader->aws_upload($path);
+
+        $path = 'words/' . $clean_username . '/zomato.docx';
+        $filesystem->copy('words/zomato.docx', $path,
+            true);
+        $this->add_new_template("zomato", "zomato.docx", $user);
+        $uploader->aws_upload($path);
+
+        $path = 'words/' . $clean_username . '/webovky.docx';
+        $filesystem->copy('words/webovky.docx', $path,
+            true);
+        $this->add_new_template("web", "webovky.docx", $user);
+        $uploader->aws_upload($path);
+
+    }
+
+    public function add_new_template($name, $path, $user) {
+        $template = new Template();
+        $template->setName($name);
+        $template->setPath($path);
+        $template->setUser($user);
+
+        $this->getDoctrine()->getManager()->persist($template);
+        $this->getDoctrine()->getManager()->flush();
+    }
+
+    public function initialize_settings($user) {
         $settings = new Settings();
         $days = [];
         $meals = [];
@@ -74,10 +262,12 @@ class SecurityController extends AbstractController
     /**
      * @Route("/register", name="register")
      * @param AuthenticationUtils $authenticationUtils
-     * @param $request
+     * @param Request $request
+     * @param FileUploader $uploader
      * @return Response
+     * @throws \Exception
      */
-    public function register(AuthenticationUtils $authenticationUtils,Request $request): Response
+    public function register(AuthenticationUtils $authenticationUtils, Request $request, FileUploader $uploader): Response
     {
         // last username entered by the user
         $lastUsername = $authenticationUtils->getLastUsername();
@@ -113,7 +303,13 @@ class SecurityController extends AbstractController
                     $this->addFlash('error', 'Uživatel s emailovou adresou \'' . $user->getEmail() . '\' již existuje.');
                     return $this->redirect($this->generateUrl('register'));
                 }
+                $this->initialize_settings($user);
+
                 $this->default_settings($user);
+                $this->fill_default_foods($user);
+                $this->add_default_templates($user, $uploader);
+                $this->add_random_history($user);
+
                 $this->addFlash('success', 'Uživatel \'' . $user->getEmail() . '\' byl úspěšně přidán.');
                 $this->addFlash('info', 'Prosím, přihlaste se.');
                 return $this->redirect($this->generateUrl('app_login'));

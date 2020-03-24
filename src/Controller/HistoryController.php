@@ -106,22 +106,12 @@ class HistoryController extends AbstractController {
     public function add() {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $json = file_get_contents('php://input');
-        //dump($json);
         $data = json_decode ($json, true);
-        //dump($data['date']);
-        //dump($json);
-        //dump($data);
         $history = new History();
         $date = new DateTime("@" . $data['date'] / 1000);
-        //dump($date);
         $history->setDateFrom($date);
-        //dump($history->getDateFrom());
-        //dump($history->getDateFromFormatted());
-        //dump(json_encode($data['json']));
-        //dump($data['json']);
         $history->setJson($data['json']);
         $history->setUser($this->getUser());
-        //dump($history);
         $this->historyRepository->save($history);
 
         return new Response();
