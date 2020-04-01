@@ -93,7 +93,7 @@
                                 {% set tags = tags ~ "]"%}
                                 <div class="meal card-header filter-tags meal{{ food.id }}" id="meal{{ food.id }}" data-id="{{ food.id }}"
                                      data-type="{{ type }}" data-tags="{{ tags }}" data-description="{{ food.description }}">
-                                    {{ food.name }}, {{ food.price }}
+                                        {{ food.name }}, {{ food.price }}
                                 </div>
                             {% endfor %}
                         </div>
@@ -152,6 +152,8 @@
     // initialization
 
     $().ready(function() {
+        document.getElementById('datepicker').value = get_nearest_monday();
+
         highlight_used_meals();
 
         $('#datepicker').datepicker({
@@ -197,12 +199,10 @@
     }
 
     function get_date_separated($stringdate) {
-        let regexpNames =  /(?<dd>\d+). (?<mm>\d+). (?<yyyy>\d+)/mg;
+        let regexpNames =  /(\d+). (\d+). (\d+)/mg;
         let match = regexpNames.exec($stringdate);
-        return {dd: match.groups.dd, mm: match.groups.mm, yyyy: match.groups.yyyy}
+        return {dd: match[1], mm: match[2], yyyy: match[3]}
     }
-
-    document.getElementById('datepicker').value = get_nearest_monday();
 
     function saveMenu() {
         $("#loading").modal("show");
@@ -380,15 +380,19 @@
         })
     }
 
-    boxArray = document.getElementsByClassName("dragula");
-    boxes = Array.prototype.slice.call(boxArray);
-    dragula({
+    let boxArray = document.getElementsByClassName("dragula");
+    let boxes = Array.prototype.slice.call(boxArray);
+    dragula([document.getElementById("foodList"), document.getElementsByClassName("drop-container")], {
         containers: boxes,
         copy: function (el, source) {
-            return source.classList.contains('get-container')
+            if (el.classList.contains("meal")) {
+                return source.classList.contains('get-container');
+            } else {
+                return false;
+            }
         },
         accepts: function (el, target) {
-            return target.classList.contains('drop-container')
+            return target.classList.contains('drop-container');
         },
         removeOnSpill: true,
         ignoreInputTextSelection: false
