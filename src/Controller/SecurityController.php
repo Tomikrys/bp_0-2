@@ -230,6 +230,12 @@ class SecurityController extends AbstractController
         $this->add_new_template("zomato", "zomato.docx", $user);
         $uploader->aws_upload($path);
 
+        $path = 'words/' . $clean_username . '/facebook.docx';
+        $filesystem->copy('words/facebook.docx', $path,
+            true);
+        $this->add_new_template("facebook", "facebook.docx", $user);
+        $uploader->aws_upload($path);
+
         $path = 'words/' . $clean_username . '/webovky.docx';
         $filesystem->copy('words/webovky.docx', $path,
             true);
