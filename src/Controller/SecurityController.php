@@ -218,7 +218,7 @@ class SecurityController extends AbstractController
 
         $filesystem->mkdir('/words/' . $clean_username);
 
-        $path = 'words/' . $clean_username . '/template.docx';
+        /*$path = 'words/' . $clean_username . '/template.docx';
         $filesystem->copy('words/template.docx', $path,
             true);
         $this->add_new_template("menu", "template.docx", $user);
@@ -235,7 +235,7 @@ class SecurityController extends AbstractController
             true);
         $this->add_new_template("web", "webovky.docx", $user);
         $uploader->aws_upload($path);
-
+        */
     }
 
     public function add_new_template($name, $path, $user) {
@@ -307,8 +307,8 @@ class SecurityController extends AbstractController
 
                 $this->default_settings($user);
                 $this->fill_default_foods($user);
-                $this->add_default_templates($user, $uploader);
                 $this->add_random_history($user);
+                $this->add_default_templates($user, $uploader);
 
                 $this->addFlash('success', 'Uživatel \'' . $user->getEmail() . '\' byl úspěšně přidán.');
                 $this->addFlash('info', 'Prosím, přihlaste se.');
