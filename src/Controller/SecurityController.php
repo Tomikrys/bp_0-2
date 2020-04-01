@@ -307,8 +307,8 @@ class SecurityController extends AbstractController
 
                 $this->default_settings($user);
                 $this->fill_default_foods($user);
-                $this->add_default_templates($user, $uploader);
                 $this->add_random_history($user);
+                $this->add_default_templates($user, $uploader);
 
                 $this->addFlash('success', 'Uživatel \'' . $user->getEmail() . '\' byl úspěšně přidán.');
                 $this->addFlash('info', 'Prosím, přihlaste se.');
