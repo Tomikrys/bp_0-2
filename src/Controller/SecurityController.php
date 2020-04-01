@@ -216,9 +216,9 @@ class SecurityController extends AbstractController
         $clean_username = $user->getCleanUsername();
         $filesystem = new Filesystem();
 
-        $filesystem->mkdir('/words/' . $clean_username);
+        $filesystem->mkdir('words/' . $clean_username);
 
-        /*$path = 'words/' . $clean_username . '/template.docx';
+        $path = 'words/' . $clean_username . '/template.docx';
         $filesystem->copy('words/template.docx', $path,
             true);
         $this->add_new_template("menu", "template.docx", $user);
@@ -235,7 +235,7 @@ class SecurityController extends AbstractController
             true);
         $this->add_new_template("web", "webovky.docx", $user);
         $uploader->aws_upload($path);
-        */
+
     }
 
     public function add_new_template($name, $path, $user) {
