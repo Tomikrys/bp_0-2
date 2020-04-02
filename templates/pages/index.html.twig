@@ -10,7 +10,7 @@
         font-size: 2.4em;
     }
     img {
-        padding: 15px;
+        margin: 15px;
     }
     p {
         text-align: justify;
@@ -19,6 +19,15 @@
     .row {
         margin-bottom: 50px;
     }
+    {% if app.environment == "dev" %}
+    img {
+        border: #222222 solid 1px;
+        background-color: #565656;
+        width: 100%;
+        height: 380px;
+        margin-bottom: 20px;
+    }
+    {% endif %}
 </style>
 {% endblock %}
 {% block body %}
@@ -28,13 +37,13 @@
         <div class="row">
             <div class="col-12 col-md-4">
                 <h2>Tvorba menu snadno</h2>
-                <p>Aplikace slouží především restauracím, které se každý týden moří s tvořením týdenních menu.
+                <p>Aplikace slouží především <b>restauracím</b>, které se každý týden moří s tvořením týdenních menu.
                     <?--Po importu jídel, které k tvorbě menu používáte stačí jen jednoduše seskládat menu a vygenerovat si ho ve všech formátech,
                     které používáte.--> </p>
                 <h2>Rychlý import</h2>
                 <p>
-                    Můžete využít rychlý automatický import jídel. Jídla jsou rozděla do kategorií podle typů.
-                    Jídla můžete označit tagy pro snadné vyhledávání. Pro úpravu více jídel můžete použít dávkových změn.
+                    Můžete využít rychlý automatický <b>import jídel</b>. Jídla jsou rozděla do kategorií podle typů.
+                    Jídla můžete označit tagy pro snadné vyhledávání. Pro úpravu více jídel můžete použít <b>dávkových změn</b>.
                     V jídlech můžete snadno vyhledávat.
                     <?--Do aplikace si naimportujete svá jídla, ty je třeba rozdělit podle typů a příslušně otagovat. Není to nutné, ale
                     při tvorbě menu to pomáhá vyhledávat jednotlivé pokrmy. Poté si sestavíte menu přesunutím jídel do chlívečků. Nyní
@@ -44,9 +53,6 @@
             </div>
             <div class="col-12 col-md-8">
                 <img src="public/media/stock_laptop_foods.png" width="100%">
-                <div class="d-flex justify-content-center" >
-                    <a href="/register"><button type="button" class="btn btn-success btn-lg">Zaregistrujte se!</button></a>
-                </div>
             </div>
         </div>
         <div class="row">
@@ -55,16 +61,20 @@
             </div>
             <div class="col-12 col-md-4">
                 <h2>Sestavení menu</h2>
-                <p>Menu snadno sestavíte přetažením (drag&drop) do předpřipraveného formuláře. Jídla, která jste na daný týden použili
+                <p><b>Menu snadno sestavíte přetažením</b> (drag&drop) do předpřipraveného formuláře. Jídla, která jste
+                    na daný týden použili
                 se vám přehledně zvýrazní. Poté již stačí jenom exportovat do připravených šablon.</p>
                 <h2>Šikovný filtr</h2>
                 <p>
-                    V jídlech se dá snadno ztratit, proto je připraven jednoduchý filtr, který Vám pomůže se zorientovat.
+                    V jídlech se dá snadno ztratit, proto je připraven <b>jednoduchý filtr</b>, který Vám pomůže se zorientovat.
                 </p>
+                <div class="d-flex justify-content-center" >
+                    <a href="/register"><button type="button" class="btn btn-success btn-lg">Zaregistrujte se!</button></a>
+                </div>
             </div>
             <div class="col-12 col-md-4">
                 <h2>Jak se tvoří menu?</h2>
-                <p>Šablony jsou tvořeny dokumenty .docx (Word), proto je jeich editace a tvorba velmi snadná.
+                <p>Šablony jsou tvořeny dokumenty <b>.docx (Word)</b>, proto je jeich editace a tvorba velmi snadná.
                 <br>
                     Při registraci se Vám automaticky naimportují ilustrační šablony. Okamžitě můžete generovat
                     <b>menu ve&nbsp; formátu pro tisk</b>, menu připravené pro import do platformy <b>Zomato</b> +
@@ -77,7 +87,7 @@
         <div class="row">
             <div class="col">
                 <h2>Jak začít</h2>
-                <p>Začněte tím, že se <a href="/register">zaregistrujete</a>. Vytvoří se vám profil se základním nastavením a pár
+                <p>Začněte tím, že se <b><a href="/register">zaregistrujete</a></b>. Vytvoří se vám profil se základním nastavením a pár
                     jídly pro ukázku funkčnosti, vše si můžete změnit v nastavení aplikace a v seznamu jídel. Vše si proklikejte
                     a vyzkoušejte pokud byste měli nějaké dotazy neváhejte se obrátit na email <b>tomikrys@seznam.cz</b>!</p>
             </div>
