@@ -98,7 +98,14 @@
     <script src="{{ asset('public/js/dragula.min.js') }}"></script>
     <script src="{{ asset('public/js/sorttable.js') }}"></script>
 {% endif %}
-<script>sorttable.sort_alpha = function(a,b) { return a[0].localeCompare(b[0]); }</script>
+<script>
+    sorttable.sort_alpha = function(a,b) { return a[0].localeCompare(b[0]); }
+    if(navigator.userAgent.toLowerCase().indexOf('chrome') === -1){
+        document.getElementById("cite").classList.remove("text-muted");
+        document.getElementById("cite").classList.add("text-danger");
+        document.getElementById("cite").innerText="Při problémech použijte prohlížeč Chrome!"
+    }
+</script>
 {% block javascripts %}{% endblock %}
 </body>
 </html>
