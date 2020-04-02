@@ -88,6 +88,7 @@
 
 
     <h2>Typy jídel</h2>
+    <small>Nutno zatím ukládat po jednom. Ostatní neuložené se smažou.</small>
     <table id="types_settings" class="table table-hover table-sm table-bordered nonfluid">
         <thead class="thead-dark">
         <tr>
@@ -110,6 +111,7 @@
     <button type="button" class="btn btn-success" onclick="add_row_type(this)">Přidat řádek</button>
 
     <h2>Tagy jídel</h2>
+    <small>Nutno zatím ukládat po jednom. Ostatní neuložené se smažou.</small>
     <table id="days_menu" class="table table-hover table-sm table-bordered nonfluid">
         <thead class="thead-dark">
         <tr>
@@ -131,7 +133,7 @@
     </table>
     <button type="button" class="btn btn-success" onclick="add_row_tag(this)">Přidat řádek</button>
 
-    <h2>Import jídel</h2>
+    <h2 id="import">Import jídel</h2>
     <p>Jediný akceptovaný formát:<br><code>Název|Popis jídla|Cena|Typ|Tag|Tag</code><br>
     Počet tagů není omezen a nejsou povinné. Pokud tag či typ neexistuje je vytvořen.</p>
     <form action="javascript:void(0);">

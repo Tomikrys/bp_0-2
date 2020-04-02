@@ -38,14 +38,23 @@
         </style>
 
         <span class="text-muted mr-3">"Čas jsou peníze..."</span>
+
         {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/settings#import">Import jídel</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/settings">Nastavení aplikace</a>
+                </li>
+            </ul>
             <div class="btn-group mr-2">
                 <button class="btn btn-secondary btn-sm dropdown-toggle btn-custom-dropdown" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     {{ app.user.email }}
                 </button>
                 <div class="dropdown-menu dropdown-menu-right">
                    <!-- <a class="dropdown-item" href="/users/detail/{{ app.user.id }}">Upravit profil</a> -->
-                    <a class="dropdown-item" href="/settings">Nastavení aplikace</a>
+                    <!-- <a class="dropdown-item" href="/settings">Nastavení aplikace</a>-->
                     <a class="dropdown-item" href="/logout">Odlásit se</a>
                 </div>
             </div>

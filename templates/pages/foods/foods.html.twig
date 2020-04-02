@@ -402,243 +402,242 @@
         }
 
         function only_numbers_listener() {
-            $(".only-numbers").keydown(function (event) {
-                // Allow: backspace, delete, tab, escape, and enter
-                if (event.keyCode == 46 || event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 27 || event.keyCode == 13 ||
-                    // Allow: Ctrl+A
-                    (event.keyCode == 65 && event.ctrlKey === true) ||
-                    // Allow: home, end, left, right
-                    (event.keyCode >= 35 && event.keyCode <= 39)) {
-                    // let it happen, don't do anything
-                    return;
-                } else {
-                    // Ensure that it is a number and stop the keypress
-                    if (event.shiftKey || (event.keyCode < 48 || event.keyCode > 57) && (event.keyCode < 96 || event.keyCode > 105)) {
-                        event.preventDefault();
-                    }
-                }
-            });
-        }
-
-        let changed_foods = [];
-        function add_to_changed_foods(e) {
-            push_if_not_there(changed_foods, e.id);
-            //console.log(changed_foods);
-        }
-
-
-        function save_all_changed() {
-            changed_foods.forEach(function (food) {
-                edit_food(food);
-            });
-
-            let adding_foods = document.getElementsByClassName("adding_row");
-            //console.log(adding_foods);
-            for(let i = 0; i < adding_foods.length; i++) {
-                add_food(adding_foods[i].id);
+        $(".only-numbers").keydown(function (event) {
+            // Allow: backspace, delete, tab, escape, and enter
+            if (event.keyCode == 46 || event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 27 ||
+                // Allow: Ctrl+A
+                (event.keyCode == 65 && event.ctrlKey === true) ||
+                // Allow: home, end, left, right
+                (event.keyCode >= 35 && event.keyCode <= 39)) {
+                // let it happen, don't do anything
+                return;
             }
-
-            window.location.reload();
-        }
-
-        let selected_foods = [];
-        function select_food(id) {
-            push_if_not_there(selected_foods, id);
-            let selector = '#' + id;
-            let $input = $("#" + id).find("input.select_food").get()[0];
-            //console.log($input.checked);
-            if (!$input.checked) {
-                remove_from_array(selected_foods, id);
+            let numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+            if (!numbers.includes(event.key)) {
+                event.preventDefault();
             }
-            //console.log(selected_foods);
-        }
+        });
+      }
 
-        function delete_selected() {
-            if (confirm('Opravdu chcete smazat jídla? počet: ' + selected_foods.length)) {
-                selected_foods.forEach(function (id) {
-                    delete_food(id);
-                });
-            }
-            window.location.reload();
-        }
+      let changed_foods = [];
+      function add_to_changed_foods(e) {
+          push_if_not_there(changed_foods, e.id);
+          //console.log(changed_foods);
+      }
 
-        function clear_selected_foods() {
-            let foods = document.getElementById("foods");
-            let checkboxes = foods.getElementsByClassName("select_food");
-            for (let i = 0; i < checkboxes.length; i++) {
-                checkboxes[i].checked = false;
-            }
-            selected_foods = [];
-            document.getElementById("select_all_foods").checked = false;
-        }
 
-        function isVisible(e) {
-            return !!( e.offsetWidth || e.offsetHeight || e.getClientRects().length );
-        }
+      function save_all_changed() {
+          changed_foods.forEach(function (food) {
+              edit_food(food);
+          });
 
-        function set_selected_foods() {
-            let foods = document.getElementById("foods");
-            let checkboxes = foods.getElementsByClassName("select_food");
-            for (let i = 0; i < checkboxes.length; i++) {
-                if (isVisible(checkboxes[i])) {
-                    checkboxes[i].checked = true;
-                    select_food(checkboxes[i].getAttribute("data-id"));
-                }
-            }
-        }
+          let adding_foods = document.getElementsByClassName("adding_row");
+          //console.log(adding_foods);
+          for(let i = 0; i < adding_foods.length; i++) {
+              add_food(adding_foods[i].id);
+          }
 
-        function toggle_all_checkboxes($checkbox) {
-            let $status = $checkbox.checked;
-            if ($status) {
-                set_selected_foods();
-            } else {
-                clear_selected_foods()
-            }
-        }
+          window.location.reload();
+      }
 
-        function manage_avaliability_of_edit_and_delete_button() {
-            let foods = document.getElementById("foods");
-            let checkboxes = foods.getElementsByClassName("select_food");
-            let hidden_flag = false;
-            for (let i = 0; i < checkboxes.length; i++) {
-                if (isVisible(checkboxes[i]) && checkboxes[i].checked) {
-                    hidden_flag = true;
-                }
-            }
-            if (hidden_flag) {
-                $(".delete_selected").prop('disabled', false);
-                $(".edit_selected").prop('disabled', false);
-            } else {
-                $(".delete_selected").prop('disabled', true);
-                $(".edit_selected").prop('disabled', true);
-            }
-        }
+      let selected_foods = [];
+      function select_food(id) {
+          push_if_not_there(selected_foods, id);
+          let selector = '#' + id;
+          let $input = $("#" + id).find("input.select_food").get()[0];
+          //console.log($input.checked);
+          if (!$input.checked) {
+              remove_from_array(selected_foods, id);
+          }
+          //console.log(selected_foods);
+      }
 
-        function select_right_tags () {
-            let form_add = document.getElementById("editFoodFormAddTag").getElementsByClassName("edit_multiple_foods_tag_form")[0];
-            let form_add_checkboxes = form_add.getElementsByClassName("form-checkbox");
-            for (let i = 0; i < form_add_checkboxes.length; i++) {
-                form_add_checkboxes[i].checked = false;
-                form_add_checkboxes[i].disabled = false;
-            }
+      function delete_selected() {
+          if (confirm('Opravdu chcete smazat jídla? počet: ' + selected_foods.length)) {
+              selected_foods.forEach(function (id) {
+                  delete_food(id);
+              });
+          }
+          window.location.reload();
+      }
 
-            let form_remove = document.getElementById("editFoodFormRemoveTag").getElementsByClassName("edit_multiple_foods_tag_form")[0];
-            let form_remove_checkboxes = form_remove.getElementsByClassName("form-checkbox");
-            for (let i = 0; i < form_remove_checkboxes.length; i++) {
-                form_remove_checkboxes[i].checked = false;
-                form_remove_checkboxes[i].disabled = false;
-            }
+      function clear_selected_foods() {
+          let foods = document.getElementById("foods");
+          let checkboxes = foods.getElementsByClassName("select_food");
+          for (let i = 0; i < checkboxes.length; i++) {
+              checkboxes[i].checked = false;
+          }
+          selected_foods = [];
+          document.getElementById("select_all_foods").checked = false;
+      }
 
-            let all_tags_unique = [];
-            let all_tags = [];
-            selected_foods.forEach(function (food_id) {
-                document.getElementById(food_id).querySelectorAll('.food_tag').forEach(
-                    function(food) {
-                        let tag_id = food.getAttribute('data-id');
-                        push_if_not_there(all_tags_unique, tag_id);
-                        all_tags.push(tag_id);
-                    }
-                );
-            });
+      function isVisible(e) {
+          return !!( e.offsetWidth || e.offsetHeight || e.getClientRects().length );
+      }
 
-            for (let i = 0; i < form_add_checkboxes.length; i++) {
-                let checkbox_value =  form_add_checkboxes[i].getAttribute('value');
-                if (all_tags.filter(i => i === checkbox_value).length === selected_foods.length) {
-                    form_add_checkboxes[i].checked = true;
-                    form_add_checkboxes[i].disabled = true;
-                }
-            }
+      function set_selected_foods() {
+          let foods = document.getElementById("foods");
+          let checkboxes = foods.getElementsByClassName("select_food");
+          for (let i = 0; i < checkboxes.length; i++) {
+              if (isVisible(checkboxes[i])) {
+                  checkboxes[i].checked = true;
+                  select_food(checkboxes[i].getAttribute("data-id"));
+              }
+          }
+      }
 
-            for (let i = 0; i < form_remove_checkboxes.length; i++) {
-                if (all_tags_unique.indexOf(form_remove_checkboxes[i].getAttribute('value')) !== -1) {
-                    form_remove_checkboxes[i].checked = true;
-                } else {
-                    form_remove_checkboxes[i].disabled = true;
-                }
-            }
-        }
+      function toggle_all_checkboxes($checkbox) {
+          let $status = $checkbox.checked;
+          if ($status) {
+              set_selected_foods();
+          } else {
+              clear_selected_foods()
+          }
+      }
 
-        function select_right_type() {
-            let first_run = true;
-            let all_types = null;
-            let types_flag = true;
-            selected_foods.forEach(function (food_id) {
-                let selector = document.getElementById(food_id).getElementsByClassName("food_type")[0];
-                let type = selector[selector.selectedIndex].value;
-                if (first_run) {
-                    first_run = false;
-                    all_types = type;
-                } else {
-                    if (all_types !== type) {
-                        types_flag = false;
-                    }
-                }
-            });
-            if (types_flag) {
-                $("#multiple_edit_types").val(all_types);
-            } else {
-                $("#multiple_edit_types").val("");
-            }
-        }
+      function manage_avaliability_of_edit_and_delete_button() {
+          let foods = document.getElementById("foods");
+          let checkboxes = foods.getElementsByClassName("select_food");
+          let hidden_flag = false;
+          for (let i = 0; i < checkboxes.length; i++) {
+              if (isVisible(checkboxes[i]) && checkboxes[i].checked) {
+                  hidden_flag = true;
+              }
+          }
+          if (hidden_flag) {
+              $(".delete_selected").prop('disabled', false);
+              $(".edit_selected").prop('disabled', false);
+          } else {
+              $(".delete_selected").prop('disabled', true);
+              $(".edit_selected").prop('disabled', true);
+          }
+      }
 
-        function select_right_price() {
-            let first_run = true;
-            let all_prices = null;
-            let prices_flag = true;
-            selected_foods.forEach(function (food_id) {
-                const price = document.getElementById(food_id).getElementsByClassName("food_price")[0].innerText;
-                if (first_run) {
-                    first_run = false;
-                    all_prices = price;
-                } else {
-                    if (all_prices !== price) {
-                        prices_flag = false;
-                    }
-                }
-            });
-            if (prices_flag) {
-                $("#multiple_edit_price").val(all_prices);
-            } else {
-                $("#multiple_edit_price").val("");
-            }
-        }
+      function select_right_tags () {
+          let form_add = document.getElementById("editFoodFormAddTag").getElementsByClassName("edit_multiple_foods_tag_form")[0];
+          let form_add_checkboxes = form_add.getElementsByClassName("form-checkbox");
+          for (let i = 0; i < form_add_checkboxes.length; i++) {
+              form_add_checkboxes[i].checked = false;
+              form_add_checkboxes[i].disabled = false;
+          }
 
-        function edit_selected() {
-            select_right_tags();
-            select_right_type();
-            select_right_price();
-            $("#multiple_edit_count").text(selected_foods.length);
+          let form_remove = document.getElementById("editFoodFormRemoveTag").getElementsByClassName("edit_multiple_foods_tag_form")[0];
+          let form_remove_checkboxes = form_remove.getElementsByClassName("form-checkbox");
+          for (let i = 0; i < form_remove_checkboxes.length; i++) {
+              form_remove_checkboxes[i].checked = false;
+              form_remove_checkboxes[i].disabled = false;
+          }
 
-            $("#editMultipleFoodsModal").modal("show");
-        }
+          let all_tags_unique = [];
+          let all_tags = [];
+          selected_foods.forEach(function (food_id) {
+              document.getElementById(food_id).querySelectorAll('.food_tag').forEach(
+                  function(food) {
+                      let tag_id = food.getAttribute('data-id');
+                      push_if_not_there(all_tags_unique, tag_id);
+                      all_tags.push(tag_id);
+                  }
+              );
+          });
 
-        function save_multiple_changes() {
-            $("#loading").modal("show");
-            let price = $("#multiple_edit_price").val();
-            const selector = document.getElementById("multiple_edit_types");
-            const type = selector[selector.selectedIndex].getAttribute('data-id');
+          for (let i = 0; i < form_add_checkboxes.length; i++) {
+              let checkbox_value =  form_add_checkboxes[i].getAttribute('value');
+              if (all_tags.filter(i => i === checkbox_value).length === selected_foods.length) {
+                  form_add_checkboxes[i].checked = true;
+                  form_add_checkboxes[i].disabled = true;
+              }
+          }
 
-            let $add_tags = [];
-            $("#editFoodFormAddTag input.add_tag_modal_checkbox").each(function() {
-                if ($(this).is(':checked')) {
-                    $add_tags.push($(this).val());
-                }
-            });
+          for (let i = 0; i < form_remove_checkboxes.length; i++) {
+              if (all_tags_unique.indexOf(form_remove_checkboxes[i].getAttribute('value')) !== -1) {
+                  form_remove_checkboxes[i].checked = true;
+              } else {
+                  form_remove_checkboxes[i].disabled = true;
+              }
+          }
+      }
 
-            let $remove_other_tags = [];
-            $("#editFoodFormRemoveTag input.add_tag_modal_checkbox").each(function() {
-                if ($(this).is(':checked')){
-                    $remove_other_tags.push($(this).val());
-                }
-            });
+      function select_right_type() {
+          let first_run = true;
+          let all_types = null;
+          let types_flag = true;
+          selected_foods.forEach(function (food_id) {
+              let selector = document.getElementById(food_id).getElementsByClassName("food_type")[0];
+              let type = selector[selector.selectedIndex].value;
+              if (first_run) {
+                  first_run = false;
+                  all_types = type;
+              } else {
+                  if (all_types !== type) {
+                      types_flag = false;
+                  }
+              }
+          });
+          if (types_flag) {
+              $("#multiple_edit_types").val(all_types);
+          } else {
+              $("#multiple_edit_types").val("");
+          }
+      }
 
-            selected_foods.forEach(function (food_id) {
-                if (price || type) {
-                    edit_food(food_id, price, type);
-                }
-                edit_tags(food_id, $add_tags, $remove_other_tags);
-            });
-            window.location.reload();
-        }
-    </script>
+      function select_right_price() {
+          let first_run = true;
+          let all_prices = null;
+          let prices_flag = true;
+          selected_foods.forEach(function (food_id) {
+              const price = document.getElementById(food_id).getElementsByClassName("food_price")[0].innerText;
+              if (first_run) {
+                  first_run = false;
+                  all_prices = price;
+              } else {
+                  if (all_prices !== price) {
+                      prices_flag = false;
+                  }
+              }
+          });
+          if (prices_flag) {
+              $("#multiple_edit_price").val(all_prices);
+          } else {
+              $("#multiple_edit_price").val("");
+          }
+      }
+
+      function edit_selected() {
+          select_right_tags();
+          select_right_type();
+          select_right_price();
+          $("#multiple_edit_count").text(selected_foods.length);
+
+          $("#editMultipleFoodsModal").modal("show");
+      }
+
+      function save_multiple_changes() {
+          $("#loading").modal("show");
+          let price = $("#multiple_edit_price").val();
+          const selector = document.getElementById("multiple_edit_types");
+          const type = selector[selector.selectedIndex].getAttribute('data-id');
+
+          let $add_tags = [];
+          $("#editFoodFormAddTag input.add_tag_modal_checkbox").each(function() {
+              if ($(this).is(':checked')) {
+                  $add_tags.push($(this).val());
+              }
+          });
+
+          let $remove_other_tags = [];
+          $("#editFoodFormRemoveTag input.add_tag_modal_checkbox").each(function() {
+              if ($(this).is(':checked')){
+                  $remove_other_tags.push($(this).val());
+              }
+          });
+
+          selected_foods.forEach(function (food_id) {
+              if (price || type) {
+                  edit_food(food_id, price, type);
+              }
+              edit_tags(food_id, $add_tags, $remove_other_tags);
+          });
+          window.location.reload();
+      }
+</script>
 {% endblock %}
