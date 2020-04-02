@@ -92,6 +92,7 @@
     </div>
 
     <div class="foods-block">
+        <p><small>Pokud chcete upravovat tagy je třeba nejprve uložit všechny předchozí změny.</small></p>
         {{ include('pages/foods/parts/table.html.twig') }}
 
         {{ include('pages/foods/parts/formAddTagModal.html.twig') }}
@@ -303,6 +304,8 @@
             cell_price.classList.add("food_price");
             cell_price.classList.add("only-numbers");
             cell_price.attributes.setNamedItem(editable3);
+
+            cell_tags.innerHTML = "<small>Tagy lze přidat až po uložení</small>";
 
             // řešení selektu
             cell_type.innerHTML =
@@ -631,10 +634,8 @@
 
             selected_foods.forEach(function (food_id) {
                 if (price || type) {
-                    console.log(food_id, price, type);
                     edit_food(food_id, price, type);
                 }
-                console.log(food_id, $add_tags, $remove_other_tags);
                 edit_tags(food_id, $add_tags, $remove_other_tags);
             });
             window.location.reload();
