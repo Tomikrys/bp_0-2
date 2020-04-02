@@ -1,30 +1,67 @@
 {% extends 'base.html.twig' %}
 {% block title %}{% endblock %}
-{% block stylesheets %}{% endblock %}
+{% block stylesheets %}
+<style>
+    h1 {
+        margin-bottom: 20px;
+    }
+    img {
+        padding: 15px;
+    }
+</style>
+{% endblock %}
 {% block body %}
 
-    <h1>Vítejte v aplikaci pro tvorbu meníček</h1>
-    <h2>K čemu aplikace slouží</h2>
-    <p>Aplikace slouží především restauracím, které se každý týden moří s tvořením týdenních menu.
-    Po importu jídel, které k tvorbě menu používáte stačí jen jednoduše seskládat menu a vygenerovat si ho ve všech formátech,
-        které používáte.</p>
+    <div id="index">
+        <h1 class="text-center">Aplikace pro snadnou tvorbu meníček - SimpleMenu.cz</h1>
+        <div class="row">
+            <div class="col-4">
+                <h2>Tvorba menu snadno</h2>
+                <p>Aplikace slouží především restauracím, které se každý týden moří s tvořením týdenních menu.
+                    Po importu jídel, které k tvorbě menu používáte stačí jen jednoduše seskládat menu a vygenerovat si ho ve všech formátech,
+                    které používáte.</p>
+                <h2>Jak na to?</h2>
+                <p>Do aplikace si naimportujete svá jídla, ty je třeba rozdělit podle typů a příslušně otagovat. Není to nutné, ale
+                    při tvorbě menu to pomáhá vyhledávat jednotlivé pokrmy. Poté si sestavíte menu přesunutím jídel do chlívečků. Nyní
+                    stačí menu vygenerovat do předem připravené šablony. Tou je dokument ve wordu ve speciálním formátu, který potom
+                    aplikace přetvoří do příslušné podoby. Výhodou šablony ve Wordu je jednoduché a uživatelsky přívětivé editování.
+                    Nově registrovaní uživatelé mají pár šablon předpřipravených.</p>
+            </div>
+            <div class="col-8">
+                <img src="{{ asset('media/stock_laptop_foods.png') }}" width="100%">
+            </div>
+        </div>
+        <div class="row d-flex justify-content-center" >
+            <a href="/register"><button type="button" class="btn btn-success btn-lg">Zaregistrujte se!</button></a>
+        </div>
+        <div class="row">
+            <div class="col-8">
+                <img src="{{ asset('media/stock_laptop_menu.png') }}" width="100%">
+            </div>
+            <div class="col-4">
+                <h2>Sestavení menu</h2>
+                <p>Lorem Ipsum</p>
+                <h2>Kolik vás to bude stát</h2>
+                <p>Nic. Aplikace je tvořena vrámci bakalářské práce na FIT VUT v Brně. Minimálně během vývoje a dokud to nebude dělat světoborný věci
+                    nemám v plánu žádné funkce do budoucna zpoplatňovat. To však neznamená, že by se to v dáleké budoucnosti nemuselo změnit.
+                    Neobávejte se však, funkce které aplikace umí teď, budou zdarma napořád.</p>
+            </div>
+            <div class="col-4">
+                <h2>Jak se tvoří menu?</h2>
+                <p>šablony a tak</p>
+                <h2>Jak začít</h2>
+                <p>Začněte tím, že se <a href="/register">zaregistrujete</a>. Vytvoří se vám profil se základním nastavením a pár
+                    jídly pro ukázku funkčnosti, vše si můžete změnit v nastavení aplikace a v seznamu jídel. Vše si proklikejte a vyzkoušejte
+                    pokud byste měli nějaké dotazy neváhejte se obrátit na email tomikrys@seznam.cz!</p>
+            </div>
+            <div class="col-8">
+                <img src="{{ asset('media/stock_laptop_word_comparsion.png') }}" width="100%">
+            </div>
+        </div>
+    </div>
 
-    <h2>Jak aplikace funguje</h2>
-    <p>Do aplikace si naimportujete svá jídla, ty je třeba rozdělit podle typů a příslušně otagovat. Není to nutné, ale
-    při tvorbě menu to pomáhá vyhledávat jednotlivé pokrmy. Poté si sestavíte menu přesunutím jídel do chlívečků. Nyní
-    stačí menu vygenerovat do předem připravené šablony. Tou je dokument ve wordu ve speciálním formátu, který potom
-    aplikace přetvoří do příslušné podoby. Výhodou šablony ve Wordu je jednoduché a uživatelsky přívětivé editování.
-        Nově registrovaní uživatelé mají pár šablon předpřipravených.</p>
 
-    <h2>Kolik vás to bude stát</h2>
-    <p>Nic. Aplikace je tvořena vrámci bakalářské práce na FIT VUT v Brně. Minimálně během vývoje a dokud to nebude dělat světoborný věci
-    nemám v plánu žádné funkce do budoucna zpoplatňovat. To však neznamená, že by se to v dáleké budoucnosti nemuselo změnit.
-    Neobávejte se však, funkce které aplikace umí teď, budou zdarma napořád.</p>
 
-    <h2>Jak začít</h2>
-    <p>Začněte tím, že se <a href="/register">zaregistrujete</a>. Vytvoří se vám profil se základním nastavením a pár
-    jídly pro ukázku funkčnosti, vše si můžete změnit v nastavení aplikace a v seznamu jídel. Vše si proklikejte a vyzkoušejte
-    pokud byste měli nějaké dotazy neváhejte se obrátit na email tomikrys@seznam.cz!</p>
 
 {% endblock %}
 {% block javascripts %}{% endblock %}
