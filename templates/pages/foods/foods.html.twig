@@ -36,6 +36,7 @@
             border-radius:8px;
         }
 
+
         #form_tags {
             -webkit-column-count: 3;
             -moz-column-count: 3;
@@ -611,27 +612,27 @@
           $("#editMultipleFoodsModal").modal("show");
       }
 
-      function save_multiple_changes() {
+      async function save_multiple_changes() {
           $("#loading").modal("show");
           let price = $("#multiple_edit_price").val();
           const selector = document.getElementById("multiple_edit_types");
           const type = selector[selector.selectedIndex].getAttribute('data-id');
 
           let $add_tags = [];
-          $("#editFoodFormAddTag input.add_tag_modal_checkbox").each(function() {
+          $("#editFoodFormAddTag input.add_tag_modal_checkbox").each(function () {
               if ($(this).is(':checked')) {
                   $add_tags.push($(this).val());
               }
           });
 
           let $remove_other_tags = [];
-          $("#editFoodFormRemoveTag input.add_tag_modal_checkbox").each(function() {
-              if ($(this).is(':checked')){
+          $("#editFoodFormRemoveTag input.add_tag_modal_checkbox").each(function () {
+              if ($(this).is(':checked')) {
                   $remove_other_tags.push($(this).val());
               }
           });
 
-          selected_foods.forEach(function (food_id) {
+          await selected_foods.forEach(function (food_id) {
               if (price || type) {
                   edit_food(food_id, price, type);
               }
