@@ -19,6 +19,11 @@
     .row {
         margin-bottom: 50px;
     }
+
+    a button {
+        margin-top: 40px;
+    }
+
     {% if app.environment == "dev" %}
     img {
         border: #222222 solid 1px;
@@ -42,9 +47,8 @@
                     které používáte.--> </p>
                 <h2>Rychlý import</h2>
                 <p>
-                    Můžete využít rychlý automatický <b>import jídel</b>. Jídla jsou rozděla do kategorií podle typů.
-                    Jídla můžete označit tagy pro snadné vyhledávání. Pro úpravu více jídel můžete použít <b>dávkových změn</b>.
-                    V jídlech můžete snadno vyhledávat.
+                    Můžete využít rychlý automatický <b>import jídel</b>. Jídla jsou rozdělena do kategorií podle typů.
+                    Můžete je označit tagy pro snadné vyhledávání. Pro úpravu více jídel můžete použít <b>dávkových změn</b>.
                     <?--Do aplikace si naimportujete svá jídla, ty je třeba rozdělit podle typů a příslušně otagovat. Není to nutné, ale
                     při tvorbě menu to pomáhá vyhledávat jednotlivé pokrmy. Poté si sestavíte menu přesunutím jídel do chlívečků. Nyní
                     stačí menu vygenerovat do předem připravené šablony. Tou je dokument ve wordu ve speciálním formátu, který potom
@@ -66,7 +70,7 @@
                 se vám přehledně zvýrazní. Poté již stačí jenom exportovat do připravených šablon.</p>
                 <h2>Šikovný filtr</h2>
                 <p>
-                    V jídlech se dá snadno ztratit, proto je připraven <b>jednoduchý filtr</b>, který Vám pomůže se zorientovat.
+                    V mnoha jídlech se dá snadno ztratit, proto je připraven <b>jednoduchý filtr</b>, který Vám pomůže se zorientovat.
                 </p>
                 <div class="d-flex justify-content-center" >
                     <a href="/register"><button type="button" class="btn btn-success btn-lg">Zaregistrujte se!</button></a>
@@ -90,13 +94,13 @@
             <div class="col">
                 <h2>Jak začít</h2>
                 <p>Začněte tím, že se <b><a href="/register">zaregistrujete</a></b>. Vytvoří se vám profil se základním nastavením a pár
-                    jídly pro ukázku funkčnosti, vše si můžete změnit v nastavení aplikace a v seznamu jídel. Vše si proklikejte
-                    a vyzkoušejte pokud byste měli nějaké dotazy neváhejte se obrátit na email <b>tomikrys@seznam.cz</b>!</p>
+                    jídly pro ukázku funkčnosti, to si můžete samozřejmě změnit v nastavení aplikace a v seznamu jídel. Vše si proklikejte
+                    a vyzkoušejte, pokud byste měli nějaké dotazy neváhejte se obrátit na email <b>tomikrys@seznam.cz</b>!</p>
             </div>
             <div class="col">
                 <h2>Kolik vás to bude stát</h2>
-                <p><b>Nic</b>. Aplikace je tvořena vrámci mé bakalářské práce na <b>fakultě informatiky VUT v Brně</b>. Minimálně během vývoje
-                    a dokud to nebude dělat světoborný věci nemám v plánu žádné funkce do budoucna zpoplatňovat.
+                <p><b>Nic</b>. Aplikace je tvořena v rámci mé bakalářské práce na <b>fakultě informatiky VUT v Brně</b>.
+                    Minimálně během vývoje, dokud to nebude dělat světoborný věci, nemám v plánu žádné funkce do budoucna zpoplatňovat.
                     Neobávejte se však, funkce které aplikace umí teď, budou zdarma napořád.</p>
             </div>
         </div>
