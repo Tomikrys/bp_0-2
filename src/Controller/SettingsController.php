@@ -175,14 +175,14 @@ class SettingsController extends AbstractController {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $user = $this->getUser();
         $tag = $entityManager->getRepository(Tag::class)->find($id);
-        if ($user != $tag->getUser()) {
-            //TODO Error
-            $this->addFlash('warning', 'Neoprávněný přístup.');
-            exit;
-        }
 
         if (!$tag) {
             $tag = new Tag();
+            $tag->setUser($user);
+        } else if ($user != $tag->getUser()) {
+            //TODO Error
+            $this->addFlash('warning', 'Neoprávněný přístup.');
+            exit;
         }
 
         $tag->setName($data->name);

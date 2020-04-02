@@ -18,6 +18,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -59,7 +60,7 @@ class FoodsController extends AbstractController {
     /**
      * @param $food
      * @param Request $request
-     * @return \Symfony\Component\Form\FormInterface
+     * @return FormInterface
      * @throws ORMException
      * @throws OptimisticLockException
      */
@@ -246,36 +247,36 @@ class FoodsController extends AbstractController {
     }
 
     /**
-     * @return \Symfony\Component\Form\FormInterface
+     * @return FormInterface
      */
     function make_edittags_on_multiple_foods_form(){
-    $user = $this->getUser();
-    $tags = $this->getDoctrine()->getRepository(Tag::class)->findBy(['user' => $user]);
-    $tags_choices = [];
-    foreach ($tags as $tag) {
-        $tags_choices = $this->array_push_assoc($tags_choices, $tag->getName(),  $tag->getId());
-    }
+        $user = $this->getUser();
+        $tags = $this->getDoctrine()->getRepository(Tag::class)->findBy(['user' => $user]);
+        $tags_choices = [];
+        foreach ($tags as $tag) {
+            $tags_choices = $this->array_push_assoc($tags_choices, $tag->getName(),  $tag->getId());
+        }
 
-    //        <input type="checkbox" class="custom-control-input" id="customCheck1" checked="">
-    //      <label class="custom-control-label" for="customCheck1">Check this custom checkbox</label>
+        //        <input type="checkbox" class="custom-control-input" id="customCheck1" checked="">
+        //      <label class="custom-control-label" for="customCheck1">Check this custom checkbox</label>
 
-    return $this->createFormBuilder()
-        ->add('id', NumberType::class, [
-            'label' => false,
-            'attr' => array('class' => 'd-none')
-        ])
-        ->add('tags', ChoiceType::class, [
-            'label' => false,
-            'choices' => $tags_choices,
-            'choice_attr' => function($choice, $key, $value) {
-                // adds a class like attending_yes, attending_no, etc
-                return ['class' => 'form-checkbox add_tag_modal_checkbox'];
-            },
-            'expanded' => true,
-            'multiple' => true,
-            'attr' => array('class' => 'custom-control custom-checkbox edit_multiple_foods_tag_form')
-        ])
-        ->getForm();
+        return $this->createFormBuilder()
+            ->add('id', NumberType::class, [
+                'label' => false,
+                'attr' => array('class' => 'd-none')
+            ])
+            ->add('tags', ChoiceType::class, [
+                'label' => false,
+                'choices' => $tags_choices,
+                'choice_attr' => function($choice, $key, $value) {
+                    // adds a class like attending_yes, attending_no, etc
+                    return ['class' => 'form-checkbox add_tag_modal_checkbox'];
+                },
+                'expanded' => true,
+                'multiple' => true,
+                'attr' => array('class' => 'custom-control custom-checkbox edit_multiple_foods_tag_form')
+            ])
+            ->getForm();
     }
 
     private function make_addtag_form (Request $request) {
@@ -314,7 +315,11 @@ class FoodsController extends AbstractController {
         $formtags->handleRequest($request);
         if ($formtags->isSubmitted()) {
             $food_id = $request->request->get("form")["id"];
-            $tags_ids = $request->request->get("form")["tags"];
+            $request_form = $request->request->get("form");
+            $tags_ids = [];
+            if (array_key_exists("tags",$request_form)) {
+                $tags_ids = $request_form["tags"];
+            }
             $food = $this->getDoctrine()->getRepository(Food::class)->find($food_id);
             $tags = [];
             foreach ($tags_ids as $tag_id) {
