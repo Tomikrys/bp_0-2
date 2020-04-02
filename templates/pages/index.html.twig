@@ -3,59 +3,89 @@
 {% block stylesheets %}
 <style>
     h1 {
+        font-size: 3em;
         margin-bottom: 20px;
+    }
+    h2, h3, h4 {
+        font-size: 2.4em;
     }
     img {
         padding: 15px;
+    }
+    p {
+        text-align: justify;
+        font-size: 1.4em;
+    }
+    .row {
+        margin-bottom: 50px;
     }
 </style>
 {% endblock %}
 {% block body %}
 
     <div id="index">
-        <h1 class="text-center">Aplikace pro snadnou tvorbu meníček - SimpleMenu.cz</h1>
+        <h1 class="text-center">Aplikace pro snadnou tvorbu meníček<br>SimpleMenu.cz</h1>
         <div class="row">
-            <div class="col-4">
+            <div class="col-12 col-md-4">
                 <h2>Tvorba menu snadno</h2>
                 <p>Aplikace slouží především restauracím, které se každý týden moří s tvořením týdenních menu.
-                    Po importu jídel, které k tvorbě menu používáte stačí jen jednoduše seskládat menu a vygenerovat si ho ve všech formátech,
-                    které používáte.</p>
-                <h2>Jak na to?</h2>
-                <p>Do aplikace si naimportujete svá jídla, ty je třeba rozdělit podle typů a příslušně otagovat. Není to nutné, ale
+                    <?--Po importu jídel, které k tvorbě menu používáte stačí jen jednoduše seskládat menu a vygenerovat si ho ve všech formátech,
+                    které používáte.--> </p>
+                <h2>Rychlý import</h2>
+                <p>
+                    Můžete využít rychlý automatický import jídel. Jídla jsou rozděla do kategorií podle typů.
+                    Jídla můžete označit tagy pro snadné vyhledávání. Pro úpravu více jídel můžete použít dávkových změn.
+                    V jídlech můžete snadno vyhledávat.
+                    <?--Do aplikace si naimportujete svá jídla, ty je třeba rozdělit podle typů a příslušně otagovat. Není to nutné, ale
                     při tvorbě menu to pomáhá vyhledávat jednotlivé pokrmy. Poté si sestavíte menu přesunutím jídel do chlívečků. Nyní
                     stačí menu vygenerovat do předem připravené šablony. Tou je dokument ve wordu ve speciálním formátu, který potom
                     aplikace přetvoří do příslušné podoby. Výhodou šablony ve Wordu je jednoduché a uživatelsky přívětivé editování.
-                    Nově registrovaní uživatelé mají pár šablon předpřipravených.</p>
+                    Nově registrovaní uživatelé mají pár šablon předpřipravených.--></p>
             </div>
-            <div class="col-8">
-                <img src="{{ asset('media/stock_laptop_foods.png') }}" width="100%">
+            <div class="col-12 col-md-8">
+                <img src="media/stock_laptop_foods.png" width="100%">
+                <div class="d-flex justify-content-center" >
+                    <a href="/register"><button type="button" class="btn btn-success btn-lg">Zaregistrujte se!</button></a>
+                </div>
             </div>
-        </div>
-        <div class="row d-flex justify-content-center" >
-            <a href="/register"><button type="button" class="btn btn-success btn-lg">Zaregistrujte se!</button></a>
         </div>
         <div class="row">
-            <div class="col-8">
-                <img src="{{ asset('media/stock_laptop_menu.png') }}" width="100%">
+            <div class="col-12 col-md-8">
+                <img src="media/stock_laptop_menu.png" width="100%">
             </div>
-            <div class="col-4">
+            <div class="col-12 col-md-4">
                 <h2>Sestavení menu</h2>
-                <p>Lorem Ipsum</p>
-                <h2>Kolik vás to bude stát</h2>
-                <p>Nic. Aplikace je tvořena vrámci bakalářské práce na FIT VUT v Brně. Minimálně během vývoje a dokud to nebude dělat světoborný věci
-                    nemám v plánu žádné funkce do budoucna zpoplatňovat. To však neznamená, že by se to v dáleké budoucnosti nemuselo změnit.
-                    Neobávejte se však, funkce které aplikace umí teď, budou zdarma napořád.</p>
+                <p>Menu snadno sestavíte přetažením (drag&drop) do předpřipraveného formuláře. Jídla, která jste na daný týden použili
+                se vám přehledně zvýrazní. Poté již stačí jenom exportovat do připravených šablon.</p>
+                <h2>Šikovný filtr</h2>
+                <p>
+                    V jídlech se dá snadno ztratit, proto je připraven jednoduchý filtr, který Vám pomůže se zorientovat.
+                </p>
             </div>
-            <div class="col-4">
+            <div class="col-12 col-md-4">
                 <h2>Jak se tvoří menu?</h2>
-                <p>šablony a tak</p>
+                <p>Šablony jsou tvořeny dokumenty .docx (Word), proto je jeich editace a tvorba velmi snadná.
+                <br>
+                    Při registraci se Vám automaticky naimportují ilustrační šablony. Okamžitě můžete generovat
+                    <b>menu ve&nbsp; formátu pro tisk</b>, menu připravené pro import do platformy <b>Zomato</b> +
+                    jsou přiložené příklady šablon pro <b>příspěvek na Facebook</b> a html pro webové stránky.</p>
+            </div>
+            <div class="col-12 col-md-8">
+                <img src="media/stock_laptop_word_comparsion.png" width="100%">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
                 <h2>Jak začít</h2>
                 <p>Začněte tím, že se <a href="/register">zaregistrujete</a>. Vytvoří se vám profil se základním nastavením a pár
-                    jídly pro ukázku funkčnosti, vše si můžete změnit v nastavení aplikace a v seznamu jídel. Vše si proklikejte a vyzkoušejte
-                    pokud byste měli nějaké dotazy neváhejte se obrátit na email tomikrys@seznam.cz!</p>
+                    jídly pro ukázku funkčnosti, vše si můžete změnit v nastavení aplikace a v seznamu jídel. Vše si proklikejte
+                    a vyzkoušejte pokud byste měli nějaké dotazy neváhejte se obrátit na email <b>tomikrys@seznam.cz</b>!</p>
             </div>
-            <div class="col-8">
-                <img src="{{ asset('media/stock_laptop_word_comparsion.png') }}" width="100%">
+            <div class="col">
+                <h2>Kolik vás to bude stát</h2>
+                <p><b>Nic</b>. Aplikace je tvořena vrámci mé bakalářské práce na <b>fakultě informatiky VUT v Brně</b>. Minimálně během vývoje
+                    a dokud to nebude dělat světoborný věci nemám v plánu žádné funkce do budoucna zpoplatňovat.
+                    Neobávejte se však, funkce které aplikace umí teď, budou zdarma napořád.</p>
             </div>
         </div>
     </div>
