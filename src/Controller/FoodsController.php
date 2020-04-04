@@ -98,7 +98,12 @@ class FoodsController extends AbstractController {
      * @return Response
      */
     public function delete(Request $request, $id) {
-        $food = $this->getDoctrine()->getRepository(Food::class)->find($id);
+        $user = $this->getUser();
+        $food = $this->getDoctrine()->getRepository(Food::class)->findOneBy(array('user' => $user, 'id' => $id));
+        if (!$food) {
+            $this->addFlash('error', 'Jídlo neexistuje.');
+            throw $this->createNotFoundException('Nenalezeno jídlo pro id '.$id);
+        }
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->remove($food);
         $entityManager->flush();
@@ -130,12 +135,11 @@ class FoodsController extends AbstractController {
 
         $id =  $data->id;
         $entityManager = $this->getDoctrine()->getManager();
-        $food = $entityManager->getRepository(Food::class)->find($id);
-
+        $user = $this->getUser();
+        $food = $this->getDoctrine()->getRepository(Food::class)->findOneBy(array('user' => $user, 'id' => $id));
         if (!$food) {
-            throw $this->createNotFoundException(
-                'Nenalezeno jídlo pro id '.$id
-            );
+            $this->addFlash('error', 'Jídlo neexistuje.');
+            throw $this->createNotFoundException('Nenalezeno jídlo pro id '.$id);
         }
 
         $this->fillUpFood($data, $food);
@@ -163,7 +167,13 @@ class FoodsController extends AbstractController {
         $add_tags_ids = $data->add_tags;
         $remove_other_tags_ids = $data->remove_other_tags;
         $entityManager = $this->getDoctrine()->getManager();
-        $food = $entityManager->getRepository(Food::class)->find($id);
+        $user = $this->getUser();
+        $food = $this->getDoctrine()->getRepository(Food::class)->findOneBy(array('user' => $user, 'id' => $id));
+        if (!$food) {
+            $this->addFlash('error', 'Jídlo neexistuje.');
+            throw $this->createNotFoundException('Nenalezeno jídlo pro id '.$id);
+        }
+
 
         if (!$food) {
             throw $this->createNotFoundException(
