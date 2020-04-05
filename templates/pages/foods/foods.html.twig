@@ -134,7 +134,8 @@
 {% block javascripts %}
     <script>
         let force_refresh = false;
-
+        let lastChecked, $lastChecked_check,
+            $boxes;
         $(document).ready(function() {
             const foods = document.getElementById('foods');
             if (foods) {
@@ -167,7 +168,7 @@
                 $('#select_all_foods').on("click", function () {
                     toggle_all_checkboxes(this);
                     manage_avaliability_of_edit_and_delete_button();
-                })
+                });
             }
 
             only_numbers_listener();
@@ -184,15 +185,48 @@
 
             $('.tag-filter-item').on("click", function(){
                 clear_selected_foods();
+                initialize_shift_checkbox_feture();
             });
             $('.type-filter-item').on("click", function(){
                 clear_selected_foods();
+                initialize_shift_checkbox_feture();
             });
             $('#food-finder').on("keyup", function(){
                 clear_selected_foods();
+                initialize_shift_checkbox_feture();
             });
 
+            initialize_shift_checkbox_feture();
+
+            $boxes.click(function(evt) {
+                let ret = false;
+                if(!lastChecked) {
+                    lastChecked = this;
+                    ret = true;
+                }
+                if(!$lastChecked_check) {
+                    $lastChecked_check = $(this);
+                    ret = true;
+                }
+                if (ret) {return;}
+
+                if(evt.shiftKey) {
+                    var start = $boxes.index(this),
+                        end = $boxes.index(lastChecked);
+                    let $checkboxes = $boxes.slice(Math.min(start, end), Math.max(start, end) + 1);
+                    $checkboxes.each( function() {
+                        $(this).prop('checked', $lastChecked_check.prop("checked"));
+                    });
+                }
+
+                $lastChecked_check = $(this);
+                lastChecked = this;
+            });
         });
+
+        function initialize_shift_checkbox_feture() {
+            $boxes = $('input[type="checkbox"].select_food:visible');
+        }
 
         function delete_food(id, resolve = null) {
             $("#loading").modal("show");
