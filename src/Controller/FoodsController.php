@@ -174,7 +174,6 @@ class FoodsController extends DefaultController {
             throw $this->createNotFoundException('Nenalezeno jídlo pro id '.$id);
         }
 
-
         if (!$food) {
             throw $this->createNotFoundException(
                 'Nenalezeno jídlo pro id '.$id
@@ -186,7 +185,7 @@ class FoodsController extends DefaultController {
 
         $remove_other_tags = [];
         foreach ($remove_other_tags_ids as $id) {
-            $tag = $entityManager->getRepository(Tag::class)->find($id);
+            $tag = $entityManager->getRepository(Tag::class)->findOneBy(['user' => $user, 'id' => $id]);
             array_push($remove_other_tags, $tag);
         }
 
@@ -198,11 +197,9 @@ class FoodsController extends DefaultController {
 
         $add_tags = [];
         foreach ($add_tags_ids as $id) {
-            $tag = $entityManager->getRepository(Tag::class)->find($id);
+            $tag = $entityManager->getRepository(Tag::class)->findOneBy(['user' => $user, 'id' => $id]);
             array_push($add_tags, $tag);
         }
-
-        // random věci to dělá, jenom to horní, nechápu proš
 
         foreach ($remove_tags as $remove_tag) {
             $food->removeTag($remove_tag);
@@ -213,7 +210,7 @@ class FoodsController extends DefaultController {
         }
 
         $this->foodRepository->save($food);
-        $this->addFlash('success', 'Tagy byly upraveno.');
+        $this->addFlash('success', 'Tagy byly upraveny.');
 
         $response = new Response();
         $response->send();

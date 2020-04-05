@@ -713,7 +713,7 @@
 
       let $add_tags = [];
       $("#editFoodFormAddTag input.add_tag_modal_checkbox").each(function () {
-          if ($(this).is(':checked')) {
+          if ($(this).is(':checked') && $(this).is(':enabled')) {
               $add_tags.push($(this).val());
           }
       });
