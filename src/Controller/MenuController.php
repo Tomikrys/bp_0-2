@@ -49,8 +49,8 @@ class MenuController extends AbstractController {
 
         $templates = $this->getDoctrine()->getRepository(Template::class)->findBy(['user' => $user]);
 
-        return $this->render('pages/menu/menu.html.twig', array('foods' => $foods, 'settings' => $settings, 'tags' => $tags,
-            'types' => $types, 'templates' => $templates));
+        return $this->render('pages/menu/menu.html.twig', ['foods' => $foods, 'settings' => $settings, 'tags' => $tags,
+            'types' => $types, 'templates' => $templates]);
     }
 
     /**
@@ -176,7 +176,7 @@ class MenuController extends AbstractController {
         $file = $this->export_as_word($clear_menu, $template);
        // exit;
 
-        //return $this->render('pages/menu/export.html.twig', array('menu' => $menu, "generate" => $doGenerate));
+        //return $this->render('pages/menu/export.html.twig', ['menu' => $menu, "generate" => $doGenerate]);
         return $file;
     }
 
@@ -228,6 +228,6 @@ class MenuController extends AbstractController {
 ////        dump($menu);
 ////        exit;
 //
-//        return $this->render('pages/menu/export.html.twig', array('menu' => $menu, "generate" => $doGenerate));
+//        return $this->render('pages/menu/export.html.twig', ['menu' => $menu, "generate" => $doGenerate]);
 //    }
 }

@@ -63,7 +63,7 @@ class HistoryController extends AbstractController {
         }
         usort($prepared_history, function($a, $b) {return $a['sortdate']->getTimestamp() - $b['sortdate']->getTimestamp();});
         //dump($prepared_history);
-        return $this->render('pages/history/history.html.twig', array('history' => $prepared_history));
+        return $this->render('pages/history/history.html.twig', ['history' => $prepared_history]);
     }
 
     public function find_food_by_id($foods, $id) {
@@ -93,10 +93,10 @@ class HistoryController extends AbstractController {
             array_push($week_meals, $day_meals);
         }
         //dump($week_meals);
-        return array(
+        return [
             'days' => $days,
             'meals' => $this->invert_array_of_array($week_meals)
-        );
+        ];
     }
 
     /**
@@ -143,7 +143,7 @@ class HistoryController extends AbstractController {
     private function invert_array_of_array(array $array_of_array)
     {
         //dump($array_of_array);
-        $out = array();
+        $out = [];
         foreach ($array_of_array as $key => $subarr){
             foreach ($subarr as $subkey => $subvalue){
                 $out[$subkey][$key] = $subvalue;

@@ -103,7 +103,7 @@ class UploadController extends AbstractController {
 
         $i = 0;
         $templatename_dubler = $templatename;
-        while ($this->getDoctrine()->getRepository(Template::class)->findBy(array('name' => $templatename_dubler))) {
+        while ($this->getDoctrine()->getRepository(Template::class)->findBy(['name' => $templatename_dubler])) {
             $i++;
             $templatename_dubler = $templatename . "-" . $i;
         }

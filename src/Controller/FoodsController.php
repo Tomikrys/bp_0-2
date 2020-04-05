@@ -67,25 +67,25 @@ class FoodsController extends DefaultController {
     private function make_me_form ($food, Request $request) {
         // Vytváření editačního formuláře podle entity článku.
         $formadd = $this->createFormBuilder($food)
-            ->add('name', TextType::class, array( 'attr'=> array(
+            ->add('name', TextType::class, [ 'attr'=> [
                 'class' => 'form-control',
-                'label' => 'Název jídla') ))
-            ->add('description', TextType::class, array( 'attr'=> array(
+                'label' => 'Název jídla'] ])
+            ->add('description', TextType::class, [ 'attr'=> [
                 'class' => 'form-control',
-                'label' => 'Popis') ))
-            ->add('price', NumberType::class, array( 'attr'=> array(
+                'label' => 'Popis'] ])
+            ->add('price', NumberType::class, [ 'attr'=> [
                 'class' => 'form-control',
-                'label' => 'Cena') ))
-            ->add('submit', SubmitType::class, array(
+                'label' => 'Cena'] ])
+            ->add('submit', SubmitType::class, [
                 'label' => 'Přidat jídlo',
-                'attr' => array('class' => 'btn btn btn-success mt-3', 'data-dissmiss' => 'modal')) )
+                'attr' => ['class' => 'btn btn btn-success mt-3', 'data-dissmiss' => 'modal']] )
             ->getForm();
 
         // Zpracování editačního formuláře.
         $formadd->handleRequest($request);
         if ($formadd->isSubmitted() && $formadd->isValid()) {
             $this->foodRepository->save($food);
-            $this->addFlash('success', 'Jídlo bylo úspěšně přidáno 2.');
+            $this->addFlash('success', 'Jídlo bylo úspěšně přidáno.');
         }
 
         return $formadd;
@@ -99,7 +99,7 @@ class FoodsController extends DefaultController {
      */
     public function delete(Request $request, $id) {
         $user = $this->getUser();
-        $food = $this->getDoctrine()->getRepository(Food::class)->findOneBy(array('user' => $user, 'id' => $id));
+        $food = $this->getDoctrine()->getRepository(Food::class)->findOneBy(['user' => $user, 'id' => $id]);
         if (!$food) {
             $this->addFlash('error', 'Jídlo neexistuje.');
             throw $this->createNotFoundException('Nenalezeno jídlo pro id '.$id);
@@ -136,7 +136,7 @@ class FoodsController extends DefaultController {
         $id =  $data->id;
         $entityManager = $this->getDoctrine()->getManager();
         $user = $this->getUser();
-        $food = $this->getDoctrine()->getRepository(Food::class)->findOneBy(array('user' => $user, 'id' => $id));
+        $food = $this->getDoctrine()->getRepository(Food::class)->findOneBy(['user' => $user, 'id' => $id]);
         if (!$food) {
             $this->addFlash('error', 'Jídlo neexistuje.');
             throw $this->createNotFoundException('Nenalezeno jídlo pro id '.$id);
@@ -168,7 +168,7 @@ class FoodsController extends DefaultController {
         $remove_other_tags_ids = $data->remove_other_tags;
         $entityManager = $this->getDoctrine()->getManager();
         $user = $this->getUser();
-        $food = $this->getDoctrine()->getRepository(Food::class)->findOneBy(array('user' => $user, 'id' => $id));
+        $food = $this->getDoctrine()->getRepository(Food::class)->findOneBy(['user' => $user, 'id' => $id]);
         if (!$food) {
             $this->addFlash('error', 'Jídlo neexistuje.');
             throw $this->createNotFoundException('Nenalezeno jídlo pro id '.$id);
@@ -273,7 +273,7 @@ class FoodsController extends DefaultController {
         return $this->createFormBuilder()
             ->add('id', NumberType::class, [
                 'label' => false,
-                'attr' => array('class' => 'd-none')
+                'attr' => ['class' => 'd-none']
             ])
             ->add('tags', ChoiceType::class, [
                 'label' => false,
@@ -284,7 +284,7 @@ class FoodsController extends DefaultController {
                 },
                 'expanded' => true,
                 'multiple' => true,
-                'attr' => array('class' => 'custom-control custom-checkbox edit_multiple_foods_tag_form')
+                'attr' => ['class' => 'custom-control custom-checkbox edit_multiple_foods_tag_form']
             ])
             ->getForm();
     }
@@ -303,7 +303,7 @@ class FoodsController extends DefaultController {
         $formtags = $this->createFormBuilder()
             ->add('id', NumberType::class, [
                 'label' => false,
-                'attr' => array('class' => 'd-none')
+                'attr' => ['class' => 'd-none']
             ])
             ->add('tags', ChoiceType::class, [
                 'label' => false,
@@ -314,11 +314,11 @@ class FoodsController extends DefaultController {
                 },
                 'expanded' => true,
                 'multiple' => true,
-                'attr' => array('class' => 'custom-control custom-checkbox')
+                'attr' => ['class' => 'custom-control custom-checkbox']
             ])
-            ->add('submit', SubmitType::class, array(
+            ->add('submit', SubmitType::class, [
                 'label' => 'Uložit',
-                'attr' => array('class' => 'btn btn btn-success add_tag_modal_button', 'data-dissmiss' => 'modal')) )
+                'attr' => ['class' => 'btn btn btn-success add_tag_modal_button', 'data-dissmiss' => 'modal']] )
             ->getForm();
 
         // Zpracování editačního formuláře.
@@ -384,10 +384,10 @@ class FoodsController extends DefaultController {
         $tags = $this->getDoctrine()->getRepository(Tag::class)->findBy(['user' => $user]);
 
         $this->manage_flashes();
-        return $this->render('pages/foods/foods.html.twig', array('formadd' => $formadd->createView(),
+        return $this->render('pages/foods/foods.html.twig', ['formadd' => $formadd->createView(),
             'table' => $table, 'types' => $types, 'foods' => $foods, 'tags' => $tags,
             'formAddTag' => $formaddtag->createView(), 'editFoodFormAddTag' => $formeditfoodtag->createView(),
-            'editFoodFormRemoveTag' => $formeditfoodtag->createView()));
+            'editFoodFormRemoveTag' => $formeditfoodtag->createView()]);
     }
 
     /**
@@ -430,25 +430,25 @@ class FoodsController extends DefaultController {
                         break;
                     //typ
                     case 3:
-                        $type = $this->getDoctrine()->getRepository(Type::class)->findOneBy(array('user' => $user, 'name' => $word));
+                        $type = $this->getDoctrine()->getRepository(Type::class)->findOneBy(['user' => $user, 'name' => $word]);
                         if ($type == []) {
                             $type = new Type();
                             $type->setName($word);
                             $type->setUser($this->getUser());
                             $this->typeRepository->save($type);
-                            $type = $this->getDoctrine()->getRepository(Type::class)->findOneBy(array('user' => $user, 'name' => $word));
+                            $type = $this->getDoctrine()->getRepository(Type::class)->findOneBy(['user' => $user, 'name' => $word]);
                         }
                         $food->setType($type);
                         break;
                     //tagy
                     default:
-                        $tag = $this->getDoctrine()->getRepository(Tag::class)->findOneBy(array('user' => $user, 'name' => $word));
+                        $tag = $this->getDoctrine()->getRepository(Tag::class)->findOneBy(['user' => $user, 'name' => $word]);
                         if ($tag == []) {
                             $tag = new Tag();
                             $tag->setName($word);
                             $tag->setUser($this->getUser());
                             $this->tagRepository->save($tag);
-                            $tag = $this->getDoctrine()->getRepository(Tag::class)->findOneBy(array('user' => $user, 'name' => $word));
+                            $tag = $this->getDoctrine()->getRepository(Tag::class)->findOneBy(['user' => $user, 'name' => $word]);
                         }
                         $food->addTag($tag);
                         break;

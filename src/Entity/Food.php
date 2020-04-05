@@ -111,7 +111,7 @@ class Food {
 
     public function setTypeById(int $id, $entityManager): self {
         $repo = $entityManager->getRepository(Type::class);
-        $type = $repo->findOneBy(array('id' => $id));
+        $type = $repo->findOneBy(['id' => $id]);
         $this->type = $type;
         return $this;
     }
@@ -143,7 +143,7 @@ class Food {
     public function addTagById(int $id, $entityManager): self
     {
         $repo = $entityManager->getRepository(Tag::class);
-        $tag = $repo->findOneBy(array('id' => $id));
+        $tag = $repo->findOneBy(['id' => $id]);
         $this->addTag($tag);
         return $this;
     }

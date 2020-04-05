@@ -279,17 +279,17 @@ class SecurityController extends AbstractController
         $user = new User();
 
         $formadd = $this->createFormBuilder($user)
-            ->add('email', EmailType::class, array(
+            ->add('email', EmailType::class, [
                 'label' => 'Email',
-                'attr' => array('class' => 'form-control')
-            ))
-            ->add('password', PasswordType::class, array(
+                'attr' => ['class' => 'form-control']
+            ])
+            ->add('password', PasswordType::class, [
                 'label' => 'Heslo',
-                'attr' => array('class' => 'form-control')
-            ))
-            ->add('submit', SubmitType::class, array(
+                'attr' => ['class' => 'form-control']
+            ])
+            ->add('submit', SubmitType::class, [
                 'label' => 'Registrovat',
-                'attr' => array('class' => 'btn btn btn-success mt-3')))
+                'attr' => ['class' => 'btn btn btn-success mt-3']])
             ->getForm();
 
         // Zpracování add formuláře.
@@ -322,7 +322,7 @@ class SecurityController extends AbstractController
             }
         }
 
-        return $this->render('security/register.html.twig', array('last_username' => $lastUsername, 'formadd' => $formadd->createView()));
+        return $this->render('security/register.html.twig', ['last_username' => $lastUsername, 'formadd' => $formadd->createView()]);
     }
 
     /**
