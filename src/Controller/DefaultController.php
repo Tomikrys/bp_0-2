@@ -27,11 +27,13 @@ use Twig\Extra\CssInliner\CssInlinerExtension;
  * Class DefaultController
  * @package App\Controller
  */
-class DefaultController extends AbstractController {
+class DefaultController extends AbstractController
+{
     /**
      * @Route("/bring_me_back", name="/bring_me_back", methods={"GET", "POST", "DELETE"})
      */
-    public function back() {
+    public function back()
+    {
         return new Response(
             "<html>
             <body>
@@ -40,5 +42,37 @@ class DefaultController extends AbstractController {
                 </script>
             </body>
         </html>");
+    }
+
+    protected function getFlashes()
+    {
+        if (!$this->container->has('session')) {
+            throw new \LogicException('You can not use the addFlash method if sessions are disabled. Enable them in "config/packages/framework.yaml".');
+        }
+
+        return $this->container->get('session')->getFlashBag()->peekAll();
+    }
+
+    protected function overwriteFlashes(array $flashes)
+    {
+        $this->container->get('session')->getFlashBag()->setAll($flashes);
+    }
+
+    public function manage_flashes()
+    {
+        $new_flashes = [];
+        foreach ($this->getFlashes() as $type => $flashes_of_type) {
+            $cleared_flashes = array_count_values($flashes_of_type);
+            $cleared_flashes_of_type = [];
+            foreach ($cleared_flashes as $flash => $count) {
+                if ($count > 1) {
+                    $flash .= " počet: " . $count;
+                }
+
+                array_push($cleared_flashes_of_type, $flash);
+            }
+            $new_flashes[$type] = $cleared_flashes_of_type;
+        }
+        $this->overwriteFlashes($new_flashes);
     }
 }

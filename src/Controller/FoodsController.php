@@ -28,7 +28,7 @@ use Twig\Extra\CssInliner\CssInlinerExtension;
  * Class FoodsController
  * @package App\Controller
  */
-class FoodsController extends AbstractController {
+class FoodsController extends DefaultController {
     /**
      * @var FoodRepository
      */
@@ -336,11 +336,13 @@ class FoodsController extends AbstractController {
                 $tag = $this->getDoctrine()->getRepository(Tag::class)->find($tag_id);
                 array_push($tags, $tag);
             }
-            $food->setTags($tags);
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->flush();
-          //  exit;
-            // TODO handle
+            if ($food) {
+                $food->setTags($tags);
+                $entityManager = $this->getDoctrine()->getManager();
+                $entityManager->flush();
+            } else {
+                $this->addFlash('error', 'Jídlo pro úpravu tagů nebylo nalezeno.');
+            }
             $this->addFlash('success', 'Tagy byly editovány.');
         }
 
@@ -381,6 +383,7 @@ class FoodsController extends AbstractController {
 
         $tags = $this->getDoctrine()->getRepository(Tag::class)->findBy(['user' => $user]);
 
+        $this->manage_flashes();
         return $this->render('pages/foods/foods.html.twig', array('formadd' => $formadd->createView(),
             'table' => $table, 'types' => $types, 'foods' => $foods, 'tags' => $tags,
             'formAddTag' => $formaddtag->createView(), 'editFoodFormAddTag' => $formeditfoodtag->createView(),
