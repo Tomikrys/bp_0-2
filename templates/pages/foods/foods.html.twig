@@ -81,6 +81,10 @@
         .missing_input {
             box-shadow: 1px 1px 5px #de1111;
         }
+
+        table.sortable thead th:not(.sorttable_sorted):not(.sorttable_sorted_reverse):not(.sorttable_nosort):after {
+            content: " \25B4\034F\25BE"
+        }
     </style>
 {% endblock %}
 {% block body %}
