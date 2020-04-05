@@ -60,7 +60,7 @@
             <tr class="content_row">
                 <td class="content" contenteditable="true">{{ day[0] }}</td>
                 <td class="content" contenteditable="true">{{ day[1] }}</td>
-                <td onclick="delete_row(this)" class="cursor_pointer" style="text-align:center"><i class="fas fa-times"></i></td>
+                <td onclick="delete_row(this)" class="cursor_pointer text-center"><i class="fas fa-times"></i></td>
             </tr>
         {% endfor %}
         </tbody>
@@ -80,7 +80,7 @@
         {% for meal in settings.meals %}
         <tr>
             <td class="content" contenteditable="true">{{ meal }}</td>
-            <td onclick="delete_row(this)" class="cursor_pointer" style="text-align:center"><i class="fas fa-times"></i></td>
+            <td onclick="delete_row(this)" class="cursor_pointer text-center"><i class="fas fa-times"></i></td>
         </tr>
         {% endfor %}
         </tbody>
@@ -360,7 +360,7 @@
             cell.classList.add("content");
             cell.attributes.setNamedItem(editable);
         }
-         cell.outerHTML = '<td onclick=\"delete_row(this)\" class=\"cursor_pointer\" style=\"text-align:center\"><i class="fas fa-times"></i></td>';
+         cell.outerHTML = '<td onclick=\"delete_row(this)\" class=\"cursor_pointer text-center\"><i class=\"fas fa-times\"></i></td>';
         // cell.classList.remove("content");
         // cell.innerHTML = '<i class="fas fa-times"></i>';
         // cell.attributes.removeNamedItem("contenteditable");

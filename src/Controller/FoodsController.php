@@ -213,7 +213,7 @@ class FoodsController extends DefaultController {
         }
 
         $this->foodRepository->save($food);
-        $this->addFlash('success', 'Jídlo bylo upraveno.');
+        $this->addFlash('success', 'Tagy byly upraveno.');
 
         $response = new Response();
         $response->send();
