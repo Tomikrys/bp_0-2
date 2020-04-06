@@ -30,18 +30,25 @@ security:
             # https://symfony.com/doc/current/security.html#firewalls-authentication
 
             # https://symfony.com/doc/current/security/impersonating_user.html
-            # switch_user: true
+            switch_user: true
+
+    role_hierarchy:
+        ROLE_CAPTAIN:   ROLE_USER
+        ROLE_ADMIN:     [ROLE_USER, ROLE_CAPTAIN, ROLE_ALLOWED_TO_SWITCH]
 
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/register, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/foods, roles: ROLE_CAPTAIN }
         - { path: ^/menu, roles: ROLE_CAPTAIN }
         - { path: ^/settings, roles: ROLE_CAPTAIN }
-        - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: https, host: simplemenu.cz$ }
-        - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: https, host: menicka.herokuapp.com$ }
-        - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: http, host: localhost$ }
+        - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: https, host: menicka\.herokuapp\.com$ }
+        - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: https, host: simplemenu\.cz$ }
+        - { path: ^/register, roles: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: https, host: menicka\.herokuapp\.com$ }
+        - { path: ^/register, roles: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: https, host: simplemenu\.cz$ }
+
+        - { path: ^/, roles: ROLE_CAPTAIN, requires_channel: https, host: simplemenu.cz$ }
+        - { path: ^/, roles: ROLE_CAPTAIN, requires_channel: https, host: menicka.herokuapp.com$ }
+        - { path: ^/, roles: ROLE_CAPTAIN}
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
