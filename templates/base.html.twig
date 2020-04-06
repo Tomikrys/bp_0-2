@@ -31,7 +31,11 @@
     <link rel="apple-touch-icon" sizes="152x152" href="media/favicons/apple-icon-152x152.png">
     <link rel="apple-touch-icon" sizes="180x180" href="media/favicons/apple-icon-180x180.png">
     <link rel="icon" type="image/png" sizes="192x192"  href="media/favicons/android-icon-192x192.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="media/favicons/favicon-32x32.png">
+    {% if app.environment == "dev" %}
+        <link rel="icon" type="image/png" sizes="32x32" href="media/favicons/favicon-invert-32x32.png">
+    {% else %}
+        <link rel="icon" type="image/png" sizes="32x32" href="media/favicons/favicon-32x32.png">
+    {% endif %}
     <link rel="icon" type="image/png" sizes="96x96" href="media/favicons/favicon-96x96.png">
     <link rel="icon" type="image/png" sizes="16x16" href="media/favicons/favicon-16x16.png">
     <link rel="manifest" href="media/favicons/manifest.json">
