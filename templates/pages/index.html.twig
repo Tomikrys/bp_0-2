@@ -25,7 +25,7 @@
     }
 
     {% if app.environment == "dev" %}
-    img {
+    #index img {
         border: #222222 solid 1px;
         background-color: #565656;
         width: 100%;
@@ -33,6 +33,25 @@
         margin-bottom: 20px;
     }
     {% endif %}
+
+    #photo-modal .modal-dialog {
+        max-width: 90% !important;
+        max-height: 90% !important;
+        background-color: white;
+        padding-right: 19px;
+        padding-left: 19px;
+    }
+    #photo-modal .modal-body {
+        text-align: center;
+    }
+    #photo-modal img {
+        max-width: 95% !important;
+        max-height: 80vh !important;
+    }
+    #photo-modal {
+        padding-right: 19px;
+        padding-left: 19px;
+    }
 </style>
 {% endblock %}
 {% block body %}
@@ -40,7 +59,7 @@
     <div id="index">
         <h1 class="text-center">Aplikace pro snadnou tvorbu meníček<br>SimpleMenu.cz</h1>
         <div class="row">
-            <div class="col-12 col-md-4">
+            <div class="col-12 col-lg-4">
                 <h2>Tvorba menu snadno</h2>
                 <p>Aplikace slouží především <b>restauracím</b>, které se každý týden moří s tvořením týdenních menu.
                     <?--Po importu jídel, které k tvorbě menu používáte stačí jen jednoduše seskládat menu a vygenerovat si ho ve všech formátech,
@@ -55,15 +74,15 @@
                     aplikace přetvoří do příslušné podoby. Výhodou šablony ve Wordu je jednoduché a uživatelsky přívětivé editování.
                     Nově registrovaní uživatelé mají pár šablon předpřipravených.--></p>
             </div>
-            <div class="col-12 col-md-8">
-                <img src="public/media/stock_laptop_foods.gif" width="100%">
+            <div class="col-12 col-lg-8">
+                <img class="clickable" src="media/stock_laptop_foods.gif" width="100%">
             </div>
         </div>
         <div class="row">
-            <div class="col-12 col-md-8">
+            <div class="col-12 col-lg-8">
                 <img src="public/media/stock_laptop_menu.gif" width="100%">
             </div>
-            <div class="col-12 col-md-4">
+            <div class="col-12 col-lg-4">
                 <h2>Sestavení menu</h2>
                 <p><b>Menu snadno sestavíte přetažením</b> (drag&drop) do předpřipraveného formuláře. Jídla, která jste
                     na daný týden použili
@@ -78,7 +97,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-12 col-md-4">
+            <div class="col-12 col-lg-4">
                 <h2>Jak se tvoří menu?</h2>
                 <p>Šablony jsou tvořeny dokumenty <b>.docx (Word)</b>, proto je jeich editace a tvorba velmi snadná.
                 <br>
@@ -86,7 +105,7 @@
                     <b>menu ve&nbsp;formátu pro tisk</b>, menu připravené pro import do platformy <b>Zomato</b> +
                     jsou přiložené příklady šablon pro <b>příspěvek na Facebook</b> a html pro webové stránky.</p>
             </div>
-            <div class="col-12 col-md-8">
+            <div class="col-12 col-lg-8">
                 <img src="public/media/stock_laptop_word_comparsion.gif" width="100%">
             </div>
         </div>
@@ -106,8 +125,26 @@
         </div>
     </div>
 
-
-
-
+    <div class="modal fade" id="photo-modal">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content" style="background-color: transparent; border: none;">
+                <div class="modal-body">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <img class="align-self-center" src="https://media.giphy.com/media/3o85g3loeiLcF26OZy/giphy.gif">
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
-{% block javascripts %}{% endblock %}
+{% block javascripts %}
+<script>
+    $( document ).ready(function() {
+        $("img.clickable").click(function () {
+            $("#photo-modal img").attr("src", $(this).attr("src"));
+            $("#photo-modal").modal("show");
+        });
+    });
+</script>
+{% endblock %}
