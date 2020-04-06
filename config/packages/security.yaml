@@ -47,8 +47,8 @@ security:
         - { path: ^/register, roles: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: https, host: menicka\.herokuapp\.com$ }
         - { path: ^/register, roles: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: https, host: simplemenu\.cz$ }
 
-        - { path: ^/, roles: ROLE_CAPTAIN, requires_channel: https, host: simplemenu.cz$ }
-        - { path: ^/, roles: ROLE_CAPTAIN, requires_channel: https, host: menicka.herokuapp.com$ }
-        - { path: ^/, roles: ROLE_CAPTAIN}
+        - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: https, host: simplemenu.cz$ }
+        - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: https, host: menicka.herokuapp.com$ }
+        - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY}
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
