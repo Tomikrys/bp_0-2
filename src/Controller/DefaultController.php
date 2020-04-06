@@ -18,9 +18,11 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Twig\Extra\CssInliner\CssInlinerExtension;
 
 /**
@@ -74,5 +76,21 @@ class DefaultController extends AbstractController
             $new_flashes[$type] = $cleared_flashes_of_type;
         }
         $this->overwriteFlashes($new_flashes);
+    }
+
+    /**
+     * @Route("/impersonating_user", methods={"GET", "POST"})
+     * @param AuthorizationCheckerInterface $authChecker
+     * @return RedirectResponse|Response
+     */
+    public function impersonating_user(AuthorizationCheckerInterface $authChecker)
+    {
+        $disconnect = $authChecker->isGranted('ROLE_PREVIOUS_ADMIN');
+        $user = $_GET['impersonating_user'];
+        if ($disconnect) {
+            return $this->redirect("/impersonating_user?_switch_user=_exit&impersonating_user=" . $user);
+        } else {
+            return $this->redirect("/menu?_switch_user=".$user);
+        }
     }
 }
