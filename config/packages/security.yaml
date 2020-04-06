@@ -42,6 +42,7 @@ security:
         - { path: ^/foods, roles: ROLE_CAPTAIN }
         - { path: ^/menu, roles: ROLE_CAPTAIN }
         - { path: ^/settings, roles: ROLE_CAPTAIN }
+        - { path: ^/impersonating_user, roles: [ROLE_ADMIN, ROLE_PREVIOUS_ADMIN] }
         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: https, host: menicka\.herokuapp\.com$ }
         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: https, host: simplemenu\.cz$ }
         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY}

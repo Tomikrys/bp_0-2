@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+{% block title %}Uživatelská Nastavení{% endblock %}
+{% block stylesheets %}
+{% endblock %}
+{% block body %}
+    <h1>Uživatelská nastavení</h1>
+    <h2>Odstranit účet</h2>
+    <form action="/user/delete_account" method="delete">
+        <button class="btn btn-md btn-danger" type="submit">Smazat účet</button>
+    </form>
+{% endblock %}
+
+{% block javascripts %}
+{% endblock %}
