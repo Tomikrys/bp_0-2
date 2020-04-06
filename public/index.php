@@ -12,6 +12,12 @@ if ($_SERVER['APP_DEBUG']) {
     Debug::enable();
 }
 
+if($_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')
+{
+    $_SERVER['HTTPS'] = 'on';
+    $_SERVER['SERVER_PORT'] = 443;
+}
+
 if ($trustedProxies = $_SERVER['TRUSTED_PROXIES'] ?? $_ENV['TRUSTED_PROXIES'] ?? false) {
     Request::setTrustedProxies(explode(',', $trustedProxies), Request::HEADER_X_FORWARDED_ALL ^ Request::HEADER_X_FORWARDED_HOST);
 }
