@@ -7,5 +7,5 @@
 	RewriteCond %{REQUEST_FILENAME} -f
 	RewriteRule .? - [L]
 
-	RewriteRule .? %{ENV:BASE}/public/index.php [L]
+	RewriteRule .? %{ENV:BASE}/index.php [L]
 </IfModule>
