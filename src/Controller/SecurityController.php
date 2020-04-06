@@ -281,7 +281,7 @@ class SecurityController extends AbstractController
         $formadd = $this->createFormBuilder($user)
             ->add('email', EmailType::class, [
                 'label' => 'Email',
-                'attr' => ['class' => 'form-control']
+                'attr' => ['class' => 'form-control  mb-3']
             ])
             ->add('password', PasswordType::class, [
                 'label' => 'Heslo',
