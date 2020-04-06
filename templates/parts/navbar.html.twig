@@ -43,15 +43,17 @@
 
             {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_PREVIOUS_ADMIN') %}
                 {%  if is_granted('ROLE_PREVIOUS_ADMIN') %}
-                    <a class="nav-link" href="?_switch_user=_exit">Back</a>
+                    <a class="nav-link" href="?_switch_user=_exit">Zpět na vlastní účet</a>
                 {% endif %}
                 <div class="btn-group mr-2">
                     <button class="btn btn-secondary btn-sm dropdown-toggle btn-custom-dropdown" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Change User
+                        Změnit uživatele
                     </button>
                     <div class="dropdown-menu dropdown-menu-right">
-                        {% for user in all_users.findAll %}
-                            <a class="nav-link" href="/impersonating_user?impersonating_user={{ user.email }}">{{ user.email }}</a>
+                        {% for other_user in all_users.findAll %}
+                            {% if app.user.email != other_user.email %}
+                                <a class="nav-link" href="/impersonating_user?impersonating_user={{ other_user.email }}">{{ other_users.email }}</a>
+                            {% endif %}
                         {% endfor %}
                     </div>
                 </div>
