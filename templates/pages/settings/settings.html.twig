@@ -21,7 +21,7 @@
     <tbody>
     {% for template in templates %}
         <tr>
-            <td id="template{{ template.id }}" contenteditable="true">{{ template.name }}</td>
+            <td id="template{{ template.id }}" class="without-enter" contenteditable="true">{{ template.name }}</td>
             <td id="template{{ template.id }}"><a href="{{ template.realpath }}">{{ template.displaypath }}</a></td>
             <td>
                 <button onclick="edit_template(this)" class="btn btn-sm btn-primary edit-template" data-id="{{ template.id }}">Uložit</button>
@@ -58,8 +58,8 @@
         <tbody>
         {% for day in settings.days %}
             <tr class="content_row">
-                <td class="content" contenteditable="true">{{ day[0] }}</td>
-                <td class="content" contenteditable="true">{{ day[1] }}</td>
+                <td class="content" contenteditable="true" class="without-enter">{{ day[0] }}</td>
+                <td class="content" contenteditable="true" class="without-enter">{{ day[1] }}</td>
                 <td onclick="delete_row(this)" class="cursor_pointer text-center"><i class="fas fa-times"></i></td>
             </tr>
         {% endfor %}
@@ -79,7 +79,7 @@
         <tbody>
         {% for meal in settings.meals %}
         <tr>
-            <td class="content" contenteditable="true">{{ meal }}</td>
+            <td class="content" class="without-enter" contenteditable="true">{{ meal }}</td>
             <td onclick="delete_row(this)" class="cursor_pointer text-center"><i class="fas fa-times"></i></td>
         </tr>
         {% endfor %}
@@ -101,7 +101,7 @@
         <tbody>
         {% for type in types %}
             <tr>
-                <td id="type{{ type.id }}" contenteditable="true">{{ type.name }}</td>
+                <td id="type{{ type.id }}" class="without-enter" contenteditable="true">{{ type.name }}</td>
                 <td>
                     <button onclick="edit_type(this)" class="btn btn-sm btn-primary edit-tag" data-id="{{ type.id }}">Uložit</button>
                     <button onclick="delete_type(this)" class="btn btn-sm btn-danger delete-tag" data-id="{{ type.id }}">Smazat</button>
@@ -124,7 +124,7 @@
         <tbody>
         {% for tag in tags %}
             <tr>
-                <td id="tag{{ tag.id }}" contenteditable="true">{{ tag.name }}</td>
+                <td id="tag{{ tag.id }}" class="without-enter" contenteditable="true">{{ tag.name }}</td>
                 <td>
                     <button onclick="edit_tag(this)" class="btn btn-sm btn-primary edit-tag" data-id="{{ tag.id }}">Uložit</button>
                     <button onclick="delete_tag(this)" class="btn btn-sm btn-danger delete-tag" data-id="{{ tag.id }}">Smazat</button>
@@ -146,6 +146,27 @@
 
 {% block javascripts %}
 <script>
+    $(document).ready(function() {
+        without_enter_listener();
+    });
+    function without_enter_listener() {
+        $(".without-enter").keydown(function (event) {
+            // Allow: backspace, delete, tab, escape, and enter
+            if (event.keyCode == 46 || event.keyCode == 8 || event.keyCode == 9 ||
+                // Allow: Ctrl+A
+                (event.keyCode == 65 && event.ctrlKey === true) ||
+                // Allow: home, end, left, right
+                (event.keyCode >= 35 && event.keyCode <= 39)) {
+                // let it happen, don't do anything
+                return;
+            }
+            let enter = ['\n'];
+            if (!enter.includes(event.key)) {
+                event.preventDefault();
+            }
+        });
+    }
+
     function edit_template(e) {
         $("#loading").modal("show");
         // vytežení infa z tabulky
@@ -316,6 +337,7 @@
         let editable = document.createAttribute("contenteditable");
         editable.value = "true";
         cell.classList.add("content");
+        cell.classList.add("without-enter");
         cell.attributes.setNamedItem(editable);
 
         let cell_button = row.insertCell(-1);
@@ -323,7 +345,8 @@
             '<button onclick=\"edit_tag(this)\" class=\"btn btn-sm btn-primary edit-tag\" data-id=\"-new\">Uložit</button>' +
             '<button onclick=\"delete_row(this.parentNode)\" class=\"btn btn-sm btn-danger delete-tag\">Smazat</button>';
 
-        cell_button.attributes.removeNamedItem("contenteditable");
+        //cell_button.attributes.removeNamedItem("contenteditable");
+        without_enter_listener();
     }
 
     function add_row_type(e) {
@@ -335,14 +358,16 @@
         let editable = document.createAttribute("contenteditable");
         editable.value = "true";
         cell.classList.add("content");
+        cell.classList.add("without-enter");
         cell.attributes.setNamedItem(editable);
 
         let cell_button = row.insertCell(-1);
         cell_button.innerHTML =
             '<button onclick=\"edit_type(this)\" class=\"btn btn-sm btn-primary edit-type\" data-id=\"-new\">Uložit</button>' +
-            '<button onclick=\"delete_row(this.parentNode)\" class=\"btn btn-sm btn-danger delete-type\">Smazat</button>';
+            '<button onclick=\"delete_row(this.parentNode)\" class=\"btn btn-sm btn-danger delete-type ml-1\">Smazat</button>';
 
-        cell_button.attributes.removeNamedItem("contenteditable");
+        //cell_button.attributes.removeNamedItem("contenteditable");
+        without_enter_listener();
     }
 
     function add_row(e, i) {
@@ -358,12 +383,14 @@
             let editable = document.createAttribute("contenteditable");
             editable.value = "true";
             cell.classList.add("content");
+            cell.classList.add("without-enter");
             cell.attributes.setNamedItem(editable);
         }
          cell.outerHTML = '<td onclick=\"delete_row(this)\" class=\"cursor_pointer text-center\"><i class=\"fas fa-times\"></i></td>';
         // cell.classList.remove("content");
         // cell.innerHTML = '<i class="fas fa-times"></i>';
         // cell.attributes.removeNamedItem("contenteditable");
+        without_enter_listener();
     }
 
     function saveMeals() {

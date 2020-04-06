@@ -184,8 +184,8 @@ class SettingsController extends AbstractController {
             $this->addFlash('warning', 'Neoprávněný přístup.');
             exit;
         }
-
-        $tag->setName($data->name);
+        $name_without_new_line = preg_replace("/[\n\r]/"," ",$data->name);
+        $tag->setName($name_without_new_line);
 
         $this->getDoctrine()->getManager()->persist($tag);
         $entityManager->flush();
