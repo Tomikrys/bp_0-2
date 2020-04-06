@@ -38,11 +38,13 @@ security:
         - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/register, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/foods, roles: ROLE_USER }
-        - { path: ^/menu, roles: ROLE_USER }
-        - { path: ^/settings, roles: ROLE_USER }
+        - { path: ^/foods, roles: ROLE_CAPTAIN }
+        - { path: ^/menu, roles: ROLE_CAPTAIN }
+        - { path: ^/settings, roles: ROLE_CAPTAIN }
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
         - { path: ^/, roles: ROLE_USER, requires_channel: https, host: simplemenu\.cz }
+        - { path: ^/, roles: ROLE_USER, requires_channel: https, host: www\.simplemenu\.cz }
         - { path: ^/, roles: ROLE_USER, requires_channel: https, host: menicka\.herokuapp\.com }
+        - { path: ^/, roles: ROLE_USER, requires_channel: https, host: www\.menicka\.herokuapp\.com }
         - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: http, host: localhost$ }
