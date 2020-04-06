@@ -148,10 +148,10 @@ class SettingsController extends AbstractController {
     public function delete_tag(Request $request, $id) {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $user = $this->getUser();
-        $type = $this->getDoctrine()->getRepository(Tag::class)->find($id);
-        if ($user != $type->getUser()) {
+        $type = $this->getDoctrine()->getRepository(Tag::class)->findOneBy(['user' => $user, 'id' => $id]);
+        if ($type) {
             //TODO Error
-            $this->addFlash('warning', 'Neoprávněný přístup.');
+            $this->addFlash('warning', 'Typ nebyl nalezen');
             exit;
         }
         $entityManager = $this->getDoctrine()->getManager();
@@ -207,10 +207,10 @@ class SettingsController extends AbstractController {
         $entityManager = $this->getDoctrine()->getManager();
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $user = $this->getUser();
-        $template = $entityManager->getRepository(Template::class)->find($id);
-        if ($user != $template->getUser()) {
+        $template = $entityManager->getRepository(Template::class)->findOneBy(['user' => $user, 'id' => $id]);
+        if (!$template) {
             //TODO Error
-            $this->addFlash('warning', 'Neoprávněný přístup.');
+            $this->addFlash('warning', 'Šablona nenalezena');
             exit;
         }
 
