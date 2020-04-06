@@ -19,3 +19,5 @@
 ###< symfony/web-server-bundle ###
 /public/words/
 /.idea/
+/public/media/favicons/favicon-invert-32x32.png
+/public/media/favicons/favicon-invert-96x96.png
