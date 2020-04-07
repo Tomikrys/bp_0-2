@@ -65,6 +65,12 @@ class User implements UserInterface
      */
     private $types;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Skin")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $skin;
+
     public function __construct()
     {
         $this->foods = new ArrayCollection();
@@ -340,6 +346,18 @@ class User implements UserInterface
                 $type->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getSkin(): ?Skin
+    {
+        return $this->skin;
+    }
+
+    public function setSkin(?Skin $skin): self
+    {
+        $this->skin = $skin;
 
         return $this;
     }
