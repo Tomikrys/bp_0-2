@@ -82,6 +82,10 @@
             box-shadow: 1px 1px 5px #de1111;
         }
 
+        .changed {
+            border-right: 2px solid #ffc107;
+        }
+
         table.sortable thead th:not(.sorttable_sorted):not(.sorttable_sorted_reverse):not(.sorttable_nosort):after {
             content: " \25B4\034F\25BE"
         }
@@ -182,6 +186,11 @@
                 select_food(this.closest("tr").id);
                 manage_avaliability_of_edit_and_delete_button();
             });
+
+            $('#foods .food_types select.food_type').on("click", function(){
+                add_to_changed_foods(this.closest("tr"));
+            });
+
 
             $('.tag-filter-item').on("click", function(){
                 clear_selected_foods();
@@ -490,6 +499,7 @@
     let changed_foods = [];
     function add_to_changed_foods(e) {
       push_if_not_there(changed_foods, e.id);
+      e.classList.add("changed");
       //console.log(changed_foods);
     }
 
@@ -754,7 +764,7 @@
 
       let $remove_other_tags = [];
       $("#editFoodFormRemoveTag input.add_tag_modal_checkbox").each(function () {
-          if ($(this).is(':checked')) {
+          if ($(this).is(':checked') && $(this).is(':enabled')) {
               $remove_other_tags.push($(this).val());
           }
       });
@@ -773,9 +783,13 @@
               all_promises.push(promise);
           }
 
-          promise = new Promise(function(resolve, reject) {
-              edit_tags(food_id, $add_tags, $remove_other_tags, resolve)
-          });
+          //console.log($remove_other_tags);
+          //console.log($add_tags);
+          if ($add_tags !== [] || $remove_other_tags !== []) {
+              promise = new Promise(function (resolve, reject) {
+                  edit_tags(food_id, $add_tags, $remove_other_tags, resolve)
+              });
+          }
           all_promises.push(promise);
       }
 
@@ -787,7 +801,7 @@
 
     window.onbeforeunload = function(){
         if (!force_refresh) {
-            if (changed_foods !== []) {
+            if (changed_foods.length) {
                 return 'Are you sure you want to leave?';
             }
         }
