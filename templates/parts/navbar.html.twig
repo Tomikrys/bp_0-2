@@ -52,7 +52,7 @@
                     <div class="dropdown-menu dropdown-menu-right">
                         {% for other_user in all_users.findAll %}
                             {% if app.user.email != other_user.email %}
-                                <a class="nav-link" href="/impersonating_user?impersonating_user={{ other_user.email }}">{{ other_users.email }}</a>
+                                <a class="nav-link" href="/impersonating_user?impersonating_user={{ other_user.email }}">{{ other_user.email }}</a>
                             {% endif %}
                         {% endfor %}
                     </div>

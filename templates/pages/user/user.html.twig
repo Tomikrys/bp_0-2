@@ -7,11 +7,16 @@
     <h2>Změnit heslo</h2>
     <p class="text-danger">todo</p>
     <h2>Změnit vzhled</h2>
-    <select class="food_type form-control">
-        {% for type in look_types %}
-                <option selected="" data-id="{{ food.type.id }}">{{ food.type.name }}</option>
+    <select id="skin_selector" class="food_type form-control" style="max-width: 150px">
+        {% for skin in skins %}
+            {% if skin == app.user.skin %}
+                <option selected data-id="{{ skin.name }}">{{ skin.name }}</option>
+            {% else %}
+                <option data-id="{{ skin.id }}">{{ skin.name }}</option>
+            {% endif %}
         {% endfor %}
     </select>
+    <button class="btn btn-md btn-success mt-1 mb-2" onclick="change_skin()" type="submit">Změnit skin</button>
     <h2>Odstranit účet</h2>
     <form action="/user/delete_account" method="delete">
         <button class="btn btn-md btn-danger" type="submit">Smazat účet</button>
@@ -19,4 +24,18 @@
 {% endblock %}
 
 {% block javascripts %}
+    <script>
+        function change_skin() {
+            $("#loading").modal("show");
+            let selector = document.getElementById("skin_selector");
+            let id = selector[selector.selectedIndex].getAttribute('data-id');
+            console.log(id);
+            fetch(`/user/skin/${id}`, {
+                method: 'PATCH'
+            }).then(
+                () => {
+                    window.location.reload();
+                });
+        }
+    </script>
 {% endblock %}

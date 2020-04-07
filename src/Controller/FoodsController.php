@@ -144,7 +144,7 @@ class FoodsController extends DefaultController {
 
         $this->fillUpFood($data, $food);
         $entityManager->flush();
-        $this->addFlash('success', 'Jídlo bylo upraveno.');
+        $this->addFlash('warning', 'Jídlo bylo upraveno.');
 
         $response = new Response();
         $response->send();
@@ -210,7 +210,7 @@ class FoodsController extends DefaultController {
         }
 
         $this->foodRepository->save($food);
-        $this->addFlash('success', 'Tagy byly upraveny.');
+        $this->addFlash('warning', 'Tagy byly upraveny.');
 
         $response = new Response();
         $response->send();
@@ -340,7 +340,7 @@ class FoodsController extends DefaultController {
             } else {
                 $this->addFlash('error', 'Jídlo pro úpravu tagů nebylo nalezeno.');
             }
-            $this->addFlash('success', 'Tagy byly editovány.');
+            $this->addFlash('warning', 'Tagy byly editovány.');
         }
 
         return $formtags;

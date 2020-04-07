@@ -5,6 +5,8 @@ namespace App\Repository;
 use App\Entity\Template;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 
 /**
  * @method Template|null find($id, $lockMode = null, $lockVersion = null)
@@ -23,8 +25,8 @@ class TemplateRepository extends ServiceEntityRepository
      * Uloží tag do systému.
      * Pokud není nastaveno ID, vloží nový, jinak provede editaci.
      * @param Template $template
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws ORMException
+     * @throws OptimisticLockException
      */
     public function save(Template $template): void {
         $this->getEntityManager()->persist($template);
