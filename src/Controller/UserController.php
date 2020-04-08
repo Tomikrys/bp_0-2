@@ -86,16 +86,16 @@ class UserController extends AbstractController {
 
     /**
      * @Route("/user/skin/{id}", name="/user/skin", methods={"GET", "PATCH"})
-     * @return RedirectResponse
      * @param $id
+     *@return Response
      */
     public function change_skin($id)
     {
         $skin = $this->getDoctrine()->getRepository(Skin::class)->find($id);
         $username = $this->getUser()->getUsername();
-        dump($username);
+        //dump($username);
         $user = $this->getDoctrine()->getRepository(User::class)->findOneBy(["email" => $username]);
-        dump($user);
+        //dump($user);
         $user->setSkin($skin);
         $this->userRepository->save($user);
 
