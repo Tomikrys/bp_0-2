@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Food;
 use App\Entity\History;
 use App\Entity\Settings;
+use App\Entity\Skin;
 use App\Entity\Tag;
 use App\Entity\Template;
 use App\Entity\Type;
@@ -297,6 +298,8 @@ class SecurityController extends AbstractController
         if ($formadd->isSubmitted()) {
             if ($formadd->isValid()) {
                 $user->setRoles(["ROLE_CAPTAIN"]);
+                $skin = $this->getDoctrine()->getRepository(Skin::class)->findOneBy(['name' => 'simplex']);
+                $user->setSkin($skin);
                 $user->setPassword($this->passwordEncoder->encodePassword(
                     $user,
                     $user->getPassword()
@@ -313,6 +316,7 @@ class SecurityController extends AbstractController
                 $this->fill_default_foods($user);
                 $this->add_random_history($user);
                 $this->add_default_templates($user, $uploader);
+
 
                 $this->addFlash('success', 'Uživatel \'' . $user->getEmail() . '\' byl úspěšně přidán.');
                 $this->addFlash('info', 'Prosím, přihlaste se.');
