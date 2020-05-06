@@ -445,7 +445,6 @@
         }
 
         function add_tag(e) {
-            //TODO sranda, d2l8 to random v2ci xD
             let food_id = $(e).data('id');
             let form = document.getElementById("form_tags");
             let checkboxes = form.getElementsByClassName("form-checkbox");
@@ -467,12 +466,6 @@
             $("#addTagFormModal").modal("show");
 
             //$("#addTagFormModal").modal("hide");
-        }
-
-        function push_if_not_there(array, element) {
-            if (array.indexOf(element) === -1) {
-                array.push(element);
-            }
         }
 
         function remove_from_array(array, element) {
@@ -510,7 +503,6 @@
       e.classList.add("changed");
       //console.log(changed_foods);
     }
-
 
     function save_all_changed() {
         let all_good = true;

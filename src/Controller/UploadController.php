@@ -75,6 +75,8 @@ class UploadController extends AbstractController {
 
         $AWSurl = $AWSpath . $clean_username . "/" . $file_fullname;
         $i = 0;
+        $user = $this->getUser();
+
         while ($this->does_url_exists($AWSurl)) {
             $i++;
             $filename_dubler = $filename . "-" . $i . $extension;
@@ -103,7 +105,7 @@ class UploadController extends AbstractController {
 
         $i = 0;
         $templatename_dubler = $templatename;
-        while ($this->getDoctrine()->getRepository(Template::class)->findBy(['name' => $templatename_dubler])) {
+        while ($this->getDoctrine()->getRepository(Template::class)->findBy(['user' => $user, 'name' => $templatename_dubler])) {
             $i++;
             $templatename_dubler = $templatename . "-" . $i;
         }

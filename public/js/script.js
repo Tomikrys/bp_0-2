@@ -155,3 +155,9 @@ $().ready(function() {
         }
     });
 });
+
+function push_if_not_there(array, element) {
+    if (array.indexOf(element) === -1) {
+        array.push(element);
+    }
+}

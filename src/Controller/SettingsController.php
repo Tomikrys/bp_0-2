@@ -4,10 +4,16 @@
 namespace App\Controller;
 
 
+use App\Entity\Food;
 use App\Entity\Settings;
 use App\Entity\Tag;
 use App\Entity\Template;
 use App\Entity\Type;
+use App\Repository\FoodRepository;
+use App\Repository\TagRepository;
+use App\Repository\TypeRepository;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,7 +24,34 @@ use Symfony\Component\Routing\Annotation\Route;
  * Class MenuController
  * @package App\Controller
  */
-class SettingsController extends AbstractController {
+class SettingsController extends DefaultController {
+    /**
+     * @var FoodRepository
+     */
+    private $foodRepository;
+
+    /**
+     * @var TagRepository
+     */
+    private $tagRepository;
+
+    /**
+     * @var TypeRepository
+     */
+    private $typeRepository;
+
+    /**
+     * FoodsController constructor.
+     * @param FoodRepository $foodRepository
+     * @param TagRepository $tagRepository
+     * @param TypeRepository $typeRepository
+     */
+    public function __construct(FoodRepository $foodRepository, TagRepository $tagRepository, TypeRepository $typeRepository)
+    {
+        $this->foodRepository = $foodRepository;
+        $this->tagRepository = $tagRepository;
+        $this->typeRepository = $typeRepository;
+    }
 
     /**
      * @Route("/settings", name="/settings", methods={"GET", "POST"})
@@ -33,6 +66,8 @@ class SettingsController extends AbstractController {
         $templates = $this->getDoctrine()->getRepository(Template::class)->findBy(['user' => $user]);
 //        dump($templates);
 //        exit;
+
+        $this->manage_flashes();
         return $this->render('pages/settings/settings.html.twig', ['settings' => $settings, 'types' => $types, 'tags' => $tags,
             'templates' => $templates]);
     }
@@ -164,9 +199,9 @@ class SettingsController extends AbstractController {
     }
 
     /**
-     * @Route("/settings/edit/tag", methods={"GET", "POST"})
+     * @Route("/settings/edit/tag", methods={"GET", "PATCH"})
      */
-    public function edit_tag() {
+    public function edit_add_tag() {
         $json = file_get_contents('php://input');
         $data = json_decode ($json);
 
@@ -197,7 +232,7 @@ class SettingsController extends AbstractController {
     }
 
     /**
-     * @Route("/settings/edit/template", methods={"GET", "POST"})
+     * @Route("/settings/edit/template", methods={"GET", "PATCH"})
      */
     public function edit_template() {
         $json = file_get_contents('php://input');
@@ -230,9 +265,9 @@ class SettingsController extends AbstractController {
     }
 
     /**
-     * @Route("/settings/edit/type", methods={"GET", "POST"})
+     * @Route("/settings/edit/type", methods={"GET", "PATCH"})
      */
-    public function edit_type() {
+    public function edit_add_type() {
         $json = file_get_contents('php://input');
         $data = json_decode ($json);
 
@@ -242,7 +277,7 @@ class SettingsController extends AbstractController {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $user = $this->getUser();
 
-        $type = $entityManager->getRepository(Type::class)->find($id);
+        $type = $entityManager->getRepository(Type::class)->findOneBy(['user' => $user, 'id' => $id]);
         if (!$type) {
             $type = new Type();
             $type->setUser($user);
@@ -258,11 +293,85 @@ class SettingsController extends AbstractController {
 
         $this->getDoctrine()->getManager()->persist($type);
         $entityManager->flush();
-        $this->addFlash('success', 'Type byl upraven.');
+        $this->addFlash('success', 'Typ byl upraven.');
 
         $response = new Response();
         $response->send();
         return $response;
     }
 
+    /**
+     * @Route("/import", methods={"GET", "POST"})
+     * @param Request $request
+     * @return Response
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
+    public function import_csv(Request $request) : Response {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        $user = $this->getUser();
+        $entityManager = $this->getDoctrine()->getManager();
+        // Název|Popis|Cena|Typ|Tag|Tag
+        $import = $request->getContent();
+
+        // rozdeleni na radky
+        $line_separator = "\r\n";
+        $line = strtok($import, $line_separator);
+        while ($line !== false) {
+
+            $food = new Food();
+            $food->setUser($user);
+
+            // rozdeleni na zaznamy
+            $arr = explode('|', $line);
+            foreach ($arr as $i => $word) {
+                switch ($i) {
+                    //nazev
+                    case 0:
+                        $food->setName($word);
+                        break;
+                    //popis
+                    case 1:
+                        $food->setDescription($word);
+                        break;
+                    //cena
+                    case 2:
+                        $food->setPrice($word);
+                        break;
+                    //typ
+                    case 3:
+                        $type = $this->getDoctrine()->getRepository(Type::class)->findOneBy(['user' => $user, 'name' => $word]);
+                        if ($type == []) {
+                            $type = new Type();
+                            $type->setName($word);
+                            $type->setUser($this->getUser());
+                            $this->typeRepository->save($type);
+                            $type = $this->getDoctrine()->getRepository(Type::class)->findOneBy(['user' => $user, 'name' => $word]);
+                        }
+                        $food->setType($type);
+                        break;
+                    //tagy
+                    default:
+                        $tag = $this->getDoctrine()->getRepository(Tag::class)->findOneBy(['user' => $user, 'name' => $word]);
+                        if ($tag == []) {
+                            $tag = new Tag();
+                            $tag->setName($word);
+                            $tag->setUser($this->getUser());
+                            $this->tagRepository->save($tag);
+                            $tag = $this->getDoctrine()->getRepository(Tag::class)->findOneBy(['user' => $user, 'name' => $word]);
+                        }
+                        $food->addTag($tag);
+                        break;
+                }
+            }
+            //dump($food);
+            $this->foodRepository->save($food);
+            $entityManager->flush();
+            //dump($line);
+
+            $line = strtok($line_separator);
+        }
+        $this->addFlash('success', 'Import proběhl úspěšně.');
+        return new Response();
+    }
 }
