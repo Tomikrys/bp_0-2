@@ -64,6 +64,7 @@ class MenuController extends AbstractController {
     public function export_as_word($menu, $template_url){
         $template_for_url = new Template();
         $template = new TemplateProcessor($template_for_url->getRealPath($template_url, $this->getUser()));
+        dump($template);
 //        $days = ["Pondělí", "Úterý", "Středa"];
 //        $mealsTypes = ["Polévka", "Hlavní chod"];
 //        $meals = ["pivo", "jidlo"];

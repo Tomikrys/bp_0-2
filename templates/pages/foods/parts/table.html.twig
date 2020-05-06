@@ -5,7 +5,14 @@
             <th class="{{ header.class }} align-middle">{{ header.name }}</th>
         {% endfor %}
         <th class="sorttable_nosort align-middle" nowrap="nowrap">
-            <input type="checkbox" id="select_all_foods" class="select_food_style">
+            <!--<input type="checkbox" id="select_all_foods" class="select_food_style">-->
+            <div class="pretty p-icon p-smooth">
+                <input type="checkbox" id="select_all_foods" class="select_food_style" />
+                <div class="state p-danger-o">
+                    <i class="icon material-icons">done</i>
+                    <label></label>
+                </div>
+            </div>
             <span>Úpravy</span>
         </th>
     </tr>
@@ -43,7 +50,14 @@
                 <td class="align-middle text-center">
                     <a href="#" class="btn btn-sm btn-primary edit-food d-none" data-id="{{ food.id }}">Uložit</a>
                     <a href="#" class="btn btn-sm btn-danger delete-food d-none" data-id="{{ food.id }}">Smazat</a>
-                    <input type="checkbox" class="select_food select_food_style" data-id="{{ food.id }}">
+                    <!--<input type="checkbox" class="select_food select_food_style" data-id="{{ food.id }}">-->
+                    <div class="pretty p-icon p-smooth">
+                        <input type="checkbox" class="select_food select_food_style" data-id="{{ food.id }}" />
+                        <div class="state p-danger-o">
+                            <i class="icon material-icons">done</i>
+                            <label></label>
+                        </div>
+                    </div>
                 </td>
             </tr>
         {% endfor %}
