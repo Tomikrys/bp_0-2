@@ -68,7 +68,7 @@ class MenuController extends AbstractController {
     public function export_as_word($menu, $template_url){
         $template_for_url = new Template();
         $template = new TemplateProcessor($template_for_url->getRealPath($template_url, $this->getUser()));
-        dump($template);
+        //dump($template);
 //        $days = ["Pondělí", "Úterý", "Středa"];
 //        $mealsTypes = ["Polévka", "Hlavní chod"];
 //        $meals = ["pivo", "jidlo"];
@@ -153,7 +153,7 @@ class MenuController extends AbstractController {
     //public function export_as_xml($menu){
     public function export_as_xml(FileUploader $uploader, $menu){
         //$menu = json_decode ('[{"day":"Pondělí","meals":[{"type":"Polévka","meals":[{"id":"420"},{"id":"438"}]},{"type":"Hlavní chod","meals":[{"id":"421"},{"id":"422"},{"id":"426"}]}],"description":"Monday"},{"day":"Úterý","meals":[{"type":"Polévka","meals":[{"id":"419"}]},{"type":"Hlavní chod","meals":[{"id":"422"},{"id":"424"},{"id":"426"}]}],"description":"Tuesday"},{"day":"Středa","meals":[{"type":"Polévka","meals":[{"id":"419"}]},{"type":"Hlavní chod","meals":[{"id":"421"},{"id":"424"},{"id":"426"}]}],"description":"Wednesday"},{"day":"Čtvrtek","meals":[{"type":"Polévka","meals":[{"id":"420"}]},{"type":"Hlavní chod","meals":[{"id":"422"},{"id":"423"},{"id":"426"}]}],"description":"Thursday"},{"day":"Pátek","meals":[{"type":"Polévka","meals":[{"id":"419"}]},{"type":"Hlavní chod","meals":[{"id":"421"},{"id":"424"},{"id":"425"}]}],"description":"Friday"}]', true);
-        dump($menu);
+        //dump($menu);
         $xml = new SimpleXMLElement('<daily_menu_list/>');
 
        /* for ($i = 1; $i <= 2; ++$i) {
@@ -182,8 +182,8 @@ class MenuController extends AbstractController {
                 }
             }
         }
-        dump($xml);
-        dump($xml->asXML());
+        //dump($xml);
+        //dump($xml->asXML());
 
         $clean_username = $this->getUser()->getCleanUsername();
         if (!is_dir('./xml')) {

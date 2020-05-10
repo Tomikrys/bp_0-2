@@ -9,7 +9,7 @@
 
 
     <h2>Odstranit účet</h2>
-    <form action="/user/delete_account" method="delete">
+    <form action="/user/delete_account" method="delete" onSubmit="return confirm('Opravdu chcete odstanit účet {{ user.username }}');">>
         <button class="btn btn-md btn-danger" type="submit">Smazat účet</button>
     </form>
 {% endblock %}
