@@ -166,6 +166,7 @@
 
         $('#datepicker').datepicker({
             format: "dd. mm. yyyy",
+            dateFormat: "dd. mm. yy",
             weekStart: 1,
             startDate: "-today",
             language: "cs",
@@ -173,7 +174,7 @@
             calendarWeeks: true,
             todayHighlight: true,
             autoclose: true,
-            defaultViewDate: { year: 1977, month: 04, day: 25 }
+            defaultViewDate: { year: 1977, month: 4, day: 25 }
         });
 
         // todo moc nepěkný
@@ -185,15 +186,42 @@
         $( "#menuList" ).change(function() {
         });
 
-        let url = new URL(location.href);
-        let json = url.searchParams.get('json');
-        if (json != null) {
-            update_menulist(JSON.parse(json))
-        }
+        $( "#datepicker" ).change(function() {
+            update_url();
+        });
         let date = url.searchParams.get('date');
         if (date != null) {
+            let date_values = get_date_separated(date);
             update_date(date);
         }
+    });
+
+    let url = new URL(location.href);
+    let json = url.searchParams.get('json');
+    if (json != null) {
+        update_menulist(JSON.parse(json))
+    }
+    let date = url.searchParams.get('date');
+    if (date != null) {
+        let date_values = get_date_separated(date);
+        update_date(date);
+    }
+    let boxArray = document.getElementsByClassName("dragula");
+    let boxes = Array.prototype.slice.call(boxArray);
+    dragula([document.getElementById("foodList"), document.getElementsByClassName("drop-container")], {
+        containers: boxes,
+        copy: function (el, source) {
+            if (el.classList.contains("meal")) {
+                return source.classList.contains('get-container');
+            } else {
+                return false;
+            }
+        },
+        accepts: function (el, target) {
+            return target.classList.contains('drop-container');
+        },
+        removeOnSpill: true,
+        ignoreInputTextSelection: false
     });
 
     // functions
@@ -241,7 +269,20 @@
     }
 
     function update_date(date) {
-        document.getElementById('datepicker').value = date;
+        $('#datepicker').datepicker({
+            format: "dd. mm. yyyy",
+            dateFormat: "dd. mm. yy",
+            weekStart: 1,
+            startDate: "-today",
+            language: "cs",
+            daysOfWeekHighlighted: "1",
+            calendarWeeks: true,
+            todayHighlight: true,
+            autoclose: true,
+            defaultViewDate: { year: 1977, month: 4, day: 25 }
+        });
+        $('#datepicker').datepicker("setDate", date);
+        //document.getElementById('datepicker').value = date;
     }
 
     function update_menulist(json) {
@@ -287,6 +328,7 @@
         let url = new URL(location.href);
         let json = generate_json();
         url.searchParams.set('json', JSON.stringify(json));
+        url.searchParams.set('date', document.getElementById('datepicker').value);
         //TODO ječí to
         window.history.pushState('test', 'Title', url);
     }
@@ -302,7 +344,7 @@
         let menuList = document.getElementById("menuList");
         let menuDays = menuList.children;
 
-        let datepicker = $('#datepicker').datepicker('getDate');
+        let datepicker_date = new Date( $('#datepicker').datepicker('getDate') );
         let day_date = new Date();
 
         let menu = [];
@@ -311,15 +353,16 @@
             let menuDay = menuDays[i].children;
             let day = {day: "", meals: []};
             let type = {type: "", meals: []};
+            // přidání datumu pro daný den
+            day_date = datepicker_date;
+            day_date.setDate(datepicker_date.getDate() + i);
+            day.date = day_date.getDate() + ". " + day_date.getMonth() + ". " + day_date.getFullYear();
 
             for (let j = 0; j < menuDay.length; j++) {
                 let menuDayItem = menuDay[j];
                 if (menuDayItem.classList.contains("day-name")) {
                     day.day = menuDayItem.innerText;
                     day.description = menuDayItem.getAttribute('data-description');
-                    // přidání datumu pro daný den
-                    day_date.setDate(datepicker.getDate() + i);
-                    day.date = day_date.toLocaleDateString();
 
                 } else if (menuDayItem.classList.contains("JSON-food-header")){
                     if (type.type !== "") {
@@ -400,25 +443,6 @@
             console.log($(this).attr('id'));
         })
     }
-
-    let boxArray = document.getElementsByClassName("dragula");
-    let boxes = Array.prototype.slice.call(boxArray);
-    dragula([document.getElementById("foodList"), document.getElementsByClassName("drop-container")], {
-        containers: boxes,
-        copy: function (el, source) {
-            if (el.classList.contains("meal")) {
-                return source.classList.contains('get-container');
-            } else {
-                return false;
-            }
-        },
-        accepts: function (el, target) {
-            return target.classList.contains('drop-container');
-        },
-        removeOnSpill: true,
-        ignoreInputTextSelection: false
-    });
-
 
 </script>
 {% endblock %}
