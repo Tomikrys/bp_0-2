@@ -140,7 +140,7 @@ class MenuController extends AbstractController {
         $doGenerate = $_GET["generate"];
         $file = $this->export_as_word($clear_menu, $template);
        // exit;
-        dump($menu);
+        //dump($menu);
 
         //return $this->render('pages/menu/export.html.twig', ['menu' => $menu, "generate" => $doGenerate]);
         return $file;

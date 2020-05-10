@@ -149,7 +149,10 @@ class HistoryController extends DefaultController {
             mkdir('./xml/' . $clean_username);
         }
         touch('./xml/' . $clean_username . "/menu.xml");
-        file_put_contents('./xml/' . $clean_username . "/menu.xml", $xml->asXML());
+        $fp = fopen('./xml/' . $clean_username . "/menu.xml", 'w');
+        fwrite($fp, $xml->asXML());
+        fclose($fp);
+        //file_put_contents('./xml/' . $clean_username . "/menu.xml", $xml->asXML());
 
         $clean_username = $this->getUser()->getCleanUsername();
         $path = './xml/' . $clean_username . "/menu.xml";
