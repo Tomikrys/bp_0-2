@@ -356,7 +356,8 @@
             // přidání datumu pro daný den
             day_date = new Date(datepicker_date.valueOf());
             day_date.setDate(datepicker_date.getDate() + i);
-            day.date = String(day_date.getDate()).padStart(2, '0') + ". " + day_date.getMonth()+1 + ". " + day_date.getFullYear();
+            let month = parseInt(day_date.getMonth(), 10) + 1;
+            day.date = String(day_date.getDate()).padStart(2, '0') + ". " + String(month).padStart(2, '0') + ". " + day_date.getFullYear();
 
             for (let j = 0; j < menuDay.length; j++) {
                 let menuDayItem = menuDay[j];
