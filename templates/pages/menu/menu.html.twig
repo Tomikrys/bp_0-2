@@ -354,9 +354,9 @@
             let day = {day: "", meals: []};
             let type = {type: "", meals: []};
             // přidání datumu pro daný den
-            day_date = datepicker_date;
+            day_date = new Date(datepicker_date.valueOf());
             day_date.setDate(datepicker_date.getDate() + i);
-            day.date = day_date.getDate() + ". " + day_date.getMonth() + ". " + day_date.getFullYear();
+            day.date = String(day_date.getDate()).padStart(2, '0') + ". " + day_date.getMonth()+1 + ". " + day_date.getFullYear();
 
             for (let j = 0; j < menuDay.length; j++) {
                 let menuDayItem = menuDay[j];
@@ -440,7 +440,7 @@
         $menulist_meals.each(function () {
             let $meal_id = "#" + $(this).attr('id');
             $($meal_id).addClass("used-meal");
-            console.log($(this).attr('id'));
+            //console.log($(this).attr('id'));
         })
     }
 
