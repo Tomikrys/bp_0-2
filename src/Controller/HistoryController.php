@@ -148,6 +148,7 @@ class HistoryController extends DefaultController {
         if (!is_dir('./xml/' . $clean_username)) {
             mkdir('./xml/' . $clean_username);
         }
+        touch('./xml/' . $clean_username . "/menu.xml");
         file_put_contents('./xml/' . $clean_username . "/menu.xml", $xml->asXML());
 
         $clean_username = $this->getUser()->getCleanUsername();
