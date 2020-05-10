@@ -179,7 +179,7 @@ class HistoryController extends DefaultController {
         $this->historyRepository->save($history);
 
         $menu = json_decode ($json, true);
-        dump($menu['json']);
+        //dump($menu['json']);
         $clear_menu = $this->clear_menu_from_empty($menu['json']);
         $this->export_as_xml($uploader, $clear_menu);
 
