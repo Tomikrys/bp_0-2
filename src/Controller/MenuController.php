@@ -26,7 +26,7 @@ use Symfony\Component\Routing\Annotation\Route;
  * Class MenuController
  * @package App\Controller
  */
-class MenuController extends AbstractController {
+class MenuController extends DefaultController {
     /**
      * @Route("/menu", name="menu", methods={"GET", "POST"})
      */

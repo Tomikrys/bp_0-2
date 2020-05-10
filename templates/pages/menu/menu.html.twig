@@ -184,6 +184,16 @@
 
         $( "#menuList" ).change(function() {
         });
+
+        let url = new URL(location.href);
+        let json = url.searchParams.get('json');
+        if (json != null) {
+            update_menulist(JSON.parse(json))
+        }
+        let date = url.searchParams.get('date');
+        if (date != null) {
+            update_date(date);
+        }
     });
 
     // functions
@@ -228,16 +238,6 @@
                 'Content-Type': 'application/json'
             }
         }).then(res => window.location.reload());
-    }
-
-    let url = new URL(location.href);
-    let json = url.searchParams.get('json');
-    if (json != null) {
-        update_menulist(JSON.parse(json))
-    }
-    let date = url.searchParams.get('date');
-    if (date != null) {
-        update_date(date);
     }
 
     function update_date(date) {
@@ -291,9 +291,19 @@
         window.history.pushState('test', 'Title', url);
     }
 
+    function parse_date(date) {
+        let day = date.getDay();
+        let month = date.getMonth();
+        let year = date.getFullYear();
+        return day +". " + month + ". " + year;
+    }
+
     function generate_json() {
         let menuList = document.getElementById("menuList");
         let menuDays = menuList.children;
+
+        let datepicker = $('#datepicker').datepicker('getDate');
+        let day_date = new Date();
 
         let menu = [];
 
@@ -307,6 +317,9 @@
                 if (menuDayItem.classList.contains("day-name")) {
                     day.day = menuDayItem.innerText;
                     day.description = menuDayItem.getAttribute('data-description');
+                    // přidání datumu pro daný den
+                    day_date.setDate(datepicker.getDate() + i);
+                    day.date = day_date.toLocaleDateString();
 
                 } else if (menuDayItem.classList.contains("JSON-food-header")){
                     if (type.type !== "") {

@@ -108,22 +108,11 @@ class HistoryController extends DefaultController {
      */
     //public function export_as_xml($menu){
     public function export_as_xml(FileUploader $uploader, $menu){
-        //$menu = json_decode ('[{"day":"Pondělí","meals":[{"type":"Polévka","meals":[{"id":"420"},{"id":"438"}]},{"type":"Hlavní chod","meals":[{"id":"421"},{"id":"422"},{"id":"426"}]}],"description":"Monday"},{"day":"Úterý","meals":[{"type":"Polévka","meals":[{"id":"419"}]},{"type":"Hlavní chod","meals":[{"id":"422"},{"id":"424"},{"id":"426"}]}],"description":"Tuesday"},{"day":"Středa","meals":[{"type":"Polévka","meals":[{"id":"419"}]},{"type":"Hlavní chod","meals":[{"id":"421"},{"id":"424"},{"id":"426"}]}],"description":"Wednesday"},{"day":"Čtvrtek","meals":[{"type":"Polévka","meals":[{"id":"420"}]},{"type":"Hlavní chod","meals":[{"id":"422"},{"id":"423"},{"id":"426"}]}],"description":"Thursday"},{"day":"Pátek","meals":[{"type":"Polévka","meals":[{"id":"419"}]},{"type":"Hlavní chod","meals":[{"id":"421"},{"id":"424"},{"id":"425"}]}],"description":"Friday"}]', true);
-        //dump($menu);
         $xml = new SimpleXMLElement('<daily_menu_list/>');
-
-        /* for ($i = 1; $i <= 2; ++$i) {
-             $day = $xml->addChild('daily_menu');
-             $day->addChild('date', "22.3.2998");
-             $meal = $day->addChild('meal');
-             $meal->addChild('name', "Svíčková");
-             $meal->addChild('price', "99");
-             $meal->addChild('description', "polícka ze svíček");
-         }*/
 
         foreach ($menu as $menu_day) {
             $day = $xml->addChild('daily_menu');
-            $day->addChild('date', "22.3.1998");
+            $day->addChild('date', $menu_day["date"]);
             foreach ($menu_day["meals"] as $menu_type) {
                 foreach ($menu_type["meals"] as $menu_meal) {
                     $meal = $day->addChild('meal');
@@ -138,8 +127,6 @@ class HistoryController extends DefaultController {
                 }
             }
         }
-        //dump($xml);
-        //dump($xml->asXML());
 
         $clean_username = $this->getUser()->getCleanUsername();
         if (!is_dir('./xml')) {
@@ -148,11 +135,11 @@ class HistoryController extends DefaultController {
         if (!is_dir('./xml/' . $clean_username)) {
             mkdir('./xml/' . $clean_username);
         }
-        touch('./xml/' . $clean_username . "/menu.xml");
-        $fp = fopen('./xml/' . $clean_username . "/menu.xml", 'w');
-        fwrite($fp, $xml->asXML());
-        fclose($fp);
-        //file_put_contents('./xml/' . $clean_username . "/menu.xml", $xml->asXML());
+        //touch('./xml/' . $clean_username . "/menu.xml");
+        //$fp = fopen('./xml/' . $clean_username . "/menu.xml", 'w');
+        //fwrite($fp, $xml->asXML());
+        //fclose($fp);
+        file_put_contents('./xml/' . $clean_username . "/menu.xml", $xml->asXML());
 
         $clean_username = $this->getUser()->getCleanUsername();
         $path = './xml/' . $clean_username . "/menu.xml";
