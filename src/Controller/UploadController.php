@@ -95,7 +95,7 @@ class UploadController extends AbstractController {
         try {
             $uploader->aws_upload($path);
         } catch (Exception $e) {
-
+            echo $e->getMessage() . "\n";
         }
 
         $templatename = $request->request->get('template_name');

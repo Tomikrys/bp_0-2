@@ -156,7 +156,7 @@ class HistoryController extends DefaultController {
         try {
             $uploader->aws_upload($path);
         } catch (Exception $e) {
-
+            echo $e->getMessage() . "\n";
         }
     }
 
