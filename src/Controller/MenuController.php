@@ -123,85 +123,7 @@ class MenuController extends AbstractController {
         return $this->file($generated_menu);
     }
 
-    public function clear_menu_from_empty($menu) {
-        $i = 0;
-        //dump($menu);
-        foreach ($menu as $day) {
-            $empty_flag = true;
-            $j = 0;
-            foreach ($day["meals"] as $type) {
-                if ($type["meals"] == []) {
-                    unset($type["meals"][$j]);
-                } else {
-                    $empty_flag = false;
-                }
-                $j++;
-            }
-            if ($empty_flag) {
-                unset($menu[$i]);
-            }
-            $i++;
-        }
-        return $menu;
-    }
 
-    /**
-     * @param FileUploader $uploader
-     * @param $menu
-     * @return void
-     */
-    //public function export_as_xml($menu){
-    public function export_as_xml(FileUploader $uploader, $menu){
-        //$menu = json_decode ('[{"day":"Pondělí","meals":[{"type":"Polévka","meals":[{"id":"420"},{"id":"438"}]},{"type":"Hlavní chod","meals":[{"id":"421"},{"id":"422"},{"id":"426"}]}],"description":"Monday"},{"day":"Úterý","meals":[{"type":"Polévka","meals":[{"id":"419"}]},{"type":"Hlavní chod","meals":[{"id":"422"},{"id":"424"},{"id":"426"}]}],"description":"Tuesday"},{"day":"Středa","meals":[{"type":"Polévka","meals":[{"id":"419"}]},{"type":"Hlavní chod","meals":[{"id":"421"},{"id":"424"},{"id":"426"}]}],"description":"Wednesday"},{"day":"Čtvrtek","meals":[{"type":"Polévka","meals":[{"id":"420"}]},{"type":"Hlavní chod","meals":[{"id":"422"},{"id":"423"},{"id":"426"}]}],"description":"Thursday"},{"day":"Pátek","meals":[{"type":"Polévka","meals":[{"id":"419"}]},{"type":"Hlavní chod","meals":[{"id":"421"},{"id":"424"},{"id":"425"}]}],"description":"Friday"}]', true);
-        //dump($menu);
-        $xml = new SimpleXMLElement('<daily_menu_list/>');
-
-       /* for ($i = 1; $i <= 2; ++$i) {
-            $day = $xml->addChild('daily_menu');
-            $day->addChild('date', "22.3.2998");
-            $meal = $day->addChild('meal');
-            $meal->addChild('name', "Svíčková");
-            $meal->addChild('price', "99");
-            $meal->addChild('description', "polícka ze svíček");
-        }*/
-
-        foreach ($menu as $menu_day) {
-            $day = $xml->addChild('daily_menu');
-            $day->addChild('date', "22.3.1998");
-            foreach ($menu_day["meals"] as $menu_type) {
-                foreach ($menu_type["meals"] as $menu_meal) {
-                    $meal = $day->addChild('meal');
-                    $meal_db = $this->getDoctrine()->getRepository(Food::class)->find($menu_meal["id"]);
-                    $meal->addChild('name', $meal_db->getName());
-                    $meal->addChild('price', $meal_db->getPrice());
-                    $meal->addChild('description', $meal_db->getDescription());
-                    // not_soup_counter
-                    if (htmlspecialchars($menu_type["type"]) == "Polévka") {
-                        $meal->addChild('highlight', "true");
-                    }
-                }
-            }
-        }
-        //dump($xml);
-        //dump($xml->asXML());
-
-        $clean_username = $this->getUser()->getCleanUsername();
-        if (!is_dir('./xml')) {
-            mkdir('./xml');
-        }
-        if (!is_dir('./xml/' . $clean_username)) {
-            mkdir('./xml/' . $clean_username);
-        }
-        file_put_contents('./xml/' . $clean_username . "/menu.xml", $xml->asXML());
-
-        $clean_username = $this->getUser()->getCleanUsername();
-        $path = './xml/' . $clean_username . "/menu.xml";
-        try {
-            $uploader->aws_upload($path);
-        } catch (Exception $e) {
-
-        }
-    }
 
     /**
      * @Route("/menu/generate", methods={"GET", "POST"})
@@ -210,15 +132,15 @@ class MenuController extends AbstractController {
      * @throws CopyFileException
      * @throws CreateTemporaryFileExceptionAlias
      */
-    public function generate(FileUploader $uploader){
+    public function generate(){
         $menu = json_decode ($_GET["json"], true);
         $template = $_GET["template"];
         //dump($template);
         $clear_menu = $this->clear_menu_from_empty($menu);
         $doGenerate = $_GET["generate"];
         $file = $this->export_as_word($clear_menu, $template);
-        $this->export_as_xml($uploader, $clear_menu);
        // exit;
+        dump($menu);
 
         //return $this->render('pages/menu/export.html.twig', ['menu' => $menu, "generate" => $doGenerate]);
         return $file;

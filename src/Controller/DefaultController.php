@@ -99,4 +99,27 @@ class DefaultController extends AbstractController
         $clean_username = $this->getUser()->getCleanUsername();
         return $AWSpath . '/xml/' . $clean_username . "/menu.xml";
     }
+
+
+    public function clear_menu_from_empty($menu) {
+        $i = 0;
+        //dump($menu);
+        foreach ($menu as $day) {
+            $empty_flag = true;
+            $j = 0;
+            foreach ($day["meals"] as $type) {
+                if ($type["meals"] == []) {
+                    unset($type["meals"][$j]);
+                } else {
+                    $empty_flag = false;
+                }
+                $j++;
+            }
+            if ($empty_flag) {
+                unset($menu[$i]);
+            }
+            $i++;
+        }
+        return $menu;
+    }
 }
