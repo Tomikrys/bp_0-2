@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use App\Entity\Food;
 use App\Entity\Settings;
+use App\Entity\Skin;
 use App\Entity\Tag;
 use App\Entity\Template;
 use App\Entity\Type;
@@ -67,9 +68,13 @@ class SettingsController extends DefaultController {
 //        dump($templates);
 //        exit;
 
+        $skins = $this->getDoctrine()->getRepository(Skin::class)->findAll();
+
+        $xml_menu = $this->get_xml_link();
+
         $this->manage_flashes();
         return $this->render('pages/settings/settings.html.twig', ['settings' => $settings, 'types' => $types, 'tags' => $tags,
-            'templates' => $templates]);
+            'templates' => $templates, 'skins' => $skins, "xml_menu" => $xml_menu]);
     }
 
     /**

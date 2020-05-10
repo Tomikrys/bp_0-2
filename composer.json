@@ -30,7 +30,8 @@
         "symfony/web-link": "4.3.*",
         "symfony/yaml": "4.3.*",
         "twig/cssinliner-extra": "^3.0",
-      "ext-curl": "*"
+      "ext-curl": "*",
+      "ext-simplexml": "*"
     },
     "require-dev": {
         "symfony/debug-pack": "*",

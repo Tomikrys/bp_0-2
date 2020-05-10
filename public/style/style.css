@@ -83,3 +83,18 @@ nav .btn-custom-dropdown {
 .scrolling-block {
     float: left;
 }
+.center-content {
+    width: fit-content;
+    width: -moz-fit-content;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.center-content table {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.center-content h2 ,.center-content p {
+    text-align: center;
+}

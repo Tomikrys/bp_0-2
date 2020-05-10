@@ -99,7 +99,7 @@
                                 {% set tags = tags ~ "]"%}
                                 <div class="meal card-header filter-tags meal{{ food.id }}" id="meal{{ food.id }}" data-id="{{ food.id }}"
                                      data-type="{{ type }}" data-tags="{{ tags }}" data-description="{{ food.description }}">
-                                        {{ food.name }}, {{ food.price }}
+                                        {{ food.name }}, {{ food.price }} Kč
                                 </div>
                             {% endfor %}
                         </div>
@@ -128,18 +128,20 @@
                     {% endfor %}
     {#            <button onclick="getMenu()" class="btn btn-primary">Náhled</button>#}
                     </div>
-                    <h3>Export</h3>
-                    <form action="javascript:void(0);" class="form-inline mb-2">
-                        <select class="form-control" id="export_template">
-                            {% for template in templates %}
-                                <option value="{{ template.path }}">{{ template.name }}</option>
-                            {% endfor %}
-                        </select>
-                        <button onclick="generateMenu()" class="btn btn-success ml-1">Exportovat</button>
-                        <button onclick="saveMenu()" class="btn btn-success ml-1">Uložit do historie</button>
-                    </form>
                 </div>
             </div>
+        </div>
+        <div class="center-content">
+            <h3>Export</h3>
+            <form action="javascript:void(0);" class="form-inline mb-2">
+                <select class="form-control" id="export_template">
+                    {% for template in templates %}
+                        <option value="{{ template.path }}">{{ template.name }}</option>
+                    {% endfor %}
+                </select>
+            </form>
+            <button onclick="generateMenu()" class="btn btn-success ml-1">Exportovat</button>
+            <button onclick="saveMenu()" class="btn btn-success ml-1">Uložit do historie</button>
         </div>
     </div>
     <div class="scrolling-block">

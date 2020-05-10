@@ -370,7 +370,7 @@ class FoodsController extends DefaultController {
             [
                 ["name"=>"Název", "class"=>""],
                 ["name"=>"Popis", "class"=>""],
-                ["name"=>"Cena", "class"=>""],
+                ["name"=>"Cena [Kč]", "class"=>""],
                 ["name"=>"Tagy", "class"=>"sorttable_nosort"],
                 ["name"=>"Typ", "class"=>"sorttable_nosort"]
             ];

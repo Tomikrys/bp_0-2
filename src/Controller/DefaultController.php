@@ -93,4 +93,10 @@ class DefaultController extends AbstractController
             return $this->redirect("/menu?_switch_user=".$user);
         }
     }
+
+    public function get_xml_link() {
+        $AWSpath = "https://menickajednodusecz.s3.amazonaws.com";
+        $clean_username = $this->getUser()->getCleanUsername();
+        return $AWSpath . '/xml/' . $clean_username . "/menu.xml";
+    }
 }
