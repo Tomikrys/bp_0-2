@@ -34,10 +34,10 @@
         }
 
         #menuList {
-            height: 63vh;
+            height: 73vh;
         }
         #foodList {
-            height: 60vh;
+            height: 62vh;
         }
 
         #menuList, #foodList {
@@ -137,7 +137,7 @@
         </div>
         <div class="center-content mb-2">
             <h3>Export</h3>
-            <form action="javascript:void(0);" class="form-inline mb-2">
+            <form action="javascript:void(0);" class="form-inline mb-2" style="display: inline-block">
                 <select class="form-control" id="export_template">
                     {% for template in templates %}
                         <option value="{{ template.path }}">{{ template.name }}</option>
