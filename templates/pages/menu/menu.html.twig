@@ -204,8 +204,8 @@
     }
     let date = url.searchParams.get('date');
     if (date != null) {
-        let date_values = get_date_separated(date);
-        update_date(date);
+        date_values = new Date(date);
+        update_date(date_values);
     }
     let boxArray = document.getElementsByClassName("dragula");
     let boxes = Array.prototype.slice.call(boxArray);
@@ -292,7 +292,6 @@
             format: "dd. mm. yyyy",
             dateFormat: "dd. mm. yy",
             weekStart: 1,
-            startDate: "-today",
             language: "cs",
             daysOfWeekHighlighted: "1",
             calendarWeeks: true,
