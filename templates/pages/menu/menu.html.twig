@@ -324,10 +324,10 @@
                 let k = 0;
                 while (json[i].meals[j].meals[k]) {
                     let food = document.getElementById("meal" + json[i].meals[j].meals[k].id);
-                    food.classList.add("copy");
-                    food.classList.remove("filter-tags");
-                    food.classList.remove("original");
                     if (food) {
+                        food.classList.add("copy");
+                        food.classList.remove("filter-tags");
+                        food.classList.remove("original");
                         day += food.outerHTML;
                     }
                     k++;
