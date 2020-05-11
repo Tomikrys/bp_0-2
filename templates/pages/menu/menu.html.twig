@@ -109,6 +109,10 @@
 
             <div class="col col-right">
                 <h2>Jídelníček</h2>
+                <div id="past_datepicker_alert" class="alert alert-dismissible alert-warning" style="display: none">
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    <strong>Pozor</strong> datum je v minulosti.
+                </div>
                 <div class="form-group row">
                     <label for="datepicker" class="col-form-label">Datum prvního dne menu</label>
                     <input id="datepicker" type="text" class="col ml-2 form-control form-control-sm">
@@ -192,7 +196,7 @@
         });
         let date = url.searchParams.get('date');
         if (date != null) {
-            let date_values = get_date_separated(date);
+            //let date_values = new Date(date);
             update_date(date);
         }
     });
@@ -204,7 +208,7 @@
     }
     let date = url.searchParams.get('date');
     if (date != null) {
-        date_values = new Date(date);
+        let date_values = new Date(date);
         update_date(date_values);
     }
     let boxArray = document.getElementsByClassName("dragula");
@@ -300,6 +304,15 @@
             defaultViewDate: { year: 1977, month: 4, day: 25 }
         });
         $('#datepicker').datepicker("setDate", date);
+
+        let today = new Date();
+        let datepicker = get_date_separated(document.getElementById('datepicker').value);
+        let datepicker_date = new Date(datepicker.mm + " " + datepicker.dd + " " + datepicker.yyyy);
+        if (date < today || datepicker_date < today) {
+            $("#past_datepicker_alert").show();
+        } else {
+            $("#past_datepicker_alert").hide();
+        }
         //document.getElementById('datepicker').value = date;
     }
 
@@ -349,6 +362,14 @@
         url.searchParams.set('date', document.getElementById('datepicker').value);
         //TODO ječí to
         window.history.pushState('test', 'Title', url);
+        let today = new Date();
+        let datepicker = get_date_separated(document.getElementById('datepicker').value);
+        let date = new Date(datepicker.mm + " " + datepicker.dd + " " + datepicker.yyyy);
+        if (date < today) {
+            $("#past_datepicker_alert").show();
+        } else {
+            $("#past_datepicker_alert").hide();
+        }
     }
 
     function parse_date(date) {
