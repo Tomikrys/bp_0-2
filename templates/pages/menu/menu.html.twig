@@ -215,6 +215,11 @@
     let boxes = Array.prototype.slice.call(boxArray);
     dragula([document.getElementById("foodList"), document.getElementsByClassName("drop-container")], {
         containers: boxes,
+        invalid: function (el, handle) {
+            if (!el.classList.contains("meal")) {
+                return true;
+            }
+        },
         copy: function (el, source) {
             if (el.classList.contains("meal")) {
                 return source.classList.contains('get-container');
