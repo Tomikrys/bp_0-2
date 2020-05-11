@@ -233,6 +233,7 @@
                     let $checkboxes = $boxes.slice(Math.min(start, end), Math.max(start, end) + 1);
                     $checkboxes.each( function() {
                         $(this).prop('checked', $lastChecked_check.prop("checked"));
+                        select_food($(this).attr("data-id"));
                     });
                 }
 
