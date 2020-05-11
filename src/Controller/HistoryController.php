@@ -152,6 +152,8 @@ class HistoryController extends DefaultController {
 
     /**
      * @Route("/history/add", methods={"GET", "POST"})
+     * @param FileUploader $uploader
+     * @return Response
      * @throws \Exception
      */
     public function add(FileUploader $uploader) {
@@ -170,6 +172,22 @@ class HistoryController extends DefaultController {
         $clear_menu = $this->clear_menu_from_empty($menu['json']);
         $this->export_as_xml($uploader, $clear_menu);
 
+        return new Response();
+    }
+
+
+    /**
+     * @Route("/history/update_xml", methods={"GET", "POST"})
+     * @param FileUploader $uploader
+     * @return Response
+     */
+    public function update_xml(FileUploader $uploader) {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        $json = file_get_contents('php://input');
+        $menu = json_decode ($json, true);
+        //dump($menu['json']);
+        $clear_menu = $this->clear_menu_from_empty($menu['json']);
+        $this->export_as_xml($uploader, $clear_menu);
         return new Response();
     }
 

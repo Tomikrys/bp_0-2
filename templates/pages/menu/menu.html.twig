@@ -131,7 +131,7 @@
                 </div>
             </div>
         </div>
-        <div class="center-content">
+        <div class="center-content mb-2">
             <h3>Export</h3>
             <form action="javascript:void(0);" class="form-inline mb-2">
                 <select class="form-control" id="export_template">
@@ -142,6 +142,7 @@
             </form>
             <button onclick="generateMenu()" class="btn btn-success ml-1">Exportovat</button>
             <button onclick="saveMenu()" class="btn btn-success ml-1">Uložit do historie</button>
+            <button onclick="update_xml()" class="btn btn-success ml-1">Aktualizovat XML soubor</button>
         </div>
     </div>
     <div class="scrolling-block">
@@ -260,6 +261,24 @@
         console.log(date);
         let data = {json: generate_json(), date: date};
         const response = fetch('/history/add', {
+            method: 'POST', // or 'PUT'
+            body: JSON.stringify(data), // data can be `string` or {object}!
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(res => window.location.reload());
+    }
+
+    function update_xml() {
+        $("#loading").modal("show");
+        update_url();
+        console.log(document.getElementById('datepicker').value);
+        let date_values = get_date_separated(document.getElementById('datepicker').value);
+        let date = Date.parse(date_values.mm + '/' + date_values.dd + '/' + date_values.yyyy);
+        date += 3600000; // fix timezone to GMT
+        console.log(date);
+        let data = {json: generate_json(), date: date};
+        const response = fetch('/history/update_xml', {
             method: 'POST', // or 'PUT'
             body: JSON.stringify(data), // data can be `string` or {object}!
             headers: {
