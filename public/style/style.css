@@ -58,6 +58,16 @@ nav .btn-custom-dropdown {
     display:none;
 }
 
+#menuList .hidden {
+    display: block;
+}
+#menuList .hidden_tag {
+    display: block;
+}
+#menuList .hidden_type {
+    display: block;
+}
+
 .hidden_tag {
     display:none;
 }
