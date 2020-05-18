@@ -120,8 +120,6 @@ class SecurityController extends AbstractController
             "99", "jídlo", ["pork", "spicy"], $user);
         $this->add_new_food("Grilovaný vepřový steak na žampionech", "Podávané s hranolkami a smetanovým dipem",
             "99", "jídlo", ["pork", "spicy"], $user);
-        $this->add_new_food("Grilovaný vepřový steak na žampionech", "Podávané s hranolkami a smetanovým dipem",
-            "99", "jídlo", ["pork", "spicy"], $user);
         $this->add_new_food("Tagliatelle s kuřecím ragů", "Dlouhé ploché těstoviny, sypané parmezánem",
             "99", "jídlo", ["chicken", "spicy"], $user);
         $this->add_new_food("Čerstvý zeleninový salát", "S anglickým roasbeefem a kaparovým dresinkem, kaiserka",
