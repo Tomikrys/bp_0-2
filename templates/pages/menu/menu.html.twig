@@ -77,6 +77,13 @@
         #foodList .used-meal {
             background-color: pink;
         }
+
+        .highlight {
+            border-color: #d91717;
+        }
+        .trash-highlight {
+            color: #d91717;
+        }
     </style>
     <link id="bsdp-css" href="https://unpkg.com/bootstrap-datepicker@1.9.0/dist/css/bootstrap-datepicker3.min.css" rel="stylesheet">
 {% endblock %}
@@ -199,6 +206,44 @@
             //let date_values = new Date(date);
             update_date(date);
         }
+
+        let boxArray = document.getElementsByClassName("dragula");
+        let boxes = Array.prototype.slice.call(boxArray);
+        let drake = dragula([document.getElementById("foodList"), document.getElementsByClassName("drop-container")], {
+            containers: boxes,
+            invalid: function (el, handle) {
+                if (!el.classList.contains("meal")) {
+                    return true;
+                }
+            },
+            copy: function (el, source) {
+                if (el.classList.contains("meal")) {
+                    return source.classList.contains('get-container');
+                } else {
+                    return false;
+                }
+            },
+            accepts: function (el, target) {
+                return target.classList.contains('drop-container');
+            },
+            removeOnSpill: true,
+            ignoreInputTextSelection: false
+        });
+
+        drake.on('drag', function(el, source) {
+            let boxes = document.getElementsByClassName("drop-container");
+            for (let i = 0; i < boxes.length; i++) {
+                boxes.item(i).classList.add("highlight");
+            }
+            document.getElementsByClassName("fa-trash")[0].classList.add("trash-highlight");
+        });
+        drake.on('dragend', function(el, source) {
+            let boxes = document.getElementsByClassName("drop-container");
+            for (let i = 0; i < boxes.length; i++) {
+                boxes.item(i).classList.remove("highlight");
+            }
+            document.getElementsByClassName("fa-trash")[0].classList.remove("trash-highlight");
+        });
     });
 
     let url = new URL(location.href);
@@ -211,30 +256,14 @@
         let date_values = new Date(date);
         update_date(date_values);
     }
-    let boxArray = document.getElementsByClassName("dragula");
-    let boxes = Array.prototype.slice.call(boxArray);
-    dragula([document.getElementById("foodList"), document.getElementsByClassName("drop-container")], {
-        containers: boxes,
-        invalid: function (el, handle) {
-            if (!el.classList.contains("meal")) {
-                return true;
-            }
-        },
-        copy: function (el, source) {
-            if (el.classList.contains("meal")) {
-                return source.classList.contains('get-container');
-            } else {
-                return false;
-            }
-        },
-        accepts: function (el, target) {
-            return target.classList.contains('drop-container');
-        },
-        removeOnSpill: true,
-        ignoreInputTextSelection: false
-    });
 
     // functions
+    function dragging() {
+        console.log("dragging :O");
+        document.getElementById("demo").innerHTML = "The p element is being dragged";
+    }
+
+
     function get_nearest_monday() {
         let today = new Date();
         while (today.getDay() !== 1) {

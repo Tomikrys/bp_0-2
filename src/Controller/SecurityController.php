@@ -241,6 +241,10 @@ class SecurityController extends AbstractController
         $this->add_new_template("web", "webovky.docx", $user);
         $uploader->aws_upload($path);
 
+        $path = 'xml/' . $clean_username . '/menu.xml';
+        $filesystem->copy('xml/menu.xml', $path,
+            true);
+        $uploader->aws_upload($path);
     }
 
     public function add_new_template($name, $path, $user) {

@@ -54,9 +54,6 @@ nav .btn-custom-dropdown {
     color: #ccc;
 }
 
-.hidden {
-    display:none;
-}
 
 #menuList .hidden {
     display: block;
@@ -66,6 +63,10 @@ nav .btn-custom-dropdown {
 }
 #menuList .hidden_type {
     display: block;
+}
+
+.hidden {
+    display:none;
 }
 
 .hidden_tag {
@@ -108,3 +109,6 @@ nav .btn-custom-dropdown {
 .center-content h2 ,.center-content p {
     text-align: center;
 }
+
+
+
