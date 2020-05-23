@@ -15,4 +15,12 @@ class IndexController extends AbstractController {
     public function index(){
         return $this->render('pages/index.html.twig', []);
     }
+
+    /**
+     * @return \Symfony\Component\HttpFoundation\Response
+     * @Route("/poster", name="poster", methods={"GET", "POST"})
+     */
+    public function poster(){
+        return $this->render('pages/poster.html.twig', []);
+    }
 }
