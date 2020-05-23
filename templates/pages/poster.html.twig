@@ -16,9 +16,6 @@
             text-align: justify;
             font-size: 1.4em;
         }
-        .row {
-            margin-bottom: 50px;
-        }
 
         #index a button {
             margin-top: 40px;
@@ -44,19 +41,34 @@
         }
 
         .container {
-            max-width: 1300px !important;
+            max-width: 1500px !important;
         }
         .logo {
             width: 100%;
+        }
+
+        .title {
+            font-size:150px;
+        }
+        h2 {
+            font-size: 40px;
+        }
+        p {
+            font-size: 23px;
         }
     </style>
 {% endblock %}
 {% block body %}
 
     <div id="index">
-        <h1 class="text-center">Aplikace pro snadnou tvorbu meníček<br>SimpleMenu.cz</h1>
+        <h1 class="text-center">
+            <span class="title">SimpleMenu.cz</span>
+            <br>
+            Aplikace pro snadnou tvorbu meníček
+            <br><br>
+        </h1>
         <div class="row">
-            <div class="col-12 col-lg-5">
+            <div class="col-5">
                 <h2>Tvorba menu snadno</h2>
                 <p>Aplikace sloužící především <b>restauracím</b>, které se každý týden moří s&nbsp;tvořením týdenních menu.
                 <h2>Rychlý import</h2>
@@ -65,41 +77,35 @@
                     <code>"Název|Popis&nbsp;jídla|Cena|Typ|Tag|Tag"</code>. Jídla jsou rozdělena do kategorií podle typů.
                     Je možné je označit libovolným počtem tagů pro snadné vyhledávání. Jídla je možné upravovat přímo v&nbsp;tabulce.
                     Pro úpravu více jídel je k dispozici možnost <b>hromadného uložení změn</b>.
-                    <?--Do aplikace si naimportujete svá jídla, ty je třeba rozdělit podle typů a příslušně otagovat. Není to nutné, ale
-                    při tvorbě menu to pomáhá vyhledávat jednotlivé pokrmy. Poté si sestavíte menu přesunutím jídel do chlívečků. Nyní
-                    stačí menu vygenerovat do předem připravené šablony. Tou je dokument ve wordu ve speciálním formátu, který potom
-                    aplikace přetvoří do příslušné podoby. Výhodou šablony ve Wordu je jednoduché a uživatelsky přívětivé editování.
-                    Nově registrovaní uživatelé mají pár šablon předpřipravených.--></p>
             </div>
-            <div class="col-12 col-lg-7">
+            <div class="col-7">
                 <img class="clickable" src="media/stock_laptop_foods.gif" width="100%">
             </div>
         </div>
         <div class="row">
-            <div class="col-12 col-lg-7">
+            <div class="col-7">
                 <img class="clickable" src="media/stock_laptop_foods_dialog.gif" width="100%">
             </div>
-            <div class="col-12 col-lg-5">
+            <div class="col-5">
                 <h2>Snadné dávkové změny</h2>
                 <p>
                     Jsou připraveny dávkové úpravy pro změnu <b>ceny, typu nebo tagů</b> více jídel najednou. Stačí jídla pouze označit
                     a&nbsp;kliknout na tlačítko "Upravit vybrané".
 
                 </p>
-                <h2>Změna tagů</h2>
-                <p>
-                    Je možné všem označeným jídlům buď tagy přidat, nebo odebrat, jsou na to připraveny
-                    dva formuláře, které ukazují společné tagy všech označených jídel.
-                </p>
                 <h2>Intuitivní rozhraní</h2>
                 <p>
-                    Pro označení více jídel za sebou můžete využít zkratky, kliknout na první jídlo a&nbsp;s&nbsp;podržením
-                    klávesy shift na poslední. Jídla v&nbsp;tomto rozsahu budou označena.
+                    Je možné všem označeným jídlům buď tagy přidat, nebo odebrat, jsou na to připraveny
+                    dva formuláře, které ukazují <b>společné tagy</b> všech označených jídel.
+                </p>
+                <p>
+                    Pro označení více jídel za sebou je možné využít zkratky, je možné kliknout na první jídlo a&nbsp;s&nbsp;podržením
+                    klávesy <b>shift</b> na poslední. Jídla v&nbsp;tomto rozsahu budou označena.
                 </p>
             </div>
         </div>
         <div class="row">
-            <div class="col-12 col-lg-5">
+            <div class="col-5">
                 <h2>Sestavení menu</h2>
                 <p>Menu je možné snadno sestavit <b>přetažením (drag and drop)</b> do předpřipravené kostry. Kostru je možné definovat v nastavení aplikace.
                     Jídla, která jsou na daný týden použita, se přehledně zvýrazní. Poté již stačí jenom meníčko exportovat do připravených šablon.</p>
@@ -109,28 +115,31 @@
                     zobrazit jídla pouze daného typu nebo filtrovat pomocí tagů.
                 </p>
             </div>
-            <div class="col-12 col-lg-7">
+            <div class="col-7">
                 <img class="clickable" src="media/stock_laptop_menu.gif" width="100%">
             </div>
         </div>
         <div class="row">
-            <div class="col-12 col-lg-7">
+            <div class="col-7">
                 <img class="clickable" src="media/stock_laptop_word_comparsion.gif" width="100%">
             </div>
-            <div class="col-12 col-lg-5">
+            <div class="col-5">
                 <h2>Jak se tvoří menu?</h2>
                 <p>Šablony jsou tvořeny dokumenty <b>.docx (MS Word)</b>, proto je jejich editace a&nbsp;tvorba velmi snadná.
+                    Stačí pouze nastylovat příslušné značky.
                     <br>
-                    Při registraci jsou automaticky naimportovány ilustrační šablony. Je tedy možné okamžitě generovat
+                    Při registraci jsou automaticky přichystány ilustrační šablony. Je tedy možné okamžitě generovat
                     <b>menu ve&nbsp;formátu pro tisk</b>, menu připravené pro import do platformy <b>Zomato</b> +
                     jsou přiložené příklady šablon pro <b>příspěvek na Facebook</b> a html pro webové stránky. Je také
                     připraven export do formátu XML pro autamický import do platformy Zomato.</p>
             </div>
         </div>
         <div class="row">
-            <div class="col pr-5">
+            <div class="col-5 pr-5">
                 <h2>Použité technologie</h2>
                 <div class="row mb-0">
+                    <div class="col my-auto">
+                    </div>
                     <div class="col my-auto">
                         <img class="logo clickable" src="media/loga/html.png">
                     </div>
@@ -149,12 +158,14 @@
                 </div>
                 <div class="row mb-0" >
                     <div class="col-2 my-auto">
+                    </div>
+                    <div class="col-2 my-auto">
                         <img class="logo clickable" src="media/loga/symfony.png">
                     </div>
-                    <div class="col-4 my-auto">
+                    <div class="col-3 my-auto">
                         <img class="logo clickable" src="media/loga/phpword.png">
                     </div>
-                    <div class="col-4 my-auto">
+                    <div class="col-3 my-auto">
                         <img class="logo clickable" src="media/loga/dragula.png">
                     </div>
                     <div class="col-2 my-auto">
@@ -162,7 +173,9 @@
                     </div>
                 </div>
             </div>
-            <div class="col">
+            <div class="col-1">
+            </div>
+            <div class="col-5">
                 <h2>Autor</h2>
                 <p><b>Tomáš Ryšavý</b> (xrysav27) <br>
                     Rok: 2019/2020 <br>
