@@ -139,8 +139,15 @@ class SettingsController extends DefaultController {
         $user = $this->getUser();
         $type = $this->getDoctrine()->getRepository(Type::class)->find($id);
         if ($user != $type->getUser()) {
-            //TODO Error
             $this->addFlash('warning', 'Neoprávněný přístup.');
+            exit;
+        }
+        if (!$type) {
+            $this->addFlash('warning', 'Typ nebyl nalezen.');
+            exit;
+        }
+        if (!$type->getFoods()->isEmpty()) {
+            $this->addFlash('warning', 'Typ je přiřazen nějakým jídlům, nelze odstranit.');
             exit;
         }
         $entityManager = $this->getDoctrine()->getManager();
@@ -188,16 +195,19 @@ class SettingsController extends DefaultController {
     public function delete_tag(Request $request, $id) {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $user = $this->getUser();
-        $type = $this->getDoctrine()->getRepository(Tag::class)->findOneBy(['user' => $user, 'id' => $id]);
-        if ($type) {
-            //TODO Error
-            $this->addFlash('warning', 'Typ nebyl nalezen');
+        $tag = $this->getDoctrine()->getRepository(Tag::class)->findOneBy(['user' => $user, 'id' => $id]);
+        if (!$tag) {
+            $this->addFlash('warning', 'Tag nebyl nalezen.');
             exit;
         }
+        $msg = 'Tag byl smazán.';
+        if (!$tag->getFoods()->isEmpty()) {
+            $msg = 'Tag byl smazán, jídla již nemají tento tag.';
+        }
         $entityManager = $this->getDoctrine()->getManager();
-        $entityManager->remove($type);
+        $entityManager->remove($tag);
         $entityManager->flush();
-        $this->addFlash('warning', 'Tag byl smazán.');
+        $this->addFlash('warning', $msg);
         $response = new Response();
         $response->send();
         return $response;

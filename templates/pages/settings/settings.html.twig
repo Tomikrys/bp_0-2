@@ -144,7 +144,7 @@
                             <td onkeyup="add_to_changed_types(this)" id="type{{ type.id }}" data-id="{{ type.id }}" class="type_name without-enter" contenteditable="true">{{ type.name }}</td>
                             <td>
 {#                                <button onclick="edit_type(this)" class="btn btn-sm btn-primary edit-tag" data-id="{{ type.id }}">Uložit</button>#}
-                                <button onclick="delete_type(this)" class="btn btn-sm btn-danger delete-tag" data-id="{{ type.id }}">Smazat</button>
+                                <button onclick="delete_type(this)" class="btn btn-sm btn-danger delete-type" data-id="{{ type.id }}">Smazat</button>
                             </td>
                         </tr>
                     {% endfor %}
@@ -425,7 +425,7 @@
             fetch(`/settings/delete/tag/${id}`, {
                 method: 'DELETE'
             }).then(() => {
-                $("#loading").modal("hide");
+                window.location.reload();
             });
         }
 
@@ -454,7 +454,7 @@
             fetch(`/settings/delete/type/${id}`, {
                 method: 'DELETE'
             }).then(() => {
-                $("#loading").modal("hide");
+                window.location.reload();
             });
         }
     }
