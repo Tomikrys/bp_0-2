@@ -12,6 +12,7 @@ use App\Entity\Template;
 use App\Entity\Type;
 use App\Repository\HistoryRepository;
 use App\Service\FileUploader;
+use DateInterval;
 use DateTime;
 use http\Exception;
 use PhpOffice\PhpWord\Exception\CopyFileException;
@@ -162,6 +163,7 @@ class HistoryController extends DefaultController {
         $data = json_decode ($json, true);
         $history = new History();
         $date = new DateTime("@" . $data['date'] / 1000);
+        $date->add(new DateInterval('P1D'));
         $history->setDateFrom($date);
         $history->setJson($data['json']);
         $history->setUser($this->getUser());
