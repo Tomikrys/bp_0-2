@@ -162,7 +162,7 @@ class HistoryController extends DefaultController {
         $json = file_get_contents('php://input');
         $data = json_decode ($json, true);
         $history = new History();
-        $date = new DateTime("@" . $data['date'] / 1000);
+        $date = new DateTime($data['date']);
         //$date->add(new DateInterval('P1D'));
         $history->setDateFrom($date);
         $history->setJson($data['json']);
