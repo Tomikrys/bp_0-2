@@ -163,7 +163,7 @@ class HistoryController extends DefaultController {
         $data = json_decode ($json, true);
         $history = new History();
         $date = new DateTime("@" . $data['date'] / 1000);
-        $date->add(new DateInterval('P1D'));
+        //$date->add(new DateInterval('P1D'));
         $history->setDateFrom($date);
         $history->setJson($data['json']);
         $history->setUser($this->getUser());
